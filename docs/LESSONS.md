@@ -45,3 +45,109 @@ One entry per finding. Newest at the bottom. Format:
 - Fix: shared loop code fixed; overlays cleared before whip.
 - Prevention: QA first/last frame PSNR >= 45 dB.
 - Status: fixed
+
+## Round 3 entries
+### L-5 · 2026-11-25 · Elevator · major
+- Problem: an SFX peak only 6.7 dB under the voice at 0:31 ("It would rise").
+- Root cause: once camera moves started emitting SFX automatically, the camera punch (stamp+glint) landed on top of the hand-placed whoosh 0.9 and reveal 0.8.
+- Fix: Elevator.tsx rise cues lowered (whoosh 0.6, reveal 0.5).
+- Prevention: when adding hand cues on a frame that has a camera punch, assume stamp+glint are already there. qa.py "SFX ... none louder than voice-8 dB" catches it.
+- Status: fixed
+### L-6 · 2026-11-25 · QR · minor
+- Problem: SFX onset density 1.85/s (target 1.2–1.5, clutter risk).
+- Root cause: micro-ticks plus automatic camera SFX were added on top of the dense v2 tick runs (6-tick "cut" run).
+- Fix: micro-tick exclusion window 6 → 10 frames (EpisodeShell.tsx); QR tick run 6 → 3. Now 1.77/s.
+- Prevention: qa.py "SFX onset density 1.0-1.8 /s" (new automated check). QR is still above 1.5, see BACKLOG.
+- Status: fixed (within gate)
+### L-7 · 2026-11-25 · kit · major
+- Problem: mastered MP4s had 96 kHz AAC audio.
+- Root cause: ffmpeg-normalize (loudnorm) upsamples internally and keeps that rate unless told otherwise.
+- Fix: scripts/master.sh passes `-ar 48000`.
+- Prevention: qa.py format check now requires sample_rate 48000.
+- Status: fixed
+### L-8 · 2026-11-25 · Sky · minor
+- Problem: "SOMEONE ELSE'S AFTERNOON" (blue text) was low-contrast over the new 3D planet's blue ocean.
+- Root cause: label colour was chosen against the old dark-green SVG Earth; swapping the hero art changed what sits behind the label.
+- Fix: Sky.tsx label colour #CFEBFF.
+- Prevention: after replacing any background or hero art, re-check every label that overlaps it on the grid sheet. Automating this (a local contrast check under text boxes) is in BACKLOG.
+- Status: fixed
+### L-9 · 2026-11-25 · Elevator · minor
+- Problem: the final "crane struck out" state was readable for only 1.42 s before the loop.
+- Root cause: the strike started 2 frames after "not a crane" and took 10 frames; the narration ends close to the file end.
+- Fix: the strike starts on "not" and takes 8 frames (≈1.6 s held), and a 1.0 s narration tail was added (episodes/02-elevator/tail.txt).
+- Prevention: endings need the payoff state fully on screen ≥ 1.5 s before LOOP_FRAMES. Not automated yet (BACKLOG).
+- Status: fixed
+### L-10 · 2026-11-25 · kit · minor
+- Problem: @remotion/three renders failed with "Error creating WebGL context".
+- Root cause: headless Chrome on the box has no GPU; the angle, swiftshader, egl and vulkan backends fail.
+- Fix: remotion.config.ts `setChromiumOpenGlRenderer("swangle")`.
+- Prevention: keep swangle in config. 3D shots cost about 3.4× render time (Sky 27 → 93 s), so use at most one 3D hero per episode.
+- Status: fixed
+### L-11 · 2026-11-25 · kit · minor
+- Problem: QA outputs from v3 iteration 1 overwrote v2's qa/<Id>/report_it1.* (restored from the original folder).
+- Root cause: qa.py wrote to qa/<Id>/ regardless of render suffix.
+- Fix: qa.py writes to qa/<Id>/<suffix>/ for any suffix other than v2 (`SUF` env var; iterate.sh passes it through).
+- Prevention: every versioned output path includes the version suffix.
+- Status: fixed
+### L-12 · 2026-11-25 · kit · minor
+- Problem: caption words with end < start (e.g. "An" 0.24/0.14).
+- Root cause: whisper token timestamps; captions.py did not clamp them.
+- Fix: captions.py sets end = min(max(end, start+0.08), next start).
+- Prevention: the clamp lives in captions.py. A lint for monotonic timings is in BACKLOG.
+- Status: fixed
+
+## Round 4 entries
+### L-13 · 2026-11-25 · kit · major (regression of L-8)
+- Problem: labels under 4.5:1 WCAG contrast that a human review let through: Elevator "A CRANE" 2.3:1 (red label inside a panel faded to 55%), QR "NO SCAN" 2.9:1 (white on red pill), QR "→" glyph 2.4:1, Sky "SHORT PATH THROUGH AIR" 3.3:1 (white on blue pill).
+- Root cause: colours were picked by eye per label; parent-group opacity (dimming a "loser" panel) also dims its label; white on saturated mid-tone pills is below 4.5:1.
+- Fix: Elevator.tsx keeps the "A CRANE" label out of the dimmed group (full-opacity red on ink2); QR NO SCAN and Sky SHORT PATH pills use ink text; "→" replaced by ":" text.
+- Prevention: automated. `scripts/contrast.py` (called by qa.py, check "labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)") renders a probe pass where every Label/Pill text is pure magenta without outline (`--props {"probe":true}`, brand/Kit.tsx `PROBE`), measures the real background ring and the final MP4 text colour. Rule: never dim a label with its panel; dim the art only. On saturated pills use ink text.
+- Status: fixed (verified 11/11 QA pass on QR_v4, Elevator_v4, Sky_v4)
+### L-14 · 2026-11-25 · Elevator · major (from BACKLOG)
+- Problem: Elevator frame 0 was dark (4% of stage pixels bright vs 28-57% on the others), so the thumbnail/first impression was weak.
+- Root cause: the hook frame was the dark machine-room rig; qa.py only required 2% bright pixels at 0.3 s.
+- Fix: v4 hook design (style frames) opens on a bright, paper-coloured shaft with the title-as-hook. Animation pending owner approval of the look.
+- Prevention: qa.py "hook: frame 0 bright (>= 12% of stage pixels > 90/255) and at 0.3 s" (new automated gate; v3 Elevator fails it at 0.04).
+- Status: fixed (Elevator_v4 frame 0 bright = 0.561, 0.3s = 0.555)
+### L-15 · 2026-11-25 · kit · minor
+- Problem: SFX onset density gate (1.0-1.8/s) let QR ship at 1.77/s and Elevator at 1.55/s, above the 1.2-1.5 target.
+- Root cause: the gate was wider than the target ("within gate" was treated as done, L-6).
+- Fix: qa.py now gates 1.2-1.5/s. v3 baseline: QR 1.77 FAIL, Elevator 1.55 FAIL, Sky 1.49 PASS.
+- Prevention: gate = target. Trim order: micro-ticks first, then tick runs, then duplicate whooshes on camera moves.
+- Status: fixed (QR_v4 1.32/s, Elevator_v4 1.27/s, Sky_v4 1.27/s)
+### L-16 · 2026-11-25 · QR · major (new automated check)
+- Problem: QR payoff state is never settled before the loop whip (0.07 s still; Elevator 1.53 s, Sky 3.03 s).
+- Root cause: L-9's rule ("payoff complete >= 1.5 s before LOOP_FRAMES") was prose only; QR's ending keeps animating until the whip.
+- Fix: QR.tsx Final: orbit blocks start at the "A QR code carries" line and settle in 14 frames; camera pull moved to the same frame (v4 it3: settled 3.17 s).
+- Prevention: qa.py "end card: catchphrase card >= 1.0 s and payoff settled >= 1.5 s before loop" (stage ROI vs the last pre-whip frame, mean abs diff < 6/255).
+- Status: fixed (QR 3.17 s, Elevator 1.70 s, Sky 4.03 s on v4)
+### L-17 · 2026-11-25 · kit · minor
+- Problem: the box is shared by several agents; scratch files in /tmp were overwritten by another agent during review (a preview strip showed someone else's frame).
+- Root cause: generic /tmp names (q1.png, q3.png).
+- Fix: round-4 scratch lives in /workspace/ttm-r4/_scratch.
+- Prevention: never write review artefacts to /tmp with generic names; use the project folder.
+- Status: fixed
+### L-18 · 2026-11-25 · kit · minor
+- Problem: photo licences from aggregators can differ from the source (Openverse items point at Commons pages with several licence links; a derivative file credits several authors).
+- Root cause: trusting the aggregator's licence field / a landing-page regex.
+- Fix: scripts/photos.py re-reads Commons items through the Commons API (by title or curid), rejects TIFF/WEBP/SVG deliveries unless a JPG/PNG rendition exists, and re-verifies at pick time.
+- Prevention: skills/licensed-photos/SKILL.md; CREDITS.csv has a `verified_via` column.
+- Status: fixed
+### L-19 · 2026-11-25 · kit · minor (independent Gemini critic, all 3 episodes)
+- Problem: the critic flagged secondary annotations as small on a phone: Elevator "≈ BALANCED" (0:03), QR "Reed-Solomon (1960)" (0:15), Sky "~1000× smaller than a light wave" (0:11).
+- Root cause: qa.py had no lower bound on rendered text size; raw SVG <text> (CAR 26 px) bypasses <Label>.
+- Fix: qa.py check "labels: minimum font size >= 30 px on all <Label> elements" (static scan of the episode .tsx). Raw <text> still open (BACKLOG).
+- Prevention: repeated critic finding -> automated check. Extend the scan to raw <text>.
+- Status: partly fixed (<Label> gated; raw <text> open)
+### L-20 · 2026-11-25 · kit · minor
+- Problem: the critic requested gemini-2.5-pro / 2.5-flash and both returned HTTP 404 ("no longer available to new users"); every v4 review silently ran on gemini-3-flash-preview.
+- Root cause: model list hard-coded from older docs; the fallback logged only the exception type.
+- Fix: critic.py records the model actually used in critic.json/critic.md and metrics.
+- Prevention: check the models endpoint before a review round; report the model next to every score.
+- Status: fixed (model recorded); default order to be updated in round 5
+### L-21 · 2026-11-25 · kit · major
+- Problem: the critic scored v3 Elevator 9.2/10, but the owner disliked v3 (and rejected both v4 style frames); v4 scored 9.3. The scores do not separate a rejected video from an approved one.
+- Root cause: generic rubric with no anchored examples or references; scores asked for before weaknesses; a flash model.
+- Fix: open (round 5: calibrate with anchored rubric, reference channels, weaknesses-before-scores, a pro model).
+- Prevention: a critic is only trusted after it ranks known-rejected below known-approved renders.
+- Status: open

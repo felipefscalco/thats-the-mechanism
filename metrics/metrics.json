@@ -1,49 +1,65 @@
 {
-  "generated": "2026-11-25T14:31:45-03:00",
+  "generated": "2026-11-25T18:57:21-03:00",
   "cost_usd_total": 0.0,
   "llm_tokens": "not available to the pipeline (authoring bot's token usage is not exposed)",
   "episodes": {
     "01-qr-code": {
       "stages": {
         "qa": {
-          "runs": 7,
-          "wall_s_total": 342.43,
-          "wall_s_last": 48.6,
-          "cpu_s_total": 448.46,
-          "peak_rss_mb": 2912,
+          "runs": 14,
+          "wall_s_total": 1030.74,
+          "wall_s_last": 113.64,
+          "cpu_s_total": 1418.35,
+          "peak_rss_mb": 4373,
           "out_mb_last": null
         },
         "render": {
-          "runs": 6,
-          "wall_s_total": 205.95,
-          "wall_s_last": 34.89,
-          "cpu_s_total": 455.92,
-          "peak_rss_mb": 3606,
-          "out_mb_last": 12.73
+          "runs": 13,
+          "wall_s_total": 603.36,
+          "wall_s_last": 61.68,
+          "cpu_s_total": 1118.54,
+          "peak_rss_mb": 4597,
+          "out_mb_last": 17.61
         },
         "captions": {
-          "runs": 1,
-          "wall_s_total": 7.32,
-          "wall_s_last": 7.32,
-          "cpu_s_total": 35.55,
-          "peak_rss_mb": 935,
+          "runs": 4,
+          "wall_s_total": 35.2,
+          "wall_s_last": 10.59,
+          "cpu_s_total": 175.57,
+          "peak_rss_mb": 972,
           "out_mb_last": 0.01
         },
         "mix": {
-          "runs": 1,
-          "wall_s_total": 1.26,
-          "wall_s_last": 1.26,
-          "cpu_s_total": 1.45,
-          "peak_rss_mb": 54,
-          "out_mb_last": 9.48
+          "runs": 3,
+          "wall_s_total": 4.83,
+          "wall_s_last": 1.78,
+          "cpu_s_total": 5.26,
+          "peak_rss_mb": 57,
+          "out_mb_last": 9.85
         },
         "tts": {
-          "runs": 1,
-          "wall_s_total": 7.88,
-          "wall_s_last": 7.88,
-          "cpu_s_total": 51.14,
-          "peak_rss_mb": 783,
-          "out_mb_last": 2.37
+          "runs": 3,
+          "wall_s_total": 29.96,
+          "wall_s_last": 10.7,
+          "cpu_s_total": 186.32,
+          "peak_rss_mb": 787,
+          "out_mb_last": 2.41
+        },
+        "master": {
+          "runs": 6,
+          "wall_s_total": 21.57,
+          "wall_s_last": 3.81,
+          "cpu_s_total": 29.05,
+          "peak_rss_mb": 200,
+          "out_mb_last": 17.61
+        },
+        "loudnorm": {
+          "runs": 2,
+          "wall_s_total": 2.31,
+          "wall_s_last": 1.29,
+          "cpu_s_total": 1.93,
+          "peak_rss_mb": 79,
+          "out_mb_last": 4.81
         }
       },
       "qa_iterations": 7,
@@ -58,44 +74,68 @@
     "02-elevator": {
       "stages": {
         "qa": {
-          "runs": 5,
-          "wall_s_total": 196.17,
-          "wall_s_last": 38.58,
-          "cpu_s_total": 298.17,
-          "peak_rss_mb": 2532,
+          "runs": 11,
+          "wall_s_total": 696.14,
+          "wall_s_last": 101.11,
+          "cpu_s_total": 964.21,
+          "peak_rss_mb": 3950,
           "out_mb_last": null
         },
         "render": {
-          "runs": 4,
-          "wall_s_total": 105.23,
-          "wall_s_last": 26.2,
-          "cpu_s_total": 224.56,
-          "peak_rss_mb": 3674,
-          "out_mb_last": 7.83
+          "runs": 10,
+          "wall_s_total": 407.56,
+          "wall_s_last": 54.34,
+          "cpu_s_total": 671.02,
+          "peak_rss_mb": 4515,
+          "out_mb_last": 12.15
         },
         "captions": {
-          "runs": 1,
-          "wall_s_total": 6.57,
-          "wall_s_last": 6.57,
-          "cpu_s_total": 34.11,
-          "peak_rss_mb": 951,
+          "runs": 3,
+          "wall_s_total": 21.81,
+          "wall_s_last": 8.42,
+          "cpu_s_total": 113.62,
+          "peak_rss_mb": 954,
           "out_mb_last": 0.01
         },
         "mix": {
-          "runs": 1,
-          "wall_s_total": 1.26,
-          "wall_s_last": 1.26,
-          "cpu_s_total": 1.23,
+          "runs": 3,
+          "wall_s_total": 4.05,
+          "wall_s_last": 1.53,
+          "cpu_s_total": 4.22,
           "peak_rss_mb": 54,
-          "out_mb_last": 7.59
+          "out_mb_last": 7.92
         },
         "tts": {
-          "runs": 1,
-          "wall_s_total": 7.1,
-          "wall_s_last": 7.1,
-          "cpu_s_total": 44.2,
+          "runs": 2,
+          "wall_s_total": 15.34,
+          "wall_s_last": 8.24,
+          "cpu_s_total": 94.94,
           "peak_rss_mb": 702,
-          "out_mb_last": 1.9
+          "out_mb_last": 1.93
+        },
+        "master": {
+          "runs": 5,
+          "wall_s_total": 14.96,
+          "wall_s_last": 3.05,
+          "cpu_s_total": 19.36,
+          "peak_rss_mb": 204,
+          "out_mb_last": 12.15
+        },
+        "r4_contrast_check": {
+          "runs": 1,
+          "wall_s_total": 25.06,
+          "wall_s_last": 25.06,
+          "cpu_s_total": 71.4,
+          "peak_rss_mb": 2537,
+          "out_mb_last": null
+        },
+        "loudnorm": {
+          "runs": 1,
+          "wall_s_total": 0.76,
+          "wall_s_last": 0.76,
+          "cpu_s_total": 0.72,
+          "peak_rss_mb": 79,
+          "out_mb_last": 3.85
         }
       },
       "qa_iterations": 5,
@@ -110,44 +150,60 @@
     "03-sky": {
       "stages": {
         "qa": {
-          "runs": 5,
-          "wall_s_total": 197.25,
-          "wall_s_last": 39.07,
-          "cpu_s_total": 292.24,
-          "peak_rss_mb": 2605,
+          "runs": 11,
+          "wall_s_total": 825.24,
+          "wall_s_last": 133.44,
+          "cpu_s_total": 1106.35,
+          "peak_rss_mb": 4425,
           "out_mb_last": null
         },
         "render": {
-          "runs": 4,
-          "wall_s_total": 114.04,
-          "wall_s_last": 27.45,
-          "cpu_s_total": 257.37,
-          "peak_rss_mb": 3750,
-          "out_mb_last": 9.47
+          "runs": 10,
+          "wall_s_total": 786.88,
+          "wall_s_last": 124.48,
+          "cpu_s_total": 754.5,
+          "peak_rss_mb": 4893,
+          "out_mb_last": 12.97
         },
         "captions": {
-          "runs": 1,
-          "wall_s_total": 6.31,
-          "wall_s_last": 6.31,
-          "cpu_s_total": 32.86,
-          "peak_rss_mb": 945,
+          "runs": 3,
+          "wall_s_total": 22.07,
+          "wall_s_last": 9.45,
+          "cpu_s_total": 115.65,
+          "peak_rss_mb": 946,
           "out_mb_last": 0.01
         },
         "mix": {
-          "runs": 1,
-          "wall_s_total": 1.26,
-          "wall_s_last": 1.26,
-          "cpu_s_total": 1.36,
+          "runs": 2,
+          "wall_s_total": 2.8,
+          "wall_s_last": 1.54,
+          "cpu_s_total": 3.03,
           "peak_rss_mb": 54,
-          "out_mb_last": 8.11
+          "out_mb_last": 8.64
         },
         "tts": {
+          "runs": 2,
+          "wall_s_total": 15.9,
+          "wall_s_last": 8.53,
+          "cpu_s_total": 99.98,
+          "peak_rss_mb": 792,
+          "out_mb_last": 2.11
+        },
+        "master": {
+          "runs": 5,
+          "wall_s_total": 15.45,
+          "wall_s_last": 3.04,
+          "cpu_s_total": 20.09,
+          "peak_rss_mb": 204,
+          "out_mb_last": 12.97
+        },
+        "loudnorm": {
           "runs": 1,
-          "wall_s_total": 7.37,
-          "wall_s_last": 7.37,
-          "cpu_s_total": 46.7,
-          "peak_rss_mb": 791,
-          "out_mb_last": 2.03
+          "wall_s_total": 1.02,
+          "wall_s_last": 1.02,
+          "cpu_s_total": 0.82,
+          "peak_rss_mb": 79,
+          "out_mb_last": 4.23
         }
       },
       "qa_iterations": 5,
@@ -212,6 +268,127 @@
       },
       "qa_iterations": 2,
       "render_iterations": 2,
+      "cost_usd": 0.0
+    },
+    "all": {
+      "stages": {
+        "r4_backdrops_drawing_skill": {
+          "runs": 1,
+          "wall_s_total": 4.8,
+          "wall_s_last": 4.8,
+          "cpu_s_total": 5.35,
+          "peak_rss_mb": 313,
+          "out_mb_last": null
+        },
+        "r4_library_build": {
+          "runs": 1,
+          "wall_s_total": 0.76,
+          "wall_s_last": 0.76,
+          "cpu_s_total": 0.73,
+          "peak_rss_mb": 67,
+          "out_mb_last": null
+        },
+        "r4_style_frames_24": {
+          "runs": 1,
+          "wall_s_total": 30.7,
+          "wall_s_last": 30.7,
+          "cpu_s_total": 49.77,
+          "peak_rss_mb": 1106,
+          "out_mb_last": 2.38
+        }
+      },
+      "qa_iterations": 0,
+      "render_iterations": 0,
+      "cost_usd": 0.0,
+      "notes": {
+        "qwen_tts_gen_s": "Ryan 169.7 s for 61 s audio; Aiden 130 s for 47.3 s (CPU)",
+        "render_time_v2_vs_v3": "QR 34.9->47.2 s, Elevator 26.2->42.1 s, Sky 27.5->93.5 s (swangle software WebGL); round-3 instrumented machine time 1263 s (render 590, qa 634, master 18, captions 20, mix 1); Qwen3-TTS + voice A/B not instrumented beyond the gen times; cost $0; LLM tokens not available",
+        "r4_photo_search_s": "photos.py search+pick across 3 episodes: ~4.5 min wall total (network-bound; 13 queries, 4 sources), 4 photos picked, --",
+        "r4_qa_baseline_v3_s": "new qa.py (with contrast + end-card + density gates) on 3 v3 renders in parallel: 213 s wall; contrast.py ~23-25 s per episode"
+      }
+    },
+    "Elevator:baseline_v3": {
+      "stages": {
+        "critic": {
+          "runs": 1,
+          "wall_s_total": 63.4,
+          "wall_s_last": 63.4,
+          "cpu_s_total": 0.0,
+          "peak_rss_mb": 0,
+          "out_mb_last": 0.0017
+        }
+      },
+      "qa_iterations": 0,
+      "render_iterations": 0,
+      "cost_usd": 0.0
+    },
+    "Elevator": {
+      "stages": {
+        "critic": {
+          "runs": 1,
+          "wall_s_total": 15.6,
+          "wall_s_last": 15.6,
+          "cpu_s_total": 0.0,
+          "peak_rss_mb": 0,
+          "out_mb_last": 0.0017
+        },
+        "qa": {
+          "runs": 1,
+          "wall_s_total": 94.8,
+          "wall_s_last": 94.8,
+          "cpu_s_total": 149.45,
+          "peak_rss_mb": 3960,
+          "out_mb_last": null
+        }
+      },
+      "qa_iterations": 3,
+      "render_iterations": 0,
+      "cost_usd": 0.0
+    },
+    "QR": {
+      "stages": {
+        "critic": {
+          "runs": 1,
+          "wall_s_total": 15.99,
+          "wall_s_last": 15.99,
+          "cpu_s_total": 0.0,
+          "peak_rss_mb": 0,
+          "out_mb_last": 0.0018
+        },
+        "qa": {
+          "runs": 1,
+          "wall_s_total": 112.22,
+          "wall_s_last": 112.22,
+          "cpu_s_total": 176.66,
+          "peak_rss_mb": 4261,
+          "out_mb_last": null
+        }
+      },
+      "qa_iterations": 3,
+      "render_iterations": 0,
+      "cost_usd": 0.0
+    },
+    "Sky": {
+      "stages": {
+        "critic": {
+          "runs": 1,
+          "wall_s_total": 17.71,
+          "wall_s_last": 17.71,
+          "cpu_s_total": 0.0,
+          "peak_rss_mb": 0,
+          "out_mb_last": 0.0018
+        },
+        "qa": {
+          "runs": 1,
+          "wall_s_total": 124.85,
+          "wall_s_last": 124.85,
+          "cpu_s_total": 199.52,
+          "peak_rss_mb": 4444,
+          "out_mb_last": null
+        }
+      },
+      "qa_iterations": 3,
+      "render_iterations": 0,
       "cost_usd": 0.0
     }
   }

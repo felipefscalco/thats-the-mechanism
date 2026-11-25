@@ -31,7 +31,12 @@ Metrics append to `metrics/runs.jsonl`; summaries regenerate in `metrics/metrics
 
 ## Automated checks (must all PASS)
 
-A1 format (1080×1920, 30 fps, H.264+AAC, 35–55 s) · A2 loudness · A3 SFX under voice · A4 motion every 1–2 s · A5 hook visual in the first second · A6 exact loop (seam PSNR ≥ 25 dB) · A7 storyboard lint.
+A1 format (1080×1920, 30 fps, H.264+AAC 48 kHz, 35–55 s) · A2 loudness · A3 SFX under voice · A3b SFX density 1.2–1.5/s · A4 motion every 1–2 s · A5 hook visual in the first second · A6 exact loop (seam PSNR ≥ 25 dB) · A7 storyboard lint · A9 WCAG label contrast ≥ 4.5:1 (`scripts/contrast.py`, probe render) · A10 end card ≥ 1.0 s + payoff settled ≥ 1.5 s · A11 frame 0 bright · A12 `<Label>` ≥ 30 px.
+
+Versioned runs: `SUF=v4 MASTER=1 scripts/iterate.sh <N> QR Elevator Sky` writes `renders/<Id>_v4.mp4` and `qa/<Id>/v4/`. `QA_DIR=v4/baseline_v3` re-checks an older render without touching its QA.
+
+## Independent critic
+After everything passes, run `scripts/critic.py <Id>` (`skills/critic`, needs `GEMINI_API_KEY`). The builder does not grade its own work; route critic findings into LESSONS/BACKLOG.
 
 ## Visual review (you must actually look)
 

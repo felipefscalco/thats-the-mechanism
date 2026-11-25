@@ -54,3 +54,11 @@ python3 scripts/lint_shots.py <slug>
 ```
 
 Official Remotion guidance in `remotion/.agents/skills/` still applies (sequences, `useCurrentFrame`, no invalid hooks). This skill wins on channel-specific layout and motion rules.
+
+## Round 4 additions
+- **Style-frames gate:** for a new look, render stills (`node remotion/style_frames.mjs`, `scripts/style_sheet.py`) into `style_frames/` and get the owner's pick before animating.
+- **Title-as-hook:** `<TitleHook t={[…]} />` (dark backing card) over a scale reveal: frame 0 is a bright close-up of the subject, pulling out to the whole mechanism within ~1 s.
+- **Backdrops:** `EpisodeShell backdrop="library/<name>.jpg" backdropDim={…}` for drawn backgrounds (`assets/library/backdrops/make_backdrops.py`); keep them away from dense mechanisms.
+- **ProofCard:** `<ProofCard src="photos/…" tag credit focus focusLabel startFrame duration />` for 1–2 s of a licensed real photo (credit line in MONO ≥ 30 px).
+- **Motion:** smooth keyed trajectories with cubic in-out and back-overshoot on reveals; coupled secondary motion (cables, counterweight, wheels) from the same variable.
+- **Probe mode:** labels honour `PROBE` (`--props '{"probe":true}'`) for the contrast check; don't hard-code text colours outside `<Label>`/`<Pill>` when it can be avoided.

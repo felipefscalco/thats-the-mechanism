@@ -46,3 +46,8 @@ Place cues with the brand `Sfx` helper so they fire on a frame that matches a vi
 - To add a new cue: drop a licensed source into `sfx/`, run `scripts/prep_sfx.py` (normalises a 400 ms window), copy into `remotion/public/sfx/`, and append a row to `CREDITS.csv`. No unlicensed scrapes.
 
 Audio products (`bed.wav`, `narration*.wav`, `remotion/public/<slug>.wav`) are gitignored and rebuilt.
+
+## Round 4 rules
+- Onset density gate is 1.2–1.5/s (qa.py A3b). Trim order: micro-ticks (`EpisodeShell microGap`), then tick runs, then duplicate whooshes on camera moves.
+- If the median SFX gap is > 16 dB under the voice, raise soft cue volumes (0.85–0.95) or widen `microGap` rather than adding cues.
+- papercut-explainer cues (swish, whip, cut, glint, stamp, count, pop3, micro) are MIT; see `sfx/CREDITS.csv`.

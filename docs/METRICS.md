@@ -4,27 +4,44 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 
 | episode | stage | runs | last wall (s) | total wall (s) | CPU (s) | peak RAM (MB) | output (MB) | cost |
 |---|---|---|---|---|---|---|---|---|
-| 01-qr-code | qa | 7 | 48.6 | 342.43 | 448.46 | 2912 | – | $0 |
-| 01-qr-code | render | 6 | 34.89 | 205.95 | 455.92 | 3606 | 12.73 | $0 |
-| 01-qr-code | captions | 1 | 7.32 | 7.32 | 35.55 | 935 | 0.01 | $0 |
-| 01-qr-code | mix | 1 | 1.26 | 1.26 | 1.45 | 54 | 9.48 | $0 |
-| 01-qr-code | tts | 1 | 7.88 | 7.88 | 51.14 | 783 | 2.37 | $0 |
-| 02-elevator | qa | 5 | 38.58 | 196.17 | 298.17 | 2532 | – | $0 |
-| 02-elevator | render | 4 | 26.2 | 105.23 | 224.56 | 3674 | 7.83 | $0 |
-| 02-elevator | captions | 1 | 6.57 | 6.57 | 34.11 | 951 | 0.01 | $0 |
-| 02-elevator | mix | 1 | 1.26 | 1.26 | 1.23 | 54 | 7.59 | $0 |
-| 02-elevator | tts | 1 | 7.1 | 7.1 | 44.2 | 702 | 1.9 | $0 |
-| 03-sky | qa | 5 | 39.07 | 197.25 | 292.24 | 2605 | – | $0 |
-| 03-sky | render | 4 | 27.45 | 114.04 | 257.37 | 3750 | 9.47 | $0 |
-| 03-sky | captions | 1 | 6.31 | 6.31 | 32.86 | 945 | 0.01 | $0 |
-| 03-sky | mix | 1 | 1.26 | 1.26 | 1.36 | 54 | 8.11 | $0 |
-| 03-sky | tts | 1 | 7.37 | 7.37 | 46.7 | 791 | 2.03 | $0 |
+| 01-qr-code | qa | 14 | 113.64 | 1030.74 | 1418.35 | 4373 | – | $0 |
+| 01-qr-code | render | 13 | 61.68 | 603.36 | 1118.54 | 4597 | 17.61 | $0 |
+| 01-qr-code | captions | 4 | 10.59 | 35.2 | 175.57 | 972 | 0.01 | $0 |
+| 01-qr-code | mix | 3 | 1.78 | 4.83 | 5.26 | 57 | 9.85 | $0 |
+| 01-qr-code | tts | 3 | 10.7 | 29.96 | 186.32 | 787 | 2.41 | $0 |
+| 01-qr-code | master | 6 | 3.81 | 21.57 | 29.05 | 200 | 17.61 | $0 |
+| 01-qr-code | loudnorm | 2 | 1.29 | 2.31 | 1.93 | 79 | 4.81 | $0 |
+| 02-elevator | qa | 11 | 101.11 | 696.14 | 964.21 | 3950 | – | $0 |
+| 02-elevator | render | 10 | 54.34 | 407.56 | 671.02 | 4515 | 12.15 | $0 |
+| 02-elevator | captions | 3 | 8.42 | 21.81 | 113.62 | 954 | 0.01 | $0 |
+| 02-elevator | mix | 3 | 1.53 | 4.05 | 4.22 | 54 | 7.92 | $0 |
+| 02-elevator | tts | 2 | 8.24 | 15.34 | 94.94 | 702 | 1.93 | $0 |
+| 02-elevator | master | 5 | 3.05 | 14.96 | 19.36 | 204 | 12.15 | $0 |
+| 02-elevator | r4_contrast_check | 1 | 25.06 | 25.06 | 71.4 | 2537 | – | $0 |
+| 02-elevator | loudnorm | 1 | 0.76 | 0.76 | 0.72 | 79 | 3.85 | $0 |
+| 03-sky | qa | 11 | 133.44 | 825.24 | 1106.35 | 4425 | – | $0 |
+| 03-sky | render | 10 | 124.48 | 786.88 | 754.5 | 4893 | 12.97 | $0 |
+| 03-sky | captions | 3 | 9.45 | 22.07 | 115.65 | 946 | 0.01 | $0 |
+| 03-sky | mix | 2 | 1.54 | 2.8 | 3.03 | 54 | 8.64 | $0 |
+| 03-sky | tts | 2 | 8.53 | 15.9 | 99.98 | 792 | 2.11 | $0 |
+| 03-sky | master | 5 | 3.04 | 15.45 | 20.09 | 204 | 12.97 | $0 |
+| 03-sky | loudnorm | 1 | 1.02 | 1.02 | 0.82 | 79 | 4.23 | $0 |
 | 04-ice-demo | tts | 1 | 4.83 | 4.83 | 29.81 | 670 | 1.38 | $0 |
 | 04-ice-demo | loudnorm | 1 | 0.76 | 0.76 | 0.56 | 79 | 2.75 | $0 |
 | 04-ice-demo | captions | 1 | 6.07 | 6.07 | 30.25 | 912 | – | $0 |
 | 04-ice-demo | mix | 1 | 1.01 | 1.01 | 1.0 | 54 | 5.5 | $0 |
 | 04-ice-demo | render | 2 | 18.28 | 39.39 | 95.8 | 3332 | 7.31 | $0 |
 | 04-ice-demo | qa | 2 | 23.12 | 47.8 | 64.17 | 2134 | – | $0 |
+| Elevator | critic | 1 | 15.6 | 15.6 | 0.0 | 0 | 0.0017 | $0 |
+| Elevator | qa | 1 | 94.8 | 94.8 | 149.45 | 3960 | – | $0 |
+| Elevator:baseline_v3 | critic | 1 | 63.4 | 63.4 | 0.0 | 0 | 0.0017 | $0 |
+| QR | critic | 1 | 15.99 | 15.99 | 0.0 | 0 | 0.0018 | $0 |
+| QR | qa | 1 | 112.22 | 112.22 | 176.66 | 4261 | – | $0 |
+| Sky | critic | 1 | 17.71 | 17.71 | 0.0 | 0 | 0.0018 | $0 |
+| Sky | qa | 1 | 124.85 | 124.85 | 199.52 | 4444 | – | $0 |
+| all | r4_backdrops_drawing_skill | 1 | 4.8 | 4.8 | 5.35 | 313 | – | $0 |
+| all | r4_library_build | 1 | 0.76 | 0.76 | 0.73 | 67 | – | $0 |
+| all | r4_style_frames_24 | 1 | 30.7 | 30.7 | 49.77 | 1106 | 2.38 | $0 |
 
 | episode | render iterations | QA iterations |
 |---|---|---|
@@ -32,13 +49,22 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | 02-elevator | 5 | 5 |
 | 03-sky | 5 | 5 |
 | 04-ice-demo | 2 | 2 |
+| Elevator | 0 | 3 |
+| Elevator:baseline_v3 | 0 | 0 |
+| QR | 0 | 3 |
+| Sky | 0 | 3 |
 
 | episode | total machine wall time (s) | total CPU (s) | peak RAM (MB) | cost |
 |---|---|---|---|---|
-| 01-qr-code | 564.8 | 992.5 | 3606 | $0 |
-| 02-elevator | 316.3 | 602.3 | 3674 | $0 |
-| 03-sky | 326.2 | 630.5 | 3750 | $0 |
+| 01-qr-code | 1728.0 | 2935.0 | 4597 | $0 |
+| 02-elevator | 1185.7 | 1939.5 | 4515 | $0 |
+| 03-sky | 1669.4 | 2100.4 | 4893 | $0 |
 | 04-ice-demo | 99.9 | 221.6 | 3332 | $0 |
+| Elevator | 110.4 | 149.4 | 3960 | $0 |
+| Elevator:baseline_v3 | 63.4 | 0.0 | 0 | $0 |
+| QR | 128.2 | 176.7 | 4261 | $0 |
+| Sky | 142.6 | 199.5 | 4444 | $0 |
+| all | 36.3 | 55.9 | 1106 | $0 |
 
 Notes:
 - 01-qr-code · script: authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available
@@ -50,3 +76,7 @@ Notes:
 - 03-sky · script: authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available
 - 03-sky · render_it1: iteration-1 renders ran before instrumentation (~1 min each, from file mtimes)
 - 03-sky · tts: re-timed into /tmp (output bit-identical to the round-1 narration, so the episode files were not replaced)
+- all · qwen_tts_gen_s: Ryan 169.7 s for 61 s audio; Aiden 130 s for 47.3 s (CPU)
+- all · render_time_v2_vs_v3: QR 34.9->47.2 s, Elevator 26.2->42.1 s, Sky 27.5->93.5 s (swangle software WebGL); round-3 instrumented machine time 1263 s (render 590, qa 634, master 18, captions 20, mix 1); Qwen3-TTS + voice A/B not instrumented beyond the gen times; cost $0; LLM tokens not available
+- all · r4_photo_search_s: photos.py search+pick across 3 episodes: ~4.5 min wall total (network-bound; 13 queries, 4 sources), 4 photos picked, --
+- all · r4_qa_baseline_v3_s: new qa.py (with contrast + end-card + density gates) on 3 v3 renders in parallel: 213 s wall; contrast.py ~23-25 s per episode

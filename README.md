@@ -2,9 +2,9 @@
 
 A local, LLM-agnostic pipeline for vertical explainer Shorts (YouTube, Instagram, TikTok). One everyday object is opened up to show the hidden mechanism. Videos are written and fact-checked here, spoken with local TTS, captioned with whisper.cpp, and rendered as original Remotion animation — no generative video model, no stock b-roll.
 
-This repository is the round-2 state of the channel kit (brand shell, SFX, episode sources, and the scripts that build a Short end to end). It is meant to be driven by **any** coding agent (Claude, Gemini, Cursor, Copilot, Codex, …). Canonical agent instructions live in [`AGENTS.md`](AGENTS.md).
+This repository is the round-4 state of the channel kit (brand shell, SFX, episode sources, and the scripts that build a Short end to end). It is meant to be driven by **any** coding agent (Claude, Gemini, Cursor, Copilot, Codex, …). Canonical agent instructions live in [`AGENTS.md`](AGENTS.md).
 
-**Nothing in this pipeline publishes.** A human approves the angle, the script, and the final video, then uploads by hand.
+**Nothing in this pipeline publishes.** A human approves the angle, the script, the style frames of any new look, and the final video, then uploads by hand.
 
 ## Pipeline
 
@@ -13,14 +13,19 @@ flowchart TD
   A[Topic + angle] --> B[Human approval: angle]
   B --> C[Script + fact-check<br/>2+ sources per claim]
   C --> D[Human approval: script]
-  D --> E[TTS Kokoro]
+  D --> SF[Style frames for a new look]
+  SF --> SG[Human approval: look]
+  SG --> E[TTS Kokoro]
   E --> F[Captions whisper.cpp]
   F --> G[SFX + ambient bed mix]
-  G --> H[Remotion animation]
+  G --> P[Licensed real photo<br/>PD/CC0, verified at source]
+  P --> H[Remotion animation]
   H --> I[Render 1080x1920 MP4]
   I --> J[Automated QA + visual review]
   J -->|fail| H
-  J -->|pass| K[Package metadata]
+  J -->|pass| CR[Independent Gemini critic<br/>video + audio]
+  CR -->|score < 7| H
+  CR -->|ok| K[Package metadata]
   K --> L[Human approval: final video]
   L --> M[Human publishes]
 ```
@@ -33,7 +38,13 @@ scripts/new-episode.sh 05-slug CompId sci "HOOK TITLE" "SOURCE"
 # write brief.md, shots.md, sources.json  — then get script approval
 scripts/build-episode.sh 05-slug CompId            # TTS → captions → mix → lint → render → QA
 scripts/iterate.sh 2 CompId                         # after edits: lint → render → QA
+SUF=v4 MASTER=1 scripts/iterate.sh 3 QR Elevator Sky  # versioned renders + mastering + QA into qa/<Id>/v4/
+.venv-tts/bin/python scripts/photos.py search 05-slug "query"   # PD/CC0 photos, licence re-read at the source
+GEMINI_API_KEY=… .venv-tts/bin/python scripts/critic.py CompId  # independent video+audio critic (key from env only)
 ```
+
+### QA gates (scripts/qa.py, all must PASS)
+Format and 48 kHz audio · loudness −14 LUFS / TP ≤ −1 dBTP · SFX 10–16 dB under the voice · SFX density 1.2–1.5 onsets/s · no stage hold > 2 s · hook visible at 0.3 s and frame 0 bright (≥ 12 % bright stage pixels) · exact loop · WCAG label contrast ≥ 4.5:1 (`scripts/contrast.py` probe render) · end card ≥ 1 s with the payoff settled ≥ 1.5 s before the loop · `<Label>` ≥ 30 px · storyboard lint. Then a visual review of `qa/<Id>/<SUF>/grid_it<N>.png` and `transitions_it<N>.png`, then the critic (`skills/critic`, needs the `GEMINI_API_KEY` environment variable; Gemini free tier, $0).
 
 Every stage records wall time, CPU time, peak RAM, output size and tool cost ($0) into `metrics/runs.jsonl`.
 
@@ -64,14 +75,18 @@ Open the Remotion studio with `(cd remotion && npm run dev)` once episode audio 
 | `templates/Episode.tsx.tmpl` | Starting composition for a new episode |
 | `scripts/` | Scaffold, TTS, captions, mix, lint, render, QA, metrics, setup |
 | `episodes/` | Pilot scripts, shot tables, sources, captions (audio is generated, not committed) |
-| `sfx/` | Kenney CC0 packs + original synth cues; mapping in `sfx/CREDITS.csv` |
+| `sfx/` | Kenney CC0 packs, original synth cues, papercut-explainer MIT cues; mapping in `sfx/CREDITS.csv` |
+| `assets/library/` | Own brand SVGs + Lottie, Lucide (ISC) / Tabler (MIT) icons, drawn backdrops (claude-drawing-skill, MIT) |
+| `assets/photos/CREDITS.csv` | Every real photo used on screen, with licence verified at the source |
+| `style_frames/` | Look A/B style-frame contact sheets (the owner chose Look A + drawn backdrops) |
+| `skills/licensed-photos`, `skills/critic` | Real-photo proof card; independent Gemini critic |
 | `metadata.md` | Titles, descriptions, hashtags, pinned comments for the pilot (not uploaded) |
 
 Pilot compositions already registered: `QR`, `Elevator`, `Sky`. `IceDemo` is a **template smoke test only** — not for publishing.
 
-Contact sheets of the approved v2 renders (no MP4s in git): `contact_sheet_v2.png`.
+Contact sheets (no MP4s in git): `contact_sheet_v2.png`, `contact_sheet_v3.jpg`, `contact_sheet_v4.jpg` (v4 approved by the owner).
 
-## Metrics (round 2, local box)
+## Metrics (round 2, local box; rounds 3–4 in docs/METRICS.md)
 
 All tools are local and free: **cost $0.00**. LLM token counts are not measured by this pipeline. Full tables: [`docs/METRICS.md`](docs/METRICS.md). Typical times for a 40–50 s episode:
 

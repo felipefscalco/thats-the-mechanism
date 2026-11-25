@@ -13,13 +13,13 @@ It is **not** a publisher. It does not call the YouTube, Instagram, or TikTok up
 ## Hard rules
 
 1. **Do not publish, schedule, or upload** a video, description, or comment anywhere. Stop at a reviewed MP4 + `metadata.md` entry and wait for a human.
-2. **Human approval at three gates:** the episode angle, the finished script (with sources), and the final video. Do not skip a gate.
+2. **Human approval at four gates:** the episode angle, the finished script (with sources), the style frames for any new look (`style_frames/`), and the final video. Do not skip a gate.
 3. **Fact-check every factual claim with at least two independent sources.** Record them in `episodes/<slug>/sources.json`. If a claim cannot be sourced, cut it or flag it — never invent a number.
 4. **On-screen text is ≥ 30 px** on the 1080-wide stage (`<Label>` enforces this). Max two text levels on the stage; captions are a separate track.
 5. **Respect safe zones.** Content lives in y 290–1190. Captions 1222–1440. Chapter deck 1462–1552. Nothing important below y 1560 or in the right-hand platform column (x > 900 and y > 900).
 6. **No cross-fades between sections.** Transitions are world moves: push-through, whip, whipUp, or cut+punch.
-7. **Do not add media you cannot license.** Use the Kenney CC0 packs, the original synth cues, or new assets with a recorded license in `sfx/CREDITS.csv` / `LICENSES.md`. Do not pull random YouTube audio or copyrighted clips.
-8. **Do not commit secrets, tokens, `.env` files, model binaries, or rendered MP4s.** See `.gitignore`.
+7. **Do not add media you cannot license.** Use the Kenney CC0 packs, the original synth cues, the papercut-explainer MIT cues, `assets/library/` (own SVG/Lottie, Lucide ISC, Tabler MIT), or new assets with a recorded license in `sfx/CREDITS.csv` / `LICENSES.md`. Real photos must be public domain or CC0, verified at the source with `scripts/photos.py` and logged in `assets/photos/CREDITS.csv` (`skills/licensed-photos`). Do not pull random YouTube audio, thumbnails or copyrighted clips.
+8. **Do not commit secrets, tokens, `.env` files, model binaries, or rendered MP4s.** See `.gitignore`. API keys (e.g. `GEMINI_API_KEY`) are read from the environment only; never print them or put them in a URL, log or file.
 9. **Do not treat `IceDemo` as a shippable episode.** It is a template smoke test.
 10. **Prefer editing the brand kit over forking it.** Shared look lives in `remotion/src/brand/`. Episode files only provide the subject and shot list.
 
@@ -33,8 +33,11 @@ It is **not** a publisher. It does not call the YouTube, Instagram, or TikTok up
 | 4 | Captions | `skills/captions` | whisper.cpp DTW → `captions.json` + `remotion/src/<slug>.captions.json` |
 | 5 | Animate | `skills/animate-remotion` | `remotion/src/episodes/<CompId>.tsx` from `templates/Episode.tsx.tmpl` |
 | 6 | SFX + mix | `skills/sfx-mix` | `scripts/mix_one.sh` + `<Sfx cue>` in the composition |
-| 7 | Render + QA loop | `skills/qa-loop` | `scripts/build-episode.sh` then `scripts/iterate.sh` |
-| 8 | Package metadata | `skills/package-metadata` | Title, description, hashtags, pinned comment, AI-label notes |
+| 5a | Style frames (new look only) | `skills/animate-remotion` | `remotion/style_frames.mjs` → `style_frames/` contact sheets → **owner picks a look** |
+| 5b | Real-photo proof | `skills/licensed-photos` | `scripts/photos.py search/pick` → `remotion/public/photos/`, `assets/photos/CREDITS.csv`, `episodes/<slug>/photo_credits.md`; shown with `<ProofCard>` |
+| 7 | Render + QA loop | `skills/qa-loop` | `scripts/build-episode.sh` then `SUF=v4 MASTER=1 scripts/iterate.sh <N> <Ids…>` |
+| 7b | Independent critic | `skills/critic` | `scripts/critic.py <Id>` (needs `GEMINI_API_KEY`) → `qa/<Id>/<SUF>/critic.{json,md}` |
+| 8 | Package metadata | `skills/package-metadata` | Title, description (with photo credits), hashtags, pinned comment, AI-label notes |
 
 `scripts/build-episode.sh <slug> <CompId>` runs stages 3–7 once. After you change animation or shots, `scripts/iterate.sh <N> <CompId>` re-lints, re-renders and re-QAs.
 
@@ -65,7 +68,7 @@ Full text: `docs/STYLE_BRIEF.md`. Non-negotiables:
 
 ## Acceptance checklist
 
-An episode is done only when **every automated check in `docs/ACCEPTANCE.md` PASSes** and a visual review of the transition/grid sheets finds no style failure (slideshow, empty half, camera into UI, clipped labels, triple push, late hook, dead air, SFX spam). Automated runner: `scripts/qa.py` → `qa/<Id>/report_it<N>.json`.
+An episode is done only when **every automated check in `docs/ACCEPTANCE.md` PASSes** (A1–A12: format, loudness, SFX under voice, SFX density 1.2–1.5/s, motion, hook, frame-0 brightness, loop, WCAG label contrast, end-card hold, label size, shot lint) and a visual review of the transition/grid sheets finds no style failure (slideshow, empty half, camera into UI, clipped labels, triple push, late hook, dead air, SFX spam). Automated runner: `scripts/qa.py` → `qa/<Id>/report_it<N>.json`.
 
 Do not call a video “acceptable” from metrics alone. Look at `qa/<Id>/grid_it<N>.png` and `transitions_it<N>.png`.
 
@@ -75,7 +78,8 @@ Do not call a video “acceptable” from metrics alone. Look at `qa/<Id>/grid_i
 - After animation edits run `(cd remotion && npx tsc --noEmit -p .)` before rendering.
 - Record timing with `scripts/metrics.py` (the build/iterate scripts already wrap stages).
 - If you add a tool or sound, document the license.
-- Suggested improvements that are **not** in this tree yet (ffmpeg-normalize, a second-model frame reviewer, Lucide icons, Qwen3-TTS / a voice clone) must not be described as if they already ship. Add them in a later change, with licenses checked.
+- Shipped since round 3: ffmpeg-normalize mastering (`scripts/master.sh`), Lucide/Tabler icons, the WCAG contrast probe, licensed photos, the Gemini critic. Still **not** in this tree: a voice clone, Qwen3-TTS. Do not describe those as shipping.
+- Shared-box hygiene: write scratch files inside the project folder, never generic `/tmp` names (L-17).
 
 ## Review memory (mandatory)
 - Before any work on an episode or the kit, read `docs/LESSONS.md` and check the work against every Prevention line.

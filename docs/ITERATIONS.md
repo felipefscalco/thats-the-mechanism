@@ -44,3 +44,59 @@ The template demo (IceDemo) failed the loop check (seam PSNR 20 dB): when the la
 were still on screen in the final frame while frame 0 has neither. Kit fix: captions and the chapter label fade out across the 14 loop frames.
 Result: all 3 episodes PASS every automated check; loop seam PSNR rose from ≈34 dB to 48.5 / 49.3 / 50.3 dB (QR / Elevator / Sky).
 Visual review of the final transitions/grid sheets: no overlaps with brand/captions/deck, no cross-fades, pills in screen space.
+
+# Round 3 (v3): depth, SFX density, Elevator ending, tool A/B (see TESTS.md)
+Worked in /workspace/ttm-r3, a cp -a copy; the original folder was not modified. Outputs: renders/{QR,Elevator,Sky}_v3.mp4, QA in qa/<Id>/v3/.
+
+Changes before it1:
+- Kit:
+  - `ShotLayers` adds 3 parallax depth layers to every shot (back gears at 0.35×, subject at 1× with a drop shadow, front bokeh at 1.4×). The loop frame uses them too.
+  - Pill takes a lucide `icon`.
+  - The papercut SFX library is in.
+  - Camera moves emit SFX automatically (punch → stamp+glint; push/glide/pull → swish; whip/cut transitions → whip/cut).
+  - Caption pages get a quiet "micro" tick when no other cue is near.
+  - `reveal()` = stamp+glint.
+  - `dedupe` drops the same SFX within 3 frames.
+- Elevator:
+  - Hook: a spotlight behind the rig, an amber car outline and a big "LIFT?" + up arrow on frame 0, struck out on "doesn't".
+  - Light isometric extrusions on the car and counterweight.
+  - New full-width ending: a SCALE panel (balanced beam, Check badge) next to a CRANE panel that is struck out with an X badge on "not a crane". Labels are 64 px.
+  - narration tail +1.0 s (episodes/02-elevator/tail.txt).
+- Sky: Earth is a @remotion/three low-poly lit planet (orthographic, pixel-aligned under the SVG overlays; renders with --gl=swangle). More reveal/count cues.
+- QR: lucide ScanLine/X verdict pills; count/pop3/reveal cues.
+- captions.py: fixed words whose end was before their start.
+
+## it1
+Automated:
+- Sky passed everything (SFX onsets 1.53/s).
+- Elevator: one SFX peak was only 6.7 dB under the voice at 31.0 s ("It would rise": whoosh 0.9 + reveal + camera punch stacked). Onsets 1.62/s.
+- QR: onsets 1.85/s, too dense. Peak 7.96 dB under the voice at 3.8 s ("anyway.": confirm + reveal + punch stamp/glint).
+
+Visual:
+- Sky "SOMEONE ELSE'S AFTERNOON" (blue) became low-contrast on the new blue 3D ocean.
+- Elevator final "struck" state held only 1.42 s before the loop.
+
+Fixes:
+- Elevator rise cues 0.9/0.8 → 0.6/0.5; strike starts on "not", 8 frames (fully struck state now ≈1.6 s before the loop; both panels readable for 3.4 s).
+- QR "anyway." reveal removed.
+- Micro-tick exclusion window 6 → 10 frames.
+- Sky label → #CFEBFF.
+- Added the master stage (ffmpeg-normalize two-pass) to iterate.sh (MASTER=1).
+
+## it2
+All checks passed except QR onsets 1.83/s. New problem: ffmpeg-normalize had resampled the AAC to 96 kHz.
+Fixes: `-ar 48000` in master.sh, and qa.py's format check now requires 48 kHz. QR "cut" ticks 6 → 3.
+
+## it3 (final)
+All 3 episodes PASS every automated check:
+
+| | QR | Elevator | Sky |
+|---|---|---|---|
+| loudness | −14.0 LUFS / TP −1.5 | −14.0 / −1.5 | −14.0 / −1.4 |
+| SFX onsets/s | 1.77 | 1.55 | 1.49 |
+| SFX median gap under voice | 15.9 dB | 15.9 dB | 15.0 dB |
+| longest hold | 1.87 s | 1.67 s | 1.30 s |
+| loop PSNR | 48.0 dB | 49.2 dB | 50.1 dB |
+
+Visual review: transitions and grid sheets are clean; the new ending is readable; the planet sits correctly under its overlays.
+Render time vs v2: QR 34.9 → 47.2 s, Elevator 26.2 → 42.1 s (depth-layer blur filters), Sky 27.5 → 93.5 s (software WebGL via swangle).
