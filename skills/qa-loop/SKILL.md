@@ -52,3 +52,11 @@ This look-then-fix loop is intentional (same idea as claude-drawing-skill). Pref
 
 ## Log what you found
 Before reviewing, read `docs/LESSONS.md`. After each iteration, append findings there (problem, root cause, fix, prevention, status) and ideas to `docs/BACKLOG.md`. Never fix something silently.
+
+## Round-5 gates (all automated in qa.py)
+- `text: no raw SVG/CSS fontSize < 30 px` scans the episode and the whole brand kit.
+- `cadence: visual-state change at least every 4.0 s`: stage differs from 0.5 s earlier by ≥10 grey levels; fix gaps with a real state change (camera punch, new element, scene change), not jitter.
+- `beat: >= 0.2 s near-silence before the catchphrase`: riser must end before the card; `mix_one.sh` ducks the bed.
+- `labels: inside Shorts UI safe zones`: probe text held ≥0.6 s may not cross y<220, y>1560, or x>900 below y 900. Long labels under a camera zoom are the usual offender.
+- The contrast/safe-zone probe renders the CURRENT code: never edit `remotion/src` while a QA batch is running (L-24).
+- Before a full render, `scripts/storyboard.py <Id> <slug>` (stills every 1.5 s) and the `storyboard` gate.

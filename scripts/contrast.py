@@ -71,10 +71,23 @@ for i, found in enumerate(samples):
 runs += open_
 fails = [dict(t_start_s=round(r_["first"] * NTH / 30, 2), t_end_s=round(r_["last"] * NTH / 30, 2), worst_ratio=r_["worst"], bbox=r_["bbox"], text_rgb=r_["text"], bg_rgb=r_["bg"])
          for r_ in runs if r_["n"] >= PERSIST]
+# r5 Shorts UI safe zones (YT Shorts/Reels/TikTok overlays): top 220 px, bottom 360 px (y > 1560), right button column x > 900 from y 900
+def unsafe(b):
+    x0, y0, x1, y1 = b
+    return y0 < 220 or y1 > 1560 or (x1 > 900 and y1 > 900)
+sz_all = [(i, x["bbox"]) for i, s_ in enumerate(samples) for x in s_ if unsafe(x["bbox"])]
+# held violations only (>= PERSIST consecutive samples, i.e. >= 0.6 s): transitions that fling labels past the edge for a few frames don't count
+idx = sorted({i for i, _ in sz_all}); held = set()
+run = [idx[0]] if idx else []
+for i in idx[1:] + [None]:
+    if i is not None and i == run[-1] + 1: run.append(i); continue
+    if len(run) >= PERSIST: held.update(run)
+    run = [i] if i is not None else []
+sz = [dict(t_s=round(i * NTH / 30, 2), bbox=b) for i, b in sz_all if i in held]
 allr = [x["ratio"] for s in samples for x in s]
 res = dict(min_required=MIN, samples=n, nth=NTH, label_instances=len(allr), min_ratio=round(min(allr), 2) if allr else None,
            p10_ratio=round(float(np.percentile(allr, 10)), 2) if allr else None, median_ratio=round(float(np.median(allr)), 2) if allr else None,
-           held_failures=fails, ok=not fails)
+           held_failures=fails, ok=not fails, safe_zone_violations=sz[:20], safe_zone_ok=not sz, safe_zone_transient=len(sz_all) - len(sz))
 if fails:  # annotated evidence: one tile per failure (frame of its worst moment)
     tiles = []
     for fl in fails[:8]:

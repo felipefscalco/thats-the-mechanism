@@ -38,3 +38,8 @@ Turn an approved angle into a spoken script, a sourced claim list, and a shot ta
 - Fact-check with **2+ independent sources per claim**. Never invent a figure.
 - Do not publish research as if it were already a video. Wait for approval, then `voice` / `build-episode.sh`.
 - English is the on-camera language of the channel unless a human asks otherwise.
+
+## Fact ledger gate (round 5)
+- Every spoken claim lives in `episodes/<slug>/facts.json` (`f-0001…`, status `verified|contested|unverified`, ≥2 `sources` ids from the same file, `caveat`, `checkedAt`, `spoken` = exact substrings of script.txt). Start from an old `sources.json` with `scripts/facts.py init <slug>`.
+- `scripts/facts.py check <slug>` fails if a spoken fact is not verified, a spoken fact has one source and no caveat, a `spoken` span went stale, or **any number/quantity word in the script is not covered by a verified fact's span**.
+- `scripts/tts.py` refuses to voice a script while `facts.py check` fails or the `script` gate is closed (`pipeline.config.json`). Re-open the source pages when you mark something verified; don't promote statuses from memory.

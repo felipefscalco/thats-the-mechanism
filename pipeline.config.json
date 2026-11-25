@@ -1,0 +1,15 @@
+{
+  "_doc": "Pipeline gates (r5). mode: human = blocks until an approval is logged with scripts/gates.py approve; auto = automated checks decide and the pass is logged as an auto-approval; off = skipped. Flip a gate to auto once gates.py stats shows a streak of approvals without changes (Felipe wants full autonomy later).",
+  "voice": {"engine": "kokoro", "voice": "am_michael", "speed": 1.0},
+  "critic": {"models": ["gemini-3.1-pro-preview", "gemini-3.8-flash", "gemini-3-flash-preview"], "samples": 1, "ship_min_overall": 7.0, "ship_min_dim": 6},
+  "autonomy": {"suggest_auto_after_streak": 5},
+  "gates": {
+    "facts":        {"mode": "auto",  "check": "scripts/facts.py check {slug}", "blocks": "tts"},
+    "script":       {"mode": "human", "artifact": "episodes/{slug}/script.txt", "blocks": "tts"},
+    "style_frames": {"mode": "human", "artifact": "style_frames/contact_sheet_style_frames.jpg", "blocks": "animate"},
+    "storyboard":   {"mode": "human", "artifact": "qa/{id}/{suf}/storyboard.jpg", "check": "scripts/storyboard.py {id}", "blocks": "render"},
+    "qa":           {"mode": "auto",  "check": "scripts/qa.py {id} {slug} {iter}", "blocks": "critic"},
+    "critic":       {"mode": "auto",  "check": "scripts/critic.py {id}", "blocks": "final"},
+    "final":        {"mode": "human", "artifact": "renders/{id}_{suf}.mp4", "blocks": "publish"}
+  }
+}

@@ -110,6 +110,8 @@ if "--no-contrast" not in sys.argv:
     try:
         c = json.loads((OUT / "contrast.json").read_text()); res["contrast"] = c
         check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", c["ok"], dict(min=c["min_ratio"], p10=c["p10_ratio"], failures=[(f["t_start_s"], f["worst_ratio"]) for f in c["held_failures"]]))
+        # r5: Shorts UI safe zones on the same probe masks (top 220, bottom >1560, right column x>900 below y 900)
+        check("labels: inside Shorts UI safe zones", c.get("safe_zone_ok", True), dict(violations=c.get("safe_zone_violations", [])[:6]))
     except Exception as e:
         check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", False, dict(error=str(e), stderr=cr.stderr[-400:]))
 
@@ -119,6 +121,32 @@ if ep_tsx.exists():
     small_labels = [int(m) for m in re.findall(r"<Label[^>]*\bsize=\{(\d+)\}", ep_tsx.read_text()) if int(m) < 30]
     res["label_sizes"] = dict(min_allowed=30, small_labels=small_labels)
     check("labels: minimum font size >= 30 px on all <Label> elements", len(small_labels) == 0, res["label_sizes"])
+    # r5 (L-19 open item): raw SVG <text fontSize={N}> and CSS fontSize: N in the episode AND the shared brand kit
+    raw_small = []
+    for src in [ep_tsx, *sorted((ROOT / "remotion" / "src" / "brand").glob("*.tsx"))]:
+        for ln, line in enumerate(src.read_text().splitlines(), 1):
+            for m in re.finditer(r"fontSize(?:=\{|:\s*)(\d+)", line):
+                if int(m.group(1)) < 30: raw_small.append(f"{src.name}:{ln}:{m.group(1)}px")
+    res["raw_text_sizes"] = dict(min_allowed=30, small=raw_small)
+    check("text: no raw SVG/CSS fontSize < 30 px (episode + brand kit)", not raw_small, res["raw_text_sizes"])
+
+# 6d. visual-state change cadence (r5, Gemini/The Why Side: a new visual state every 3-4 s, not just motion):
+#     a "state change" = stage ROI differs from 0.5 s earlier by >= STATE_DIFF mean grey levels; max gap between changes <= 4.0 s
+STATE_DIFF = 10.0  # calibrated on v4: p50 3-9, p90 30-60; at 10 v4 has 4.0-4.6 s gaps (QR 6.0 s, Elevator 20.0 s, Sky 10.2 s)
+dd = np.abs(fr[15:] - fr[:-15]).mean(axis=(1, 2))
+ev = np.where(dd >= STATE_DIFF)[0] + 15
+gaps_s = np.diff(np.concatenate([[0], ev, [len(fr) - 1]])) / fps
+worst = int(np.argmax(gaps_s)) if len(gaps_s) else 0
+res["state_changes"] = dict(threshold=STATE_DIFF, max_gap_s=round(float(gaps_s.max()), 2), at_s=round(float(np.concatenate([[0], ev])[worst] / fps), 2), p90_diff=round(float(np.percentile(dd, 90)), 2))
+check("cadence: visual-state change at least every 4.0 s", gaps_s.max() <= 4.0, res["state_changes"])
+
+# 6e. dramatic beat (r5, Gemini): 0.2-0.3 s of near-silence in the FULL MIX right before "That's the mechanism."
+xa = subprocess.run(f"ffmpeg -v error -i {MP4} -vn -ac 1 -ar 48000 -f f32le -", shell=True, capture_output=True).stdout
+xa = np.frombuffer(xa, np.float32)
+i1 = int((card_at - 0.03) * 48000); i0 = int((card_at - 0.23) * 48000)
+pre_db = float(20 * np.log10(np.sqrt(np.mean(xa[i0:i1] ** 2)) + 1e-9)) if i1 > i0 > 0 else 0.0
+res["pre_catchphrase"] = dict(window_s=[round(card_at - 0.23, 2), round(card_at - 0.03, 2)], rms_db=round(pre_db, 1))
+check("beat: >= 0.2 s near-silence (<= -38 dBFS RMS) before the catchphrase", pre_db <= -38, res["pre_catchphrase"])
 
 # 7. visual review sheets
 def sheets():
