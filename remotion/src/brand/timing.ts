@@ -21,3 +21,28 @@ export const pop = (f: number, at: number, fps: number, damping = 14) =>
   spring({ frame: f - at, fps, config: { damping, stiffness: 170, mass: 0.7 } });
 export const keyed = (f: number, keys: [number, number][]) =>
   interpolate(f, keys.map((k) => k[0]), keys.map((k) => k[1]), { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
+
+/** r5 motion tokens (emilkowalski/skills STANDARDS + mg-styles-15 Flat Vector). One timing family per element:
+ *  OUT = entering / responding (never ease-in for entries), IN_OUT = on-screen moves, OVERSHOOT = flat-vector "pop" landings. */
+export const EASE = {
+  OUT: Easing.bezier(0.23, 1, 0.32, 1),
+  IN_OUT: Easing.bezier(0.77, 0, 0.175, 1),
+  OVERSHOOT: Easing.bezier(0.34, 1.56, 0.64, 1),
+  EXIT: Easing.bezier(0.55, 0, 1, 0.45), // exits only: fast leave, never used on arrivals
+};
+/** Entry that never starts at scale(0): opacity carries the first frames, scale goes 0.62 -> overshoot -> 1. */
+export const popScale = (p: number) => (p <= 0 ? 0 : 0.62 + 0.38 * p);
+export const popOpacity = (p: number) => Math.min(1, Math.max(0, p * 2.5));
+/** Emil stagger: shrinking delays read organic (first gaps longest). i-th delay in frames. */
+export const stagger = (i: number, first = 4, decay = 0.82, min = 2) => {
+  let t = 0, d = first;
+  for (let k = 0; k < i; k++) { t += Math.max(min, d); d *= decay; }
+  return t;
+};
+/** mg Flat Vector squash & stretch on landing (~10%): returns [sx, sy] around 1 for frames after `at`. */
+export const squash = (f: number, at: number, amt = 0.1) => {
+  const t = f - at;
+  if (t < 0 || t > 14) return [1, 1] as const;
+  const k = amt * Math.exp(-t / 4) * Math.cos(t / 2.2);
+  return [1 + k, 1 - k] as const;
+};

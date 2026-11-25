@@ -62,3 +62,11 @@ Official Remotion guidance in `remotion/.agents/skills/` still applies (sequence
 - **ProofCard:** `<ProofCard src="photos/…" tag credit focus focusLabel startFrame duration />` for 1–2 s of a licensed real photo (credit line in MONO ≥ 30 px).
 - **Motion:** smooth keyed trajectories with cubic in-out and back-overshoot on reveals; coupled secondary motion (cables, counterweight, wheels) from the same variable.
 - **Probe mode:** labels honour `PROBE` (`--props '{"probe":true}'`) for the contrast check; don't hard-code text colours outside `<Label>`/`<Pill>` when it can be avoided.
+
+## Round-5 motion grammar (emilkowalski/skills MIT, mg-styles-15 Flat Vector MIT, video-shotcraft Apache-2.0, motion-video-kit MIT)
+- Easing tokens in `brand/timing.ts`: `EASE.OUT` (0.23,1,0.32,1) for entries/responses, `EASE.IN_OUT` (0.77,0,0.175,1) for on-screen moves, `EASE.OVERSHOOT` (0.34,1.56,0.64,1) for flat-vector landings, `EASE.EXIT` only for exits. Never ease-in an arrival.
+- Never `scale(0)`: use `popScale(p)` (0.62 → overshoot → 1) with `popOpacity(p)`. Large cards (ProofCard) enter from 0.94 + 40 px rise, no spring wobble; inner photo lags 3 f.
+- Stagger with `stagger(i)` (shrinking delays, 2–4 f); one hero moving at a time; `squash()` ~10 % on landings.
+- Camera `punch` = shotcraft crash-zoom: 5 f anticipation pull-back, 5 f push, 4 f recoil; its stamp/glint SFX land on the hit frame (+7 f).
+- A visual-state change every ≤4 s (qa.py cadence); hooks open on ONE subject; text that sits on art uses `TagLabel` (backing).
+- Finish: static procedural grain (7 % overlay) from `scripts/make_grain.py`; `--props '{"grain":"anim"}'` costs +30 % render.

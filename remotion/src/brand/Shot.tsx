@@ -1,7 +1,8 @@
 import React from "react";
-import { AbsoluteFill, Easing, interpolate, Sequence, useCurrentFrame } from "remotion";
+import { AbsoluteFill, interpolate, Sequence, useCurrentFrame } from "remotion";
 import { ShotLayers } from "./Depth";
 import { Cue, SfxTrack, cue } from "./Sfx";
+import { EASE } from "./timing";
 
 /** Camera moves are punctuation (huashu-art-motion 镜头语言):
  *  push = slow push 0.6-1.5 s to lead the eye; pull = pull-out to show context / close a section;
@@ -9,16 +10,24 @@ import { Cue, SfxTrack, cue } from "./Sfx";
  *  Never chain three pushes in a row; holds are fine while the object itself moves. */
 export type CamKind = "push" | "pull" | "glide" | "punch" | "settle";
 export type CamMove = { at: number; kind: CamKind; s?: number; x?: number; y?: number; dur?: number };
-const DUR: Record<CamKind, number> = { push: 30, pull: 33, glide: 21, punch: 9, settle: 18 };
+const DUR: Record<CamKind, number> = { push: 30, pull: 33, glide: 21, punch: 14, settle: 18 };
+
+/** video-shotcraft crash-zoom-punch: 5 f anticipation pull-back (~3.5 % of the move), 5 f fast push, 4 f overshoot recoil. */
+const punchCurve = (t: number) => {
+  // t in [0,1] over the whole punch; returns progress (can dip < 0 and overshoot > 1)
+  const a = 5 / 14, b = 10 / 14;
+  if (t <= a) return -0.035 * Math.sin((t / a) * Math.PI * 0.5);
+  if (t <= b) { const u = (t - a) / (b - a); return -0.035 + 1.095 * u * u * (3 - 2 * u); }
+  const u = (t - b) / (1 - b); return 1.06 - 0.06 * EASE.OUT(u);
+};
 
 export const camState = (f: number, moves: CamMove[]) => {
   let s = 1, x = 0, y = 0;
   for (const m of [...moves].sort((a, b) => a.at - b.at)) {
     const d = m.dur ?? DUR[m.kind];
-    const p = interpolate(f, [m.at, m.at + d], [0, 1], {
-      extrapolateLeft: "clamp", extrapolateRight: "clamp",
-      easing: m.kind === "punch" ? Easing.out(Easing.back(1.6)) : m.kind === "pull" ? Easing.out(Easing.cubic) : Easing.inOut(Easing.sin),
-    });
+    const t = interpolate(f, [m.at, m.at + d], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+    const p = m.kind === "punch" ? (t <= 0 ? 0 : t >= 1 ? 1 : punchCurve(t))
+      : m.kind === "pull" || m.kind === "settle" ? EASE.OUT(t) : EASE.IN_OUT(t);
     s = s + ((m.s ?? s) - s) * p; x = x + ((m.x ?? x) - x) * p; y = y + ((m.y ?? y) - y) * p;
   }
   return { s, x, y };
@@ -94,7 +103,7 @@ export const camCues = (cam: CamMove[], inT: Trans, from: number): Cue[] => {
   const out: Cue[] = [];
   for (const m of cam) {
     if (m.dur === 1) continue; // instantaneous framing, not a move
-    if (m.kind === "punch") out.push(cue(m.at, "stamp", 0.55), cue(m.at + 2, "glint", 0.5));
+    if (m.kind === "punch") out.push(cue(m.at + 7, "stamp", 0.55), cue(m.at + 9, "glint", 0.5)); // impact on the hit frame
     else if (m.kind !== "settle") out.push(cue(m.at, "swish", m.kind === "pull" ? 0.7 : 0.6));
   }
   if (inT === "whip" || inT === "whipUp") out.push(cue(from - T_FRAMES / 2, "whip", 0.75));

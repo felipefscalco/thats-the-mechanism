@@ -27,4 +27,4 @@ export const MechanismCard: React.FC<{ at: number; until: number; pillar: Pillar
   );
 };
 /** Standard sound for the card: riser into it, sting on it, whoosh out. */
-export const outroCues = (at: number, until: number): Cue[] => [cue(at - 39, "riser", 0.8), cue(at, "sting", 1), cue(until - 4, "whoosh", 0.8)];
+export const outroCues = (at: number, until: number): Cue[] => [cue(at - 47, "riser", 0.8), cue(at, "sting", 1), cue(until - 4, "whoosh", 0.8)];

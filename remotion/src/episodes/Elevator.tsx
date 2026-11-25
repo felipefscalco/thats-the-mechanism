@@ -2,7 +2,7 @@ import React from "react";
 import { Easing, interpolate, useVideoConfig } from "remotion";
 import words from "../02-elevator.captions.json";
 import { Check, X, Zap, ArrowUp, Scale } from "lucide-react";
-import { C, DISPLAY, EpisodeShell, Label, LOOP_FRAMES, MONO, PILLARS, Pill, ProofCard, Shot, Stage, TitleHook, cue, ease, makeAt, pop, reveal, useG } from "../brand";
+import { C, DISPLAY, EpisodeShell, Label, LOOP_FRAMES, MONO, PILLARS, Pill, ProofCard, Shot, Stage, TitleHook, cue, ease, makeAt, pop, popOpacity, popScale, reveal, useG } from "../brand";
 
 const P = PILLARS.eng;
 const SX = 490, SY = 585, SR = 92;
@@ -108,7 +108,7 @@ const Rig: React.FC = () => {
         {Array.from({ length: 8 }).map((_, i) => (
           <g key={i} opacity={0.45}>
             <line x1={105} x2={shaftLeft - 14} y1={420 + i * 95} y2={420 + i * 95} stroke="#2A3040" strokeWidth={2} />
-            <text x={118} y={412 + i * 95} fill="#5A6174" fontFamily={MONO} fontSize={22} fontWeight={700}>L{String(8 - i).padStart(2, "0")}</text>
+            <text x={118} y={412 + i * 95} fill="#5A6174" fontFamily={MONO} fontSize={30} fontWeight={700}>L{String(8 - i).padStart(2, "0")}</text>
           </g>
         ))}
 
@@ -207,7 +207,7 @@ const Rig: React.FC = () => {
             <GuideShoe x={-8} y={20} /><GuideShoe x={CAR_W + 8} y={20} />
             <GuideShoe x={-8} y={CAR_H - 20} /><GuideShoe x={CAR_W + 8} y={CAR_H - 20} />
             <rect x={CAR_W / 2 - 44} y={-38} width={88} height={32} rx={8} fill={C.ink} />
-            <text x={CAR_W / 2} y={-13} fill={C.paper} fontFamily={DISPLAY} fontWeight={700} fontSize={26} textAnchor="middle">CAR</text>
+            <text x={CAR_W / 2} y={-13} fill={C.paper} fontFamily={DISPLAY} fontWeight={700} fontSize={30} textAnchor="middle">CAR</text>
           </g>
 
           {/* Counterweight frame with stacked cast-iron plates + guide shoes */}
@@ -265,9 +265,14 @@ const Rig: React.FC = () => {
 
           {/* Rising arrow on empty-car release */}
           {f >= rise - 6 && f < s5 && (
-            <g transform={`translate(${CAR_X} ${carTop + CAR_H + 80}) scale(${pop(f, rise - 4, fps)})`}>
-              <circle r={42} fill={C.ink} />
-              <text y={18} fill={C.amber} fontFamily={DISPLAY} fontWeight={700} fontSize={68} textAnchor="middle">↑</text>
+            <g transform={`translate(${CAR_X} ${carTop + CAR_H + 80}) scale(${popScale(pop(f, rise - 4, fps))})`} opacity={popOpacity(pop(f, rise - 4, fps))}>
+              <circle r={46} fill={C.ink} stroke={C.amber} strokeWidth={4} />
+              {/* r5: cascading chevrons (continuous upward motion instead of a static glyph; critic v4 0:32) */}
+              {[0, 1, 2].map((k) => {
+                const ph = (((f - rise) / 16 + k / 3) % 1 + 1) % 1;
+                return <path key={k} d="M-20,10 L0,-10 L20,10" transform={`translate(0 ${22 - ph * 44})`} stroke={C.amber} strokeWidth={8}
+                  fill="none" strokeLinecap="round" strokeLinejoin="round" opacity={Math.sin(ph * Math.PI)} />;
+              })}
             </g>
           )}
         </g>
@@ -294,7 +299,7 @@ const RigHud: React.FC = () => {
         {f >= s3 && f < fd && null}
       </Stage>
       {f >= office && f < stamp && (
-        <ProofCard src="photos/02-elevator--elevator-motor-in-elevator-machine-room-washington.jpg"
+        <ProofCard src="photos/02-elevator--habs-motor-graded.jpg"
           tag="TRACTION MACHINE" credit="PHOTO: JACK E. BOUCHER, HABS / LOC · PUBLIC DOMAIN"
           aspect={1920 / 2664} focus={[0.25, 0.14, 0.90, 0.86]} focusLabel="MOTOR + DRIVE SHEAVE"
           startFrame={office} duration={Math.max(45, stamp - office)} />
@@ -348,7 +353,7 @@ const ScaleNotCrane: React.FC = () => {
       </g>
       <g transform="translate(735 750)">
         <line x1={-180} y1={-320} x2={180} y2={240} stroke={C.red} strokeWidth={18} strokeLinecap="round" strokeDasharray={720} strokeDashoffset={720 * (1 - strike)} />
-        <g transform={`translate(140 -285) scale(${pop(f, cr + 4, fps)})`}><circle r={56} fill={C.red} /><X x={-36} y={-36} width={72} height={72} color="white" strokeWidth={3.5} /></g>
+        <g transform={`translate(140 -285) scale(${popScale(pop(f, cr + 4, fps))})`} opacity={popOpacity(pop(f, cr + 4, fps))}><circle r={56} fill={C.red} /><X x={-36} y={-36} width={72} height={72} color="white" strokeWidth={3.5} /></g>
       </g>
       <g transform={`translate(425 465) scale(${win})`}><circle r={56} fill={C.green} /><Check x={-36} y={-36} width={72} height={72} color={C.ink} strokeWidth={3.5} /></g>
     </Stage>
@@ -378,7 +383,9 @@ export const ElevatorVideo: React.FC = () => {
         { at: at("It's built"), kind: "push", s: 1.24, x: -165, y: 20 },
         { at: at("plus about"), kind: "glide", s: 1.18, x: -140, y: -20 },
         { at: s3, kind: "pull", s: 0.94, x: 0, y: 15 },
+        { at: at("fights the difference"), kind: "punch", s: 1.12, x: 0, y: -40 }, // r5 cadence: 14.8-18.9 s gap
         { at: full, kind: "push", s: 1.02, x: 0, y: 0 },
+        { at: empty, kind: "punch", s: 1.16, x: -120, y: 20 }, // r5 cadence: new visual state inside the 19.9-24.3 s gap
         { at: at("heavier side"), kind: "glide", s: 1.06, x: 50, y: 20 },
         { at: s4, kind: "push", s: 1.24, x: 40, y: 130 },
         { at: rise - 2, kind: "punch", s: 1.04, x: 10, y: 40 },

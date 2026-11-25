@@ -1,7 +1,7 @@
 import React from "react";
 import { Easing, interpolate, useVideoConfig } from "remotion";
 import words from "../03-sky.captions.json";
-import { C, EpisodeShell, Ortho3D, Planet, ProofCard, reveal, Label, LOOP_FRAMES, MONO, PILLARS, Pill, Shot, Stage, TitleHook, cue, ease, makeAt, pop, useG } from "../brand";
+import { C, EpisodeShell, FlatPlanet, ProofCard, TagLabel, reveal, Label, LOOP_FRAMES, MONO, PILLARS, Pill, Shot, Stage, TitleHook, cue, ease, makeAt, pop, popOpacity, popScale, useG } from "../brand";
 
 const P = PILLARS.sci;
 const SPECTRUM = ["#8F5BFF", "#3D7BFF", "#2EC4F0", "#3DDC97", "#F5E14B", "#FF9F2E", "#FF4D3D"];
@@ -22,6 +22,9 @@ const Split: React.FC<{ tag?: string }> = ({ tag = "SAME TRICK" }) => {
   const z = isHook ? interpolate(f, [3, 34], [2.25, 1.0], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) }) : 1.0;
   const sunDrop = isHook ? ease(f, 0, 40, -24, 0) + 22 * Math.sin(f / 10) : 16 * Math.sin(f / 7);
   const topY = isHook ? 560 : 320, h = isHook ? 280 : 390, botY = topY + h + 20;
+  // r5 single-subject hook: frame 0 shows ONLY the sunset (zoom centred on it); noon drops in on "Both" with overshoot
+  const noonIn = isHook ? pop(f, at("Both"), fps, 12) : 1;
+  const zc = isHook ? botY + h / 2 : topY + h + 10;
   return (
     <>
       <Stage>
@@ -31,8 +34,8 @@ const Split: React.FC<{ tag?: string }> = ({ tag = "SAME TRICK" }) => {
           <clipPath id="top"><rect x={80} y={topY} width={920} height={h} rx={32} /></clipPath>
           <clipPath id="bot"><rect x={80} y={botY} width={920} height={h} rx={32} /></clipPath>
         </defs>
-        <g transform={`translate(540 ${topY + h + 10}) scale(${z}) translate(-540 ${-(topY + h + 10)})`}>
-          <g clipPath="url(#top)">
+        <g transform={`translate(540 ${zc}) scale(${z}) translate(-540 ${-zc})`}>
+          <g clipPath="url(#top)" transform={`translate(0 ${(1 - noonIn) * -140})`} opacity={popOpacity(noonIn)}>
             <rect x={80} y={topY} width={920} height={h} fill="url(#noon)" />
             <circle cx={780} cy={topY + 95 + sunDrop * 0.3} r={54} fill="#FFF6D8" /><circle cx={780} cy={topY + 95 + sunDrop * 0.3} r={90} fill="#FFF6D8" opacity={0.25} />
             {Array.from({ length: 9 }).map((_, i) => { const a = (i / 9) * Math.PI * 2 + f / 7; return <line key={i} x1={780} y1={topY + 95 + sunDrop * 0.3} x2={780 + Math.cos(a) * 155} y2={topY + 95 + sunDrop * 0.3 + Math.sin(a) * 155} stroke={BLUE} strokeWidth={6} opacity={0.55} />; })}
@@ -41,11 +44,16 @@ const Split: React.FC<{ tag?: string }> = ({ tag = "SAME TRICK" }) => {
           <g clipPath="url(#bot)">
             <rect x={80} y={botY} width={920} height={h} fill="url(#dusk)" />
             <circle cx={420} cy={botY + h - 70 + sunDrop} r={70} fill="#FFD27A" /><circle cx={420} cy={botY + h - 70 + sunDrop} r={126} fill="#FF9F2E" opacity={0.3} />
+            {/* r5 hook motion (hold 1.0-3.6 s): blue light streams sideways out of the sunset beam - the episode's idea in one image */}
+            {isHook && [0, 1, 2, 3].map((k) => (
+              <path key={k} d={wave(470, botY + h - 110 - k * 34, 520, 44, 9, f / 3 + k)} stroke={BLUE} strokeWidth={6} fill="none" strokeLinecap="round"
+                opacity={ease(f, 30 + k * 4, 44 + k * 4) * (0.35 + 0.35 * Math.sin(f / 6 + k))} strokeDasharray="40 26" strokeDashoffset={-f * 6 - k * 20} />
+            ))}
             <rect x={80} y={botY + h - 52} width={920} height={52} fill="#1B1530" />
           </g>
-          <Label x={115} y={topY + 58} text="NOON" anchor="start" size={38} color="white" />
+          <Label x={115} y={topY + 58 + (1 - noonIn) * -140} text="NOON" anchor="start" size={38} color="white" o={popOpacity(noonIn)} />
           <Label x={115} y={botY + 58} text="SUNSET" anchor="start" size={38} color="white" />
-          <g transform={`translate(540 ${topY + h + 10}) scale(${pop(f, tagAt, fps)})`}>
+          <g transform={`translate(540 ${topY + h + 10}) scale(${popScale(pop(f, tagAt, fps))})`} opacity={popOpacity(pop(f, tagAt, fps))}>
             <rect x={-230} y={-40} width={460} height={80} rx={40} fill={C.ink} stroke={C.amber} strokeWidth={4} />
             <Label x={0} y={15} text={tag} size={42} color={C.amber} />
           </g>
@@ -73,13 +81,14 @@ const Scatter: React.FC = () => {
       )}
       {f >= mol - 4 && (
         <g opacity={ease(f, mol - 4, mol + 6)}>
-          <g transform={`translate(540 660) scale(${pop(f, mol, fps) * (1 + 0.08 * Math.sin(f / 4))})`}>
+          <g transform={`translate(540 660) scale(${popScale(pop(f, mol, fps)) * (1 + 0.08 * Math.sin(f / 4)) * ease(f, at("a thousand times"), at("a thousand times") + 14, 1, 0.38)})`} opacity={popOpacity(pop(f, mol, fps))}>
             <circle cx={-30} r={40} fill={P.color} /><circle cx={30} r={40} fill={P.color} />
           </g>
           <Label x={540} y={570} text="N₂ / O₂ MOLECULE" size={36} color={P.color} />
           <path d={wave(60, 840, ease(f, mol, mol + 20, 0, 470), 46, 22, f / 2)} stroke={BLUE} strokeWidth={8} fill="none" />
           <path d={wave(60, 940, ease(f, mol, mol + 20, 0, 980), 110, 22, f / 3)} stroke={RED} strokeWidth={8} fill="none" />
-          <Label x={540} y={1060} text="~1000× SMALLER THAN A LIGHT WAVE" size={36} o={ease(f, at("a thousand times"), at("a thousand times") + 8)} />
+          <Label x={540} y={1040} text="~1000× SMALLER" size={40} color={C.amber} o={ease(f, at("a thousand times"), at("a thousand times") + 8)} />
+          <Label x={540} y={1088} text="THAN A LIGHT WAVE" size={32} o={ease(f, at("a thousand times") + 3, at("a thousand times") + 11)} />
           {f > sc && Array.from({ length: 12 }).map((_, i) => {
             const a = (i / 12) * Math.PI * 2 + 0.3, len = ease(f, sc + i, sc + i + 14, 0, 230);
             return <line key={i} x1={540} y1={660} x2={540 + Math.cos(a) * len} y2={660 + Math.sin(a) * len} stroke={BLUE} strokeWidth={7} strokeLinecap="round" />;
@@ -98,7 +107,7 @@ const Ratio: React.FC = () => {
     <Stage>
       <rect x={70} y={440} width={940} height={660} rx={32} fill={C.ink} opacity={0.86} stroke={C.line} strokeWidth={3} />
       {([["BLUE · 450 nm", 4.4, "#5EA4FF", BLUE], ["RED · 650 nm", 1, "#FF7E73", RED]] as const).map(([lab, v, tc, c], i) => {
-        const g = ease(f, four + i * 4, four + i * 4 + 16), w = v * 160 * g;
+        const g = ease(f, four + i * 4, four + i * 4 + 16), w = v * 140 * g; // r5: 4.4× label stays left of x 900 under the punch
         return (
           <g key={i} transform={`translate(110 ${520 + i * 210})`}>
             <Label x={0} y={-26} text={lab} anchor="start" size={40} color={tc} />
@@ -107,7 +116,7 @@ const Ratio: React.FC = () => {
           </g>
         );
       })}
-      <Label x={540} y={980} text="SCATTERING ∝ 1 / λ⁴" size={58} color={C.amber} font={MONO} o={ease(f, four + 10, four + 20)} />
+      <Label x={540} y={980} text="SCATTERING ∝ 1 / λ⁴" size={52} color={C.amber} font={MONO} o={ease(f, four + 10, four + 20)} />
       <Label x={540} y={1050} text="Rayleigh scattering" size={36} color={C.paper} weight={500} o={ease(f, four + 14, four + 24)} />
     </Stage>
   );
@@ -125,8 +134,8 @@ const Earth: React.FC = () => {
   const glowRight = noon ? ease(f, sky, sky + 10) : ease(f, se, se + 10);
   return (
     <>
-      <Ortho3D><Planet x={EX} y={EY} r={ER} spin={-0.6 + f / 260} light={[1, 0.12, 0.35]} land="#6CC47F" sea="#2D7FB0" /></Ortho3D>
       <Stage>
+        <FlatPlanet x={EX} y={EY} r={ER} f={f} />
         <defs>
           <linearGradient id="beam" gradientUnits="userSpaceOnUse" x1={xStart} y1={yb} x2={EX} y2={yb}>
             <stop offset="0" stopColor="white" /><stop offset="0.55" stopColor="#FFD27A" /><stop offset="1" stopColor={RED} />
@@ -163,8 +172,8 @@ const Earth: React.FC = () => {
               const tx = EX + ER * Math.cos(-0.25 - i * 0.18), ty = EY + ER * Math.sin(-0.25 - i * 0.18);
               return <line key={i} x1={x0} y1={yb} x2={x0 + (tx - x0) * 0.8 * gg} y2={yb + (ty - yb) * 0.8 * gg} stroke={BLUE} strokeWidth={7} strokeLinecap="round" />;
             })}
-            <Label x={EX + ER + 40} y={EY + 110} text="SOMEONE ELSE'S AFTERNOON" size={36} color="#CFEBFF" anchor="end" o={ease(f, se, se + 8)} />
-            <Label x={EX - 40} y={yb - 30} text="YOU, AT SUNSET" anchor="end" size={36} color={red > 0.5 ? ORANGE : C.paper} o={ease(f, s4 + 6, s4 + 14)} />
+            <TagLabel x={EX + ER + 40} y={EY + 110} text="SOMEONE ELSE'S AFTERNOON" size={34} color="#CFEBFF" anchor="end" o={ease(f, se, se + 8)} />
+            <TagLabel x={EX - 40} y={yb - 30} text="YOU, AT SUNSET" anchor="end" size={34} color={red > 0.5 ? ORANGE : C.paper} o={ease(f, s4 + 6, s4 + 14)} />
           </>
         )}
       </Stage>
@@ -178,11 +187,13 @@ const EarthHud: React.FC = () => {
   const { fps } = useVideoConfig();
   const at = makeAt(words, fps);
   const s3 = at("At noon"), s4 = at("At sunset"), along = at("Along the way"), se = at("color someone"), orr = at("orange and red");
+  const out = at("scattered out");
   const showPhoto = f >= along && f < se;
   return (
     <>
       <Stage>
         {f < s4 && <Pill x={540} y={1152} w={600} text="SHORT PATH THROUGH AIR" color={BLUE} textColor={C.ink} s={pop(f, s3 + 10, fps)} />}
+        {showPhoto && f >= out && <Pill x={540} y={1152} w={600} text="BLUE SCATTERED AWAY" color={BLUE} textColor={C.ink} s={pop(f, out, fps)} />}{/* r5: breaks the 2.2 s photo hold (qa motion) */}
         {f >= s4 && !showPhoto && <Pill x={540} y={1152} w={620} text={f >= orr ? "ORANGE + RED SURVIVE" : "LONG PATH THROUGH AIR"} color={f >= orr ? ORANGE : C.amber} s={pop(f, s4 + 10, fps) * (f >= orr ? pop(f, orr, fps) : 1)} />}
       </Stage>
       {showPhoto && (
@@ -215,8 +226,8 @@ export const SkyVideo: React.FC = () => {
       cardAt={card} cardUntil={fin} cues={cues} hook={<Split />}
       chapters={[{ at: 0, label: "SAME TRICK?" }, { at: s2, label: "WHAT AIR DOES" }, { at: four, label: "BLUE VS RED" }, { at: s3, label: "NOON" }, { at: s4, label: "SUNSET" }]}>
       <Shot from={0} to={s2} inT="none" outT="push" cam={[{ at: at("same trick"), kind: "punch", s: 1.08, y: 16 }]}><Split /></Shot>
-      <Shot from={s2} to={four} inT="push" outT="cut" cam={[{ at: mol, kind: "push", s: 1.12, y: 50 }, { at: sc, kind: "punch", s: 1.2, y: 40 }, { at: at("short waves"), kind: "pull", s: 1.05, y: 20 }]}><Scatter /></Shot>
-      <Shot from={four} to={s3} inT="cut" outT="whip" cam={[{ at: four + 16, kind: "push", s: 1.08, dur: 30 }, { at: at("four times"), kind: "punch", s: 1.16, x: 60, y: 60 }]}><Ratio /></Shot>
+      <Shot from={s2} to={four} inT="push" outT="cut" cam={[{ at: mol, kind: "push", s: 1.12, y: 50 }, { at: at("light wave"), kind: "glide", s: 1.14, y: -60, dur: 24 }, { at: sc, kind: "punch", s: 1.2, y: 40 }, { at: at("short waves"), kind: "pull", s: 1.05, y: 20 }]}><Scatter /></Shot>
+      <Shot from={four} to={s3} inT="cut" outT="whip" cam={[{ at: four + 16, kind: "push", s: 1.08, dur: 30 }, { at: at("four times"), kind: "punch", s: 1.14, x: -20, y: 60 }]}><Ratio /></Shot>
       <Shot from={s3} to={card} inT="whip" outT="push" cam={[
         { at: s3, kind: "glide", s: 1.1, x: -80, y: 0, dur: 20 },
         { at: scb, kind: "push", s: 1.18, x: -140, y: 0 },

@@ -1,6 +1,7 @@
 import { getInputProps } from "remotion";
 import React from "react";
-import { AbsoluteFill, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Img, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { PROBE } from "./Kit";
 import { Audio } from "@remotion/media";
 import { Pillar } from "./tokens";
 import { Background, BrandChip, Captions, Chapter, Deck } from "./Chrome";
@@ -43,6 +44,7 @@ export const EpisodeShell: React.FC<{
       </AtFrame>
       {f >= loopFrom - T_FRAMES && <LoopBack from={loopFrom} hook={hook} />}
       <MechanismCard at={cardAt} until={cardUntil} pillar={pillar} />
+      <Grain f={f} D={D} />
       <BrandChip pillar={pillar} ep={ep} source={source} />
       <Deck chapters={chapters} pillar={pillar} rewindFrom={loopFrom} />
       <Captions words={words} hideFrom={cardAt} hideTo={cardUntil} fadeFrom={loopFrom} />
@@ -65,4 +67,16 @@ const LoopBack: React.FC<{ from: number; hook: React.ReactNode }> = ({ from, hoo
       </AbsoluteFill>
     </Sequence>
   );
+};
+
+/** r5 finish texture (mg-styles "finish_texture"; Texturelabs technique, our own procedural tiles from scripts/make_grain.py):
+ *  default: one static tile (paper/film texture) at 7% overlay; --props '{"grain":"anim"}' cycles 4 tiles every 2 frames
+ *  (frames near the loop seam use tile 0 so last == first); '{"grain":"off"}' disables. */
+const Grain: React.FC<{ f: number; D: number }> = ({ f, D }) => {
+  const ip = getInputProps() as { grain?: string };
+  if (PROBE || ip.grain === "off") return null;
+  // default = static paper/film texture (benchmark r5: animated grain +30% render time, +33% file size for little visible gain)
+  if (ip.grain !== "anim") return <Img src={staticFile("grain/g0.png")} style={{ position: "absolute", inset: 0, width: 1080, height: 1920, opacity: 0.07, mixBlendMode: "overlay", pointerEvents: "none" }} />;
+  const k = f >= D - LOOP_FRAMES ? 0 : Math.floor(f / 2) % 4;
+  return <Img src={staticFile(`grain/g${k}.png`)} style={{ position: "absolute", inset: 0, width: 1080, height: 1920, opacity: 0.07, mixBlendMode: "overlay", pointerEvents: "none" }} />;
 };

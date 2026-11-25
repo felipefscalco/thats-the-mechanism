@@ -2,6 +2,7 @@ import React from "react";
 import type { LucideIcon } from "lucide-react";
 import { getInputProps } from "remotion";
 import { C, DISPLAY, LAYOUT } from "./tokens";
+import { popOpacity, popScale } from "./timing";
 
 /** QA contrast probe (scripts/contrast.py): render with --props='{"probe":true}' and every Label/Pill text is drawn in pure
  *  key magenta with no outline, so the QA can find the text pixels and measure the real background around them. */
@@ -17,9 +18,22 @@ export const Label: React.FC<{ x: number; y: number; text: string; color?: strin
       style={{ paintOrder: "stroke", stroke: C.ink, strokeWidth: 6, strokeLinejoin: "round" }}>{text}</text>;
   };
 
+/** r5: Label on a dark rounded backing (for labels that sit on busy art, e.g. over a planet). Width estimated from glyph count. */
+export const TagLabel: React.FC<{ x: number; y: number; text: string; color?: string; size?: number; o?: number; anchor?: "middle" | "start" | "end" }> =
+  ({ x, y, text, color = C.paper, size = 36, o = 1, anchor = "middle" }) => {
+    const w = text.length * size * 0.6 + 36, h = size + 22;
+    const x0 = anchor === "middle" ? x - w / 2 : anchor === "end" ? x - w + 18 : x - 18;
+    return (
+      <g opacity={o}>
+        <rect x={x0} y={y - size * 0.8 - 10} width={w} height={h} rx={h / 2} fill={C.ink} opacity={0.82} />
+        <Label x={x} y={y} text={text} color={color} size={size} anchor={anchor} />
+      </g>
+    );
+  };
+
 /** Verdict pill. Optional lucide icon (ISC licence) replaces unicode ✓/✕ glyphs for crisp, consistent symbols. */
 export const Pill: React.FC<{ x: number; y: number; w: number; text: string; color: string; s: number; textColor?: string; icon?: LucideIcon }> = ({ x, y, w, text, color, s, textColor = C.ink, icon: Icon }) => (
-  <g transform={`translate(${x} ${y}) scale(${s})`} opacity={Math.min(1, s)}>
+  <g transform={`translate(${x} ${y}) scale(${popScale(s)})`} opacity={popOpacity(s)}>
     <rect x={-w / 2 + 4} y={-30} width={w} height={76} rx={38} fill="#000" opacity={0.35} />
     <rect x={-w / 2} y={-38} width={w} height={76} rx={38} fill={color} />
     {Icon && <Icon x={-w / 2 + 22} y={-22} width={44} height={44} color={textColor} strokeWidth={3} />}

@@ -6,7 +6,8 @@ const STEM_SFX = (getInputProps() as { stem?: string }).stem;
 
 /** Library in public/sfx (see sfx/CREDITS.csv). All normalised so volume=1 sits ~12-14 dB under the voice. */
 export type SfxName = "whoosh" | "riser" | "sting" | "tick" | "pop" | "click" | "confirm" | "error" | "glitch" | "thud" | "clank"
-  | "swish" | "whip" | "cut" | "glint" | "stamp" | "count" | "pop3" | "micro";
+  | "swish" | "whip" | "cut" | "glint" | "stamp" | "count" | "pop3" | "micro"
+  | "latch" | "detent" | "land" | "step"; // r5: UI SFX CC0 (mechanical/cinematic feels)
 export type Cue = { at: number; sfx: SfxName; vol?: number };
 export const cue = (at: number, sfx: SfxName, vol = 1): Cue => ({ at, sfx, vol });
 

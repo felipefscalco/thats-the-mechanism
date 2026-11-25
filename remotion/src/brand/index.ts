@@ -11,3 +11,4 @@ export * from "./Kit";
 export * from "./Depth";
 export * from "./Hero3D";
 export * from "./ProofCard";
+export * from "./FlatPlanet";

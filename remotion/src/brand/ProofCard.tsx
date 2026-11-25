@@ -1,8 +1,8 @@
 import React from "react";
-import { Img, staticFile, useVideoConfig } from "remotion";
+import { Img, staticFile } from "remotion";
 import { C, DISPLAY, MONO } from "./tokens";
 import { PROBE, PROBE_KEY } from "./Kit";
-import { ease, pop } from "./timing";
+import { EASE, ease } from "./timing";
 import { useG } from "./frame";
 
 /** Look A real-photo proof card: amber brand border, Ken Burns pan/zoom, dashed focus box, >= 30 px credit. */
@@ -16,25 +16,29 @@ export const ProofCard: React.FC<{
   startFrame: number;
   duration?: number;
   y?: number;
-}> = ({ src, tag, credit, aspect = 1, focus, focusLabel, startFrame, duration = 66, y = 415 }) => {
+  /** r5: CSS filter for dark archival photos, e.g. "brightness(1.35) contrast(1.15)" */
+  treat?: string;
+}> = ({ src, tag, credit, aspect = 1, focus, focusLabel, startFrame, duration = 66, y = 450, treat }) => {
   const f = useG();
-  const { fps } = useVideoConfig();
-  const s = pop(f, startFrame, fps, 12);
+  // r5 (Emil): ease-out entry from 0.94 + 40 px rise over 12 f, no spring wobble on a large card; inner photo lags 3 f (stagger)
+  const sOut = EASE.OUT(Math.min(1, Math.max(0, (f - startFrame) / 12)));
+  const sPhoto = EASE.OUT(Math.min(1, Math.max(0, (f - startFrame - 3) / 12)));
   const kb = 1.0 + 0.07 * ease(f, startFrame, startFrame + duration);
   const panX = (ease(f, startFrame, startFrame + duration) - 0.5) * -14;
   const dash = ease(f, startFrame + 6, startFrame + 22);
-  const W = 800;
-  const H = Math.min(550, Math.round(W / aspect));
-  const x = (1080 - W) / 2;
+  // r5 Shorts safe zone: keep the whole card (incl. credit + backing) left of the right-hand button column (x <= 900)
+  const W = 760;
+  const H = Math.min(540, Math.round(W / aspect));
+  const x = 100;
   return (
-    <div style={{ position: "absolute", left: x, top: y, width: W, transform: `scale(${0.92 + 0.08 * s}) translateY(${(1 - s) * 28}px)`, opacity: Math.min(1, s * 1.4) }}>
+    <div style={{ position: "absolute", left: x, top: y, width: W, transform: `scale(${0.94 + 0.06 * sOut}) translateY(${(1 - sOut) * 40}px)`, opacity: Math.min(1, sOut * 1.6) }}>
       <div style={{ position: "absolute", left: -24, top: -96, width: W + 48, height: H + 210, borderRadius: 34, background: "rgba(13,14,18,0.88)" }} />
-      <div style={{ position: "absolute", left: 0, top: -72, display: "flex", gap: 16, alignItems: "center", whiteSpace: "nowrap" }}>
+      <div style={{ position: "absolute", left: 0, top: -76, display: "flex", gap: 16, alignItems: "center", whiteSpace: "nowrap" }}>
         <div style={{ background: C.amber, color: PROBE ? PROBE_KEY : C.ink, fontFamily: DISPLAY, fontWeight: 700, fontSize: 36, padding: "6px 24px", borderRadius: 40 }}>REAL PHOTO</div>
         <div style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 38, color: PROBE ? PROBE_KEY : C.paper }}>{tag}</div>
       </div>
       <div style={{ position: "relative", width: W, height: H, borderRadius: 24, overflow: "hidden", border: `6px solid ${C.amber}`, background: C.ink2, boxShadow: "0 20px 52px rgba(0,0,0,0.65)" }}>
-        <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${kb}) translateX(${panX}px)`, transformOrigin: "55% 55%" }} />
+        <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${kb * (1.04 - 0.04 * sPhoto)}) translateX(${panX}px)`, transformOrigin: "55% 55%", filter: treat, opacity: sPhoto }} />
         {focus && (
           <svg width={W} height={H} style={{ position: "absolute", left: 0, top: 0 }}>
             <rect x={focus[0] * W} y={focus[1] * H} width={(focus[2] - focus[0]) * W} height={(focus[3] - focus[1]) * H}

@@ -3,7 +3,7 @@ import { useVideoConfig } from "remotion";
 import words from "../01-qr-code.captions.json";
 import qr from "../qr-matrix.json";
 import { ScanLine, X, type LucideIcon } from "lucide-react";
-import { C, EpisodeShell, GearG, Label, LOOP_FRAMES, MONO, PILLARS, Pill, ProofCard, Shot, Stage, TitleHook, cue, ease, makeAt, pop, useG } from "../brand";
+import { C, EpisodeShell, GearG, Label, LOOP_FRAMES, MONO, PILLARS, Pill, ProofCard, Shot, Stage, TitleHook, cue, ease, makeAt, pop, popOpacity, popScale, useG } from "../brand";
 
 const P = PILLARS.tech;
 const N = qr.n;
@@ -79,7 +79,8 @@ const Hook: React.FC = () => {
           {f > cam && <rect x={cx - 300} y={cy - 300 + ((f - cam) * 28) % 600} width={600} height={6} fill={C.green} opacity={0.85} />}
         </g>
       </Stage>
-      <TitleHook t={["THE CODE THAT", "REPAIRS", "ITSELF"]} top={280} />
+      {/* r5: title leaves before the push-out so the transition never flings it into the platform UI zone */}
+      <TitleHook t={["THE CODE THAT", "REPAIRS", "ITSELF"]} top={280} o={ease(f, at("When the code") - 9, at("When the code") - 3, 1, 0)} />
     </>
   );
 };
@@ -111,7 +112,7 @@ const Bytes: React.FC = () => {
         const s = pop(f, cut + i * 1.4, fps), x = 115 + (i % 6) * 145, y = 470 + Math.floor(i / 6) * 116;
         const pulse = f > adds ? Math.max(0, Math.sin((f - adds) * 0.22 - i * 0.55)) : 0;
         return (
-          <g key={i} transform={`translate(${x + 60} ${y + 44}) scale(${s * (1 + 0.06 * pulse)})`} opacity={Math.min(1, s)}>
+          <g key={i} transform={`translate(${x + 60} ${y + 44}) scale(${popScale(s) * (1 + 0.06 * pulse)})`} opacity={popOpacity(s)}>
             <rect x={-60} y={-44} width={120} height={88} rx={14} fill={pulse > 0.6 ? "#233648" : C.ink2} stroke={pulse > 0.6 ? C.amber : P.color} strokeWidth={4} />
             <text y={12} fill={C.paper} fontFamily={MONO} fontSize={34} fontWeight={700} textAnchor="middle">{b}</text>
           </g>
@@ -122,7 +123,7 @@ const Bytes: React.FC = () => {
       {Array.from({ length: 12 }).map((_, i) => {
         const s = pop(f, adds + i * 1.6, fps), x = 115 + (i % 6) * 145, y = 766 + Math.floor(i / 6) * 116;
         return (
-          <g key={i} transform={`translate(${x + 60} ${y + 44}) scale(${s})`} opacity={Math.min(1, s)}>
+          <g key={i} transform={`translate(${x + 60} ${y + 44}) scale(${popScale(s)})`} opacity={popOpacity(s)}>
             <rect x={-60} y={-44} width={120} height={88} rx={14} fill={C.amber} opacity={0.82 + 0.18 * Math.sin(f * 0.2 - i * 0.5)} />
             <text y={13} fill={C.ink} fontFamily={MONO} fontSize={40} fontWeight={700} textAnchor="middle">+</text>
           </g>
@@ -172,7 +173,7 @@ const Repair: React.FC = () => {
           <QRCard cx={W / 2} cy={700} size={580} logo={0.12} rot={f * 1.8} />
           <rect x={W / 2 - 245} y={700 - 245} width={490} height={490 * 0.3 * g30} rx={18} fill={C.amber} opacity={0.28 + 0.14 * Math.sin(f / 4)} stroke={C.amber} strokeWidth={5} />
           <rect x={W / 2 - 255} y={700 - 245 + ((f * 18) % 490)} width={510} height={6} rx={3} fill={C.amber} opacity={0.65} />
-          <Label x={W / 2} y={1080} text={`${Math.round(30 * g30)}% REBUILDABLE (LEVEL H)`} size={50} color={C.amber} />
+          <Label x={W / 2} y={1080} text={`${Math.round(30 * g30)}% REBUILDABLE (LEVEL H)`} size={42} color={C.amber} />
         </g>
       )}
       {f > s3 + 4 && mode === 0 && (
@@ -200,7 +201,7 @@ const Budget: React.FC = () => {
           <Label x={W / 2} y={1000} text={f >= p15 ? "LOGO ≈ 15% OF AREA" : "PLANNED-FOR DAMAGE"} size={42} color={f >= p15 ? C.green : C.amber} />
           <rect x={barX} y={barY} width={barW} height={42} rx={21} fill={C.ink2} stroke={C.line} strokeWidth={4} />
           <rect x={barX + 4} y={barY + 4} width={(barW - 8) * (logoA / 0.3)} height={34} rx={17} fill={C.green} />
-          <Label x={barX + barW} y={barY + 86} text="REPAIR BUDGET: 30%" anchor="end" size={32} color={C.paper} />
+          <Label x={barX} y={barY + 86} text="REPAIR BUDGET: 30%" anchor="start" size={32} color={C.paper} />
         </Stage>
       )}
       {showPhoto && (
@@ -272,7 +273,7 @@ export const QRVideo: React.FC = () => {
       cardAt={card} cardUntil={fin} cues={cues} hook={<Hook />}
       chapters={[{ at: 0, label: "A LOGO ON A QR" }, { at: s2, label: "BYTES + REPAIR BYTES" }, { at: s3, label: "REBUILDING" }, { at: s4, label: "THE LOGO BUDGET" }, { at: s5, label: "THE CORNERS" }]}>
       <Shot from={0} to={s2} inT="none" outT="push" cam={[{ at: at("Your camera"), kind: "push", s: 1.05 }, { at: at("anyway."), kind: "punch", s: 1.14, y: -30 }]} hud={<Verdict phrase="anyway." text="LINK OPENS" color={C.green} icon={ScanLine} w={460} />}><Hook /></Shot>
-      <Shot from={s2} to={s3} inT="push" outT="whip" cam={[{ at: 0, kind: "settle", s: 1.0, y: 90, dur: 1 }, { at: adds, kind: "glide", s: 1.04, y: 40 }, { at: at("error correction"), kind: "glide", s: 1.06, x: -30, y: 50 }, { at: at("same math"), kind: "push", s: 1.1, x: 0, y: 30 }, { at: cd - 6, kind: "pull", s: 0.96, y: 0 }]}><Bytes /></Shot>
+      <Shot from={s2} to={s3} inT="push" outT="whip" cam={[{ at: 0, kind: "settle", s: 1.0, y: 90, dur: 1 }, { at: at("cut into bytes"), kind: "punch", s: 1.1, y: 70 }, { at: adds, kind: "glide", s: 1.04, y: 40 }, { at: at("error correction"), kind: "glide", s: 1.06, x: -30, y: 50 }, { at: at("same math"), kind: "push", s: 1.1, x: 0, y: 30 }, { at: cd - 6, kind: "pull", s: 0.96, y: 0 }]}><Bytes /></Shot>
       <Shot from={s3} to={s4} inT="whip" outT="push" cam={[{ at: reb, kind: "punch", s: 1.16, y: 70 }, { at: hi - 4, kind: "glide", s: 1.0, y: -40 }, { at: hi + 14, kind: "push", s: 1.1, x: -70, y: 20 }, { at: at("30%"), kind: "pull", s: 1.0, x: 0, y: 0 }]}><Repair /></Shot>
       <Shot from={s4} to={s5} inT="push" outT="whipUp" cam={[{ at: s4, kind: "push", s: 1.05, dur: 45 }, { at: at("In real tests"), kind: "glide", s: 1.08, y: -40 }, { at: gl, kind: "pull", s: 1.0, y: 0 }]}><Budget /></Shot>
       <Shot from={s5} to={card} inT="whipUp" outT="push" cam={[{ at: corner, kind: "push", s: 1.08 }, { at: over, kind: "punch", s: 1.18, x: 160, y: 90 }, { at: at("Those aren't data"), kind: "pull", s: 1.0, x: 0, y: 0 }]} hud={<Verdict phrase="it's over" until="Those aren't data" text="NO SCAN" color={C.red} textColor={C.ink} w={400} icon={X} />}><Finders /></Shot>
