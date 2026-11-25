@@ -1,4 +1,4 @@
-A logo should break this QR code. Your camera reads it anyway.
+This QR code repairs itself. Your camera reads a damaged code anyway.
 
 When the code is generated, your link is cut into bytes, and the encoder adds extra bytes calculated from the data itself. That's Reed-Solomon error correction, the same math that kept scratched CDs playing.
 

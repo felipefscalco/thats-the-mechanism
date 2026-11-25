@@ -1,4 +1,4 @@
-An elevator doesn't lift you. It almost balances you.
+This is the elevator that barely lifts you. It almost balances you.
 
 On the other side of the cable hangs a counterweight. It's built to match the empty car, plus about forty to fifty percent of the rated load.
 

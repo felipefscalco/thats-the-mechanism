@@ -1,5 +1,37 @@
 # That's the Mechanism — pilot metadata (NOT uploaded anywhere)
 
+## v4 (round 4) — Final (Look A + claude-drawing-skill backdrops on QR & Sky; upgraded mechanical Look A on Elevator)
+Changes vs v1–v3: titles use The Why Side's title-as-hook grammar ("The X that Y") with a `TitleHook` opening card + scale reveal, 100% WCAG-verified labels, real public-domain/CC0 `ProofCard` photos, and `1.27–1.32/s` SFX density.
+AI disclosure unchanged: synthetic TTS voice (Kokoro `am_michael`; to be replaced by the owner's cloned voice later, still synthetic -> keep the AI label on IG/TikTok and YouTube's "altered or synthetic" toggle).
+
+### #001 QR · renders/QR_v4.mp4 (53.9 s · 1080×1920@30 · -14.0 LUFS)
+**Title:** The QR Code That Repairs Itself
+**Alt titles:** The Code That Survives a Hole in Its Middle · The QR Code That Dies If You Cover One Corner
+**Description (add to the v1 text below):**
+Photo credits (public domain / CC0, no attribution required; credited anyway):
+- QR Code Damaged / QR code for mobile English Wikipedia.svg: brdall / CC0 - https://commons.wikimedia.org/wiki/File:QR_Code_Damaged.jpg
+Note: the torn QR in the photo is a derivative of Wikipedia's "QR code for mobile English Wikipedia" (it points to the mobile Wikipedia site).
+**Open item:** the animated QR (qr-matrix.json) is scannable and points to youtube.com/@thatsthemechanism. Confirm the handle is ours before publishing, or switch to the non-scannable library QR.
+
+### #002 Elevator · renders/Elevator_v4.mp4 (43.3 s · 1080×1920@30 · -14.0 LUFS)
+**Title:** The Elevator That Barely Lifts You
+**Alt titles:** The Elevator That Would Rather Go Up · The Counterweight That Does Most of the Work
+**Description (add to the v1 text below):**
+Photo credits (public domain / CC0, no attribution required; credited anyway):
+- Elevator motor in elevator machine room - Washington Monument, High ground West of Fifteenth Street, Northwest, between Independence and Constitution Avenues, Washington, District of Columbia, DC HABS DC,WASH,2-95 / Boucher, Jack E / Public domain - https://commons.wikimedia.org/wiki/File:Elevator_motor_in_elevator_machine_room_-_Washington_Monument,_High_ground_West_of_Fifteenth_Street,_Northwest,_between_Independence_and_Constitution_Avenues,_Washington,_District_of_Columbia,_DC_HABS_DC,WASH,2-95.tif
+(HABS photograph by Jack E. Boucher, Library of Congress; Commons marks it Public domain / Copyrighted: False.)
+
+### #003 Sky · renders/Sky_v4.mp4 (47.3 s · 1080×1920@30 · -14.0 LUFS)
+**Title:** The Sunset Made of Someone Else's Blue Sky
+**Alt titles:** The Sky That Steals the Blue From Your Sunset · The Same Sunlight, Two Colours
+**Description (add to the v1 text below):**
+Photo credits (public domain / CC0, no attribution required; credited anyway):
+- Earth Observation / NASA (JSC) / Public domain (NASA media usage guidelines) - https://images.nasa.gov/details/iss028e007274
+(ISS028-E-007274, 11 June 2011, Expedition 28 crew: the sun over Earth's limb, blue scattered layer above the orange/red band.)
+---
+
+# v1 metadata (kept for reference)
+
 All three: English, 1080x1920, 30 fps, H.264 + AAC. Voice = Kokoro TTS (synthetic). 
 AI disclosure: the narration is a synthetic TTS voice. On upload, use each platform's AI/synthetic-content toggle (Instagram and TikTok ask for a label on AI-generated content; on YouTube, ticking "altered or synthetic content" is the conservative choice for a pilot).
 
