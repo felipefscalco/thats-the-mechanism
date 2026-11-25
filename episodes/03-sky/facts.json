@@ -1,0 +1,104 @@
+{
+ "facts": [
+  {
+   "id": "f-0001",
+   "claim": "Air molecules (N2, O2) are much smaller than visible wavelengths (~1000x per NOAA) and scatter short wavelengths more (Rayleigh scattering, intensity ~ 1/lambda^4).",
+   "value": "~1000x smaller; ∝ 1/λ⁴",
+   "status": "verified",
+   "sources": [
+    "s-0001",
+    "s-0002",
+    "s-0003"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "Air molecules are about a thousand times smaller than a light wave",
+    "tiny things scatter short waves far more than long ones"
+   ]
+  },
+  {
+   "id": "f-0002",
+   "claim": "Blue (~450 nm) is scattered about 4x more than red (~650 nm). (650/450)^4 = 4.35; 3.7x for 625 nm.",
+   "value": "(650/450)^4 ≈ 4.35",
+   "status": "verified",
+   "sources": [
+    "s-0004",
+    "s-0003",
+    "s-0001"
+   ],
+   "caveat": "NOAA says three to four times (violet vs red); 450 vs 650 nm gives 4.35",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "Blue gets bounced around about four times more than red"
+   ]
+  },
+  {
+   "id": "f-0003",
+   "claim": "At sunrise/sunset light crosses far more atmosphere (Brailey Sims estimate ~30x more than overhead), so blue is scattered out of the direct beam and orange/red remain.",
+   "value": "~30x more air (Brailey Sims)",
+   "status": "verified",
+   "sources": [
+    "s-0003",
+    "s-0002",
+    "s-0004"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "the light reaching you crosses dozens of times more air"
+   ]
+  },
+  {
+   "id": "f-0004",
+   "claim": "The blue removed from a sunset beam contributes to the blue sky seen elsewhere ('sunsets are red because the daytime sky is blue').",
+   "value": "",
+   "status": "verified",
+   "sources": [
+    "s-0001",
+    "s-0002"
+   ],
+   "caveat": "framing simplification: the same scattering seen from another angle, per Met Office",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "Both are the same trick, seen from two places",
+    "off to color someone else's afternoon",
+    "Your sunset is the leftovers of someone else's blue sky"
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "id": "s-0001",
+   "title": "NOAA SPC, Corfidi",
+   "url": "https://www.spc.noaa.gov/publications/corfidi/sunset.html",
+   "publisher": "spc.noaa.gov",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0002",
+   "title": "Met Office",
+   "url": "https://weather.metoffice.gov.uk/learn-about/weather/optical-effects/why-is-the-sky-blue",
+   "publisher": "weather.metoffice.gov.uk",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0003",
+   "title": "Univ. of Newcastle",
+   "url": "https://carmamaths.org/brailey/secondary_maths_publications/red_sunset.pdf",
+   "publisher": "carmamaths.org",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0004",
+   "title": "Leibniz Univ. Hannover: 'more than four times'",
+   "url": "https://www.itp.uni-hannover.de/fileadmin/itp/emeritus/zawischa/static_html/scattering.html",
+   "publisher": "itp.uni-hannover.de",
+   "accessed": "2026-11-25",
+   "http": 200
+  }
+ ]
+}

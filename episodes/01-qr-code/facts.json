@@ -1,0 +1,141 @@
+{
+ "facts": [
+  {
+   "id": "f-0001",
+   "claim": "QR codes use Reed-Solomon error correction; level H restores roughly 30% of codewords (L 7%, M 15%, Q 25%, H 30%).",
+   "value": "H ≈ 30% of codewords",
+   "status": "verified",
+   "sources": [
+    "s-0001",
+    "s-0002",
+    "s-0003"
+   ],
+   "caveat": "share of codewords, not visible area (see f-0002)",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "Reed-Solomon error correction",
+    "At the highest level, H, a scanner can restore about thirty percent of the code's bytes"
+   ]
+  },
+  {
+   "id": "f-0002",
+   "claim": "30% is a share of codewords, not of visible area; measured safe centred logo at level H is ~15-17% of the area.",
+   "value": "≈15-17% of area",
+   "status": "verified",
+   "sources": [
+    "s-0002",
+    "s-0004",
+    "s-0005"
+   ],
+   "caveat": "measured on centred logos at level H; 15% is the conservative figure",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "about fifteen percent of the area is safe"
+   ]
+  },
+  {
+   "id": "f-0003",
+   "claim": "Glare, dirt, scratches consume the same correction budget.",
+   "value": "",
+   "status": "verified",
+   "sources": [
+    "s-0005",
+    "s-0001"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "Glare and scratches spend the same budget"
+   ]
+  },
+  {
+   "id": "f-0004",
+   "claim": "Finder patterns are not covered by error correction; covering one breaks detection.",
+   "value": "3 finder patterns",
+   "status": "verified",
+   "sources": [
+    "s-0002",
+    "s-0005"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "cover one of the three big corner squares, and it's over",
+    "They're how your camera finds the code"
+   ]
+  },
+  {
+   "id": "f-0005",
+   "claim": "Reed-Solomon codes (1960) also protect audio CDs (CIRC).",
+   "value": "CIRC on audio CDs",
+   "status": "verified",
+   "sources": [
+    "s-0006",
+    "s-0007"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "the same math that kept scratched CDs playing"
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "id": "s-0001",
+   "title": "citing DENSO WAVE's L/M/Q/H restoration rates",
+   "url": "https://www.blissqr.com/posts/qr-code-error-correction/",
+   "publisher": "blissqr.com",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0002",
+   "title": "https://mostlyqr.com/blog/qr-code-logo-size",
+   "url": "https://mostlyqr.com/blog/qr-code-logo-size",
+   "publisher": "mostlyqr.com",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0003",
+   "title": "DENSO WAVE, inventor",
+   "url": "https://www.qrcode.com/en/about/error_correction.html",
+   "publisher": "qrcode.com",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0004",
+   "title": "H: 15.5% of area read in 80%+ of captures",
+   "url": "https://qrdx.dev/blog/qr-code-scan-study",
+   "publisher": "qrdx.dev",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0005",
+   "title": "~20% safe after real-world margin",
+   "url": "https://useqr.app/docs/spec/how-logos-work-without-breaking-a-code",
+   "publisher": "useqr.app",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0006",
+   "title": "https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction",
+   "url": "https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction",
+   "publisher": "en.wikipedia.org",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0007",
+   "title": "https://en.wikipedia.org/wiki/Cross-interleaved_Reed%E2%80%93Solomon_coding",
+   "url": "https://en.wikipedia.org/wiki/Cross-interleaved_Reed%E2%80%93Solomon_coding",
+   "publisher": "en.wikipedia.org",
+   "accessed": "2026-11-25",
+   "http": 200
+  }
+ ]
+}
