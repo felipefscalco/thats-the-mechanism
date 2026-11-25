@@ -72,6 +72,12 @@ An episode is done only when **every automated check in `docs/ACCEPTANCE.md` PAS
 
 Do not call a video “acceptable” from metrics alone. Look at `qa/<Id>/grid_it<N>.png` and `transitions_it<N>.png`.
 
+## Round-5 rules
+- Never voice a script before `scripts/facts.py check <slug>` passes; `tts.py` enforces this.
+- Respect `pipeline.config.json` gates. Record every human decision with `scripts/gates.py approve <slug> <gate> --changes "..." | --no-changes`. Use env overrides (`GATE_MODE_X=auto`) only when asked; they are logged.
+- The builder is not the judge: ship only if the pairwise critic prefers the new render over the last approved one. Budget Gemini free-tier calls (20/model/day, L-22).
+- Do not edit `remotion/src` while a QA batch is running (L-24). After adding a camera punch, check edge labels stay at x ≤ 900.
+
 ## Working agreements
 
 - Keep changes reviewable: one episode or one kit fix per change set when you can.

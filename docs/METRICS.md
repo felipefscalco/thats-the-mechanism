@@ -4,27 +4,27 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 
 | episode | stage | runs | last wall (s) | total wall (s) | CPU (s) | peak RAM (MB) | output (MB) | cost |
 |---|---|---|---|---|---|---|---|---|
-| 01-qr-code | qa | 14 | 113.64 | 1030.74 | 1418.35 | 4373 | – | $0 |
-| 01-qr-code | render | 13 | 61.68 | 603.36 | 1118.54 | 4597 | 17.61 | $0 |
+| 01-qr-code | qa | 17 | 116.98 | 1367.51 | 1974.38 | 4373 | – | $0 |
+| 01-qr-code | render | 16 | 73.41 | 827.21 | 1490.95 | 4597 | 19.37 | $0 |
 | 01-qr-code | captions | 4 | 10.59 | 35.2 | 175.57 | 972 | 0.01 | $0 |
 | 01-qr-code | mix | 3 | 1.78 | 4.83 | 5.26 | 57 | 9.85 | $0 |
 | 01-qr-code | tts | 3 | 10.7 | 29.96 | 186.32 | 787 | 2.41 | $0 |
-| 01-qr-code | master | 6 | 3.81 | 21.57 | 29.05 | 200 | 17.61 | $0 |
+| 01-qr-code | master | 9 | 4.05 | 32.44 | 43.17 | 201 | 19.37 | $0 |
 | 01-qr-code | loudnorm | 2 | 1.29 | 2.31 | 1.93 | 79 | 4.81 | $0 |
-| 02-elevator | qa | 11 | 101.11 | 696.14 | 964.21 | 3950 | – | $0 |
-| 02-elevator | render | 10 | 54.34 | 407.56 | 671.02 | 4515 | 12.15 | $0 |
+| 02-elevator | qa | 14 | 97.0 | 1059.52 | 1463.23 | 3950 | – | $0 |
+| 02-elevator | render | 13 | 62.99 | 610.36 | 974.85 | 4576 | 14.77 | $0 |
 | 02-elevator | captions | 3 | 8.42 | 21.81 | 113.62 | 954 | 0.01 | $0 |
 | 02-elevator | mix | 3 | 1.53 | 4.05 | 4.22 | 54 | 7.92 | $0 |
 | 02-elevator | tts | 2 | 8.24 | 15.34 | 94.94 | 702 | 1.93 | $0 |
-| 02-elevator | master | 5 | 3.05 | 14.96 | 19.36 | 204 | 12.15 | $0 |
+| 02-elevator | master | 8 | 2.78 | 23.04 | 30.29 | 204 | 14.77 | $0 |
 | 02-elevator | r4_contrast_check | 1 | 25.06 | 25.06 | 71.4 | 2537 | – | $0 |
 | 02-elevator | loudnorm | 1 | 0.76 | 0.76 | 0.72 | 79 | 3.85 | $0 |
-| 03-sky | qa | 11 | 133.44 | 825.24 | 1106.35 | 4425 | – | $0 |
-| 03-sky | render | 10 | 124.48 | 786.88 | 754.5 | 4893 | 12.97 | $0 |
+| 03-sky | qa | 15 | 112.32 | 1268.58 | 1785.44 | 4425 | – | $0 |
+| 03-sky | render | 14 | 62.38 | 1268.58 | 1197.12 | 4893 | 15.22 | $0 |
 | 03-sky | captions | 3 | 9.45 | 22.07 | 115.65 | 946 | 0.01 | $0 |
 | 03-sky | mix | 2 | 1.54 | 2.8 | 3.03 | 54 | 8.64 | $0 |
 | 03-sky | tts | 2 | 8.53 | 15.9 | 99.98 | 792 | 2.11 | $0 |
-| 03-sky | master | 5 | 3.04 | 15.45 | 20.09 | 204 | 12.97 | $0 |
+| 03-sky | master | 9 | 3.56 | 29.94 | 37.91 | 204 | 15.22 | $0 |
 | 03-sky | loudnorm | 1 | 1.02 | 1.02 | 0.82 | 79 | 4.23 | $0 |
 | 04-ice-demo | tts | 1 | 4.83 | 4.83 | 29.81 | 670 | 1.38 | $0 |
 | 04-ice-demo | loudnorm | 1 | 0.76 | 0.76 | 0.56 | 79 | 2.75 | $0 |
@@ -34,11 +34,35 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | 04-ice-demo | qa | 2 | 23.12 | 47.8 | 64.17 | 2134 | – | $0 |
 | Elevator | critic | 1 | 15.6 | 15.6 | 0.0 | 0 | 0.0017 | $0 |
 | Elevator | qa | 1 | 94.8 | 94.8 | 149.45 | 3960 | – | $0 |
+| Elevator:A=v3 B=v4 | critic | 1 | 276.4 | 276.4 | 0.0 | 0 | 0.0039 | $0 |
+| Elevator:A=v3 B=v4 (3-flash) | critic | 1 | 47.18 | 47.18 | 0.0 | 0 | 0.0035 | $0 |
+| Elevator:A=v3 B=v4 (lite sanity) | critic | 1 | 21.16 | 21.16 | 0.0 | 0 | 0.0027 | $0 |
+| Elevator:A=v4 B=v3 | critic | 1 | 50.67 | 50.67 | 0.0 | 0 | 0.0031 | $0 |
+| Elevator:A=v4 B=v3 (lite swap) | critic | 1 | 19.58 | 19.58 | 0.0 | 0 | 0.0027 | $0 |
+| Elevator:A=v4 B=v5 | critic | 1 | 23.02 | 23.02 | 0.0 | 0 | 0.0024 | $0 |
 | Elevator:baseline_v3 | critic | 1 | 63.4 | 63.4 | 0.0 | 0 | 0.0017 | $0 |
+| Elevator:v3_cal | critic | 1 | 232.22 | 232.22 | 0.0 | 0 | 0.0032 | $0 |
+| Elevator:v3_cal2 | critic | 1 | 44.31 | 44.31 | 0.0 | 0 | 0.0039 | $0 |
+| Elevator:v3_legacy38 | critic | 1 | 215.45 | 215.45 | 0.0 | 0 | 0.0021 | $0 |
+| Elevator:v4 | critic | 1 | 17.77 | 17.77 | 0.0 | 0 | 0.0046 | $0 |
+| Elevator:v4_cal | critic | 1 | 813.58 | 813.58 | 0.0 | 0 | 0.0037 | $0 |
+| Elevator:v5 | critic | 1 | 14.34 | 14.34 | 0.0 | 0 | 0.0037 | $0 |
+| Elevator:v5-legacy | critic | 1 | 12.51 | 12.51 | 0.0 | 0 | 0.0015 | $0 |
+| FlatVectorRef:ref | critic | 1 | 46.23 | 46.23 | 0.0 | 0 | 0.0041 | $0 |
 | QR | critic | 1 | 15.99 | 15.99 | 0.0 | 0 | 0.0018 | $0 |
 | QR | qa | 1 | 112.22 | 112.22 | 176.66 | 4261 | – | $0 |
+| QR:A=v4 B=v5 | critic | 1 | 19.74 | 19.74 | 0.0 | 0 | 0.0023 | $0 |
+| QR:A=v4 B=v5 5fps | critic | 1 | 28.69 | 28.69 | 0.0 | 0 | 0.0026 | $0 |
+| QR:v4 | critic | 1 | 14.85 | 14.85 | 0.0 | 0 | 0.0043 | $0 |
+| QR:v4_cal | critic | 1 | 88.02 | 88.02 | 0.0 | 0 | 0.0038 | $0 |
+| QR:v5 | critic | 1 | 13.68 | 13.68 | 0.0 | 0 | 0.0035 | $0 |
+| QR:v5-legacy | critic | 1 | 12.52 | 12.52 | 0.0 | 0 | 0.0016 | $0 |
 | Sky | critic | 1 | 17.71 | 17.71 | 0.0 | 0 | 0.0018 | $0 |
 | Sky | qa | 1 | 124.85 | 124.85 | 199.52 | 4444 | – | $0 |
+| Sky:A=v4 B=v5 | critic | 1 | 21.97 | 21.97 | 0.0 | 0 | 0.0026 | $0 |
+| Sky:v4 | critic | 2 | 13.09 | 40.46 | 0.0 | 0 | 0.0035 | $0 |
+| Sky:v5 | critic | 1 | 14.41 | 14.41 | 0.0 | 0 | 0.0042 | $0 |
+| Sky:v5-legacy | critic | 2 | 11.62 | 24.57 | 0.0 | 0 | 0.0014 | $0 |
 | all | r4_backdrops_drawing_skill | 1 | 4.8 | 4.8 | 5.35 | 313 | – | $0 |
 | all | r4_library_build | 1 | 0.76 | 0.76 | 0.73 | 67 | – | $0 |
 | all | r4_style_frames_24 | 1 | 30.7 | 30.7 | 49.77 | 1106 | 2.38 | $0 |
@@ -50,20 +74,68 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | 03-sky | 5 | 5 |
 | 04-ice-demo | 2 | 2 |
 | Elevator | 0 | 3 |
+| Elevator:A=v3 B=v4 | 0 | 0 |
+| Elevator:A=v3 B=v4 (3-flash) | 0 | 0 |
+| Elevator:A=v3 B=v4 (lite sanity) | 0 | 0 |
+| Elevator:A=v4 B=v3 | 0 | 0 |
+| Elevator:A=v4 B=v3 (lite swap) | 0 | 0 |
+| Elevator:A=v4 B=v5 | 0 | 0 |
 | Elevator:baseline_v3 | 0 | 0 |
+| Elevator:v3_cal | 0 | 0 |
+| Elevator:v3_cal2 | 0 | 0 |
+| Elevator:v3_legacy38 | 0 | 0 |
+| Elevator:v4 | 0 | 0 |
+| Elevator:v4_cal | 0 | 0 |
+| Elevator:v5 | 0 | 0 |
+| Elevator:v5-legacy | 0 | 0 |
+| FlatVectorRef:ref | 0 | 0 |
 | QR | 0 | 3 |
+| QR:A=v4 B=v5 | 0 | 0 |
+| QR:A=v4 B=v5 5fps | 0 | 0 |
+| QR:v4 | 0 | 0 |
+| QR:v4_cal | 0 | 0 |
+| QR:v5 | 0 | 0 |
+| QR:v5-legacy | 0 | 0 |
 | Sky | 0 | 3 |
+| Sky:A=v4 B=v5 | 0 | 0 |
+| Sky:v4 | 0 | 0 |
+| Sky:v5 | 0 | 0 |
+| Sky:v5-legacy | 0 | 0 |
 
 | episode | total machine wall time (s) | total CPU (s) | peak RAM (MB) | cost |
 |---|---|---|---|---|
-| 01-qr-code | 1728.0 | 2935.0 | 4597 | $0 |
-| 02-elevator | 1185.7 | 1939.5 | 4515 | $0 |
-| 03-sky | 1669.4 | 2100.4 | 4893 | $0 |
+| 01-qr-code | 2299.5 | 3877.6 | 4597 | $0 |
+| 02-elevator | 1759.9 | 2753.3 | 4576 | $0 |
+| 03-sky | 2608.9 | 3239.9 | 4893 | $0 |
 | 04-ice-demo | 99.9 | 221.6 | 3332 | $0 |
 | Elevator | 110.4 | 149.4 | 3960 | $0 |
+| Elevator:A=v3 B=v4 | 276.4 | 0.0 | 0 | $0 |
+| Elevator:A=v3 B=v4 (3-flash) | 47.2 | 0.0 | 0 | $0 |
+| Elevator:A=v3 B=v4 (lite sanity) | 21.2 | 0.0 | 0 | $0 |
+| Elevator:A=v4 B=v3 | 50.7 | 0.0 | 0 | $0 |
+| Elevator:A=v4 B=v3 (lite swap) | 19.6 | 0.0 | 0 | $0 |
+| Elevator:A=v4 B=v5 | 23.0 | 0.0 | 0 | $0 |
 | Elevator:baseline_v3 | 63.4 | 0.0 | 0 | $0 |
+| Elevator:v3_cal | 232.2 | 0.0 | 0 | $0 |
+| Elevator:v3_cal2 | 44.3 | 0.0 | 0 | $0 |
+| Elevator:v3_legacy38 | 215.4 | 0.0 | 0 | $0 |
+| Elevator:v4 | 17.8 | 0.0 | 0 | $0 |
+| Elevator:v4_cal | 813.6 | 0.0 | 0 | $0 |
+| Elevator:v5 | 14.3 | 0.0 | 0 | $0 |
+| Elevator:v5-legacy | 12.5 | 0.0 | 0 | $0 |
+| FlatVectorRef:ref | 46.2 | 0.0 | 0 | $0 |
 | QR | 128.2 | 176.7 | 4261 | $0 |
+| QR:A=v4 B=v5 | 19.7 | 0.0 | 0 | $0 |
+| QR:A=v4 B=v5 5fps | 28.7 | 0.0 | 0 | $0 |
+| QR:v4 | 14.8 | 0.0 | 0 | $0 |
+| QR:v4_cal | 88.0 | 0.0 | 0 | $0 |
+| QR:v5 | 13.7 | 0.0 | 0 | $0 |
+| QR:v5-legacy | 12.5 | 0.0 | 0 | $0 |
 | Sky | 142.6 | 199.5 | 4444 | $0 |
+| Sky:A=v4 B=v5 | 22.0 | 0.0 | 0 | $0 |
+| Sky:v4 | 40.5 | 0.0 | 0 | $0 |
+| Sky:v5 | 14.4 | 0.0 | 0 | $0 |
+| Sky:v5-legacy | 24.6 | 0.0 | 0 | $0 |
 | all | 36.3 | 55.9 | 1106 | $0 |
 
 Notes:

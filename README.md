@@ -48,6 +48,15 @@ Format and 48 kHz audio · loudness −14 LUFS / TP ≤ −1 dBTP · SFX 10–16
 
 Every stage records wall time, CPU time, peak RAM, output size and tool cost ($0) into `metrics/runs.jsonl`.
 
+## Round 5 (local, not pushed)
+- **Gates** (`pipeline.config.json`, `scripts/gates.py`): facts → script → style frames → storyboard → QA → critic → final. Each gate is `human|auto|off`; approvals go to `approvals/approvals.jsonl` with `changes: true/false`; `gates.py stats` suggests auto after 5 clean approvals in a row.
+- **Fact ledger** (`episodes/<slug>/facts.json`, `scripts/facts.py`): TTS refuses until every spoken number is backed by a verified fact.
+- **Storyboard** (`scripts/storyboard.py`): stills every 1.5 s before a full render.
+- **New QA gates**: raw font < 30 px, cadence ≤ 4 s, 0.2 s silence before the catchphrase, Shorts safe zones.
+- **Critic**: calibrated rubric plus pairwise `--compare` against the last approved render (the ship test), `--verify`, `--qa-report`. See `skills/critic`.
+- **Motion**: Emil easing tokens and `popScale`, a shotcraft crash-zoom punch, FlatPlanet, static grain, UISFX CC0 cues, Phosphor icons. Licences: `docs/ASSET_LICENSES_R5.csv`.
+- Tests and feasibility notes: `docs/TESTS_R5.md`. Progress and resume notes: `docs/ROUND5_PROGRESS.md`.
+
 ## Quickstart
 
 Requirements: **Node.js** `^20.19 || ^22.13 || >=24`, **Python 3.10+**, **FFmpeg**, **git**. Full setup also needs **cmake** and a C/C++ toolchain (to build whisper.cpp).

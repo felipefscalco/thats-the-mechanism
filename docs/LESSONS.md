@@ -148,6 +148,44 @@ One entry per finding. Newest at the bottom. Format:
 ### L-21 · 2026-11-25 · kit · major
 - Problem: the critic scored v3 Elevator 9.2/10, but the owner disliked v3 (and rejected both v4 style frames); v4 scored 9.3. The scores do not separate a rejected video from an approved one.
 - Root cause: generic rubric with no anchored examples or references; scores asked for before weaknesses; a flash model.
-- Fix: open (round 5: calibrate with anchored rubric, reference channels, weaknesses-before-scores, a pro model).
-- Prevention: a critic is only trusted after it ranks known-rejected below known-approved renders.
-- Status: open
+- Fix (round 5): calibrated prompt (anchored mg-styles scale, Jared Owen/Animagraffs/The Why Side + the 7.6 Flat Vector contact sheet, hard caps, weaknesses before scores, weighted overall capped at weakest+2). Scores dropped from 9.2–9.3 to 5.9–6.5, but the absolute score STILL ranked rejected v3 (6.46) above approved v4 (6.06) on the same model. Pairwise `--compare` ranks them correctly in both orders (3-flash: v4 +1.55/+1.76 and −0.85 swapped; lite: +0.95 / −0.41 swapped). Ship decision = pairwise vs the last approved render.
+- Prevention: a critic is only trusted after it ranks known-rejected below known-approved renders (done for pairwise, failed for absolute).
+- Status: fixed for pairwise; absolute score kept only as a fix-list generator (L-22)
+
+### L-22 · 2026-11-25 · kit · major (critic availability)
+- Problem: gemini-3.1-pro-preview returned 429 on every call (free tier ~0); gemini-3.8-flash 503'd repeatedly, then both 3.8-flash and 3-flash-preview hit `GenerateRequestsPerDayPerProjectPerModel-FreeTier` = 20 requests/day. Round-5 calibration used the whole day's quota before v5 existed, so the v5 verdicts ran on gemini-3.1-flash-lite-preview.
+- Root cause: the free tier is per-model/day; calibration samples (×2) + retries + compares burned it; the error message hid the quota id.
+- Fix: critic.py prints the quotaId and retryDelay; transient retries skip 429s; `VIDEO_FPS` env option; lite validated on the known v3/v4 pair (correct in both orders, weaker margins).
+- Prevention: budget ≤ 12 strong-model calls per round (3 compares + 3 calibrated + 3 verify + 3 spare); never calibrate and review on the same day without a paid key; lite is a fallback, not a judge for subtle diffs (it called QR v4 and v5 "identical" even at 5 fps).
+- Status: open: strong-model v5 pairwise is pending the quota reset (`_scratch/critic_v5_strong.sh`)
+
+### L-23 · 2026-11-25 · kit · minor (critic hallucinated defects)
+- Problem: calibrated critics give loop 5/10 ("ending abrupt") on loops measured at seam PSNR 48 dB, and ask for entry animations on frame 0, which the hook gate requires to be bright and already on screen.
+- Root cause: models sample about 1 fps and do not know the format; the FORMAT CONVENTIONS note is not enough for lite.
+- Fix: `--qa-report` passes measurements; the routing rule ignores critic claims that contradict measurements (skills/critic).
+- Status: mitigated
+
+### L-24 · 2026-11-25 · QA · minor (probe renders current code)
+- Problem: Sky it1 failed contrast at times where the MP4 was fine.
+- Root cause: contrast.py renders a fresh probe from the CURRENT source; I edited Sky.tsx while the batch was still running QA, so the probe and the MP4 differed. Also TagLabel hid its backing in PROBE mode.
+- Fix: TagLabel backing always drawn; never edit remotion/src while a QA batch runs (qa-loop skill).
+- Status: fixed
+
+### L-25 · 2026-11-25 · kit · minor (render cost)
+- Problem: Sky it1 took 280 s to render (r4 124 s).
+- Root cause: animated grain (4 full-frame PNG tiles alternating, +37 % per frame on a 150-frame benchmark) on top of the 3D planet.
+- Fix: static grain tile by default (`{"grain":"anim"}` opt-in), FlatPlanet replaces Ortho3D Planet → Sky 62 s (−50 % vs r4).
+- Status: fixed
+
+### L-26 · 2026-11-25 · all · major (new gates found real defects)
+- Problem: the new r5 gates failed v4-quality code: labels in the Shorts UI zones (ProofCard credit, QR REPAIR/REBUILDABLE, TitleHook fling, Sky 4.4×, Rayleigh formula under a punch), 4.0–4.6 s gaps with no visual state change, Sky ISS photo held 2.2 s, and only ~−37 dB of "silence" before the catchphrase (the riser ran into the card).
+- Root cause: none of these were measured before; camera punches push edge text into the button column.
+- Fix: safe-zone check in contrast.py/qa.py, cadence check (6d), silence-beat check (6e) + bed duck in mix_one.sh + riser at at−47; punches added at the gaps; text moved, made smaller, or punch offset changed; a mid-photo pill.
+- Prevention: when you add a camera punch, re-check edge labels under the zoom: x' = 540 + s·(x−540) + dx must stay ≤ 900.
+- Status: fixed (all 3 v5 PASS)
+
+### L-27 · 2026-11-25 · facts · minor (fact gate false positive)
+- Problem: facts.py blocked Sky on "two places" (a quantity word with no fact).
+- Root cause: the number/quantity scan counts any number word, including rhetorical ones.
+- Fix: mapped to f-0004 (noon vs sunset observers) instead of loosening the scan.
+- Status: fixed. Keep the scan strict; map rhetorical numbers to the fact they describe.
