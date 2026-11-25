@@ -1,0 +1,18 @@
+asset,type,licence,source_checked,checked_at,commercial,credit_required,redistribution_in_repo,decision,notes
+shorts-kit (agentic-video-kit),code/process,MIT,https://github.com (clone 828e120 LICENSE),2026-11-25,yes,keep notice,yes (MIT),ADOPTED (ideas re-implemented),fact ledger schema + pipeline gates + storyboard/stills idea; no code copied verbatim
+mg-styles-15,prompts/rubric,MIT,clone 3164c24 LICENSE,2026-11-25,yes,keep notice,yes (MIT),ADOPTED (rubric + Flat Vector techniques),reference film contact sheet used only as critic anchor (research/r5; not shipped in videos). Flat Vector is folder 01 in the repo
+motion-video-kit,process,MIT,clone e4b1c00 LICENSE,2026-11-25,yes,keep notice,yes,ADOPTED (Gauntlet loop + motion grammar),builder != judge; verify round; ledger
+emilkowalski/skills,rules,MIT,clone 64eb3de LICENSE,2026-11-25,yes,keep notice,yes,ADOPTED (easing tokens + choreography rules),ease-out (0.23 1 0.32 1) / in-out (0.77 0 0.175 1); never scale(0)
+video-shotcraft,recipes,Apache-2.0,clone 1152363 LICENSE,2026-11-25,yes,NOTICE if code copied,yes,ADOPTED (crash-zoom punch + parallax factors + beat-sync tolerance),re-implemented in Shot.tsx; no files copied
+UISFX audio,SFX,CC0-1.0,https://github.com/romainsimon/uisfx/blob/main/LICENSE-AUDIO + uisfx.com,2026-11-25,yes,no,yes,ADOPTED (Mechanical feel; few cues),code is MIT; audio in packages/uisfx/sounds is CC0 (not .generated/)
+Mixkit SFX,SFX,Mixkit Sound Effects Free License,https://mixkit.co/license/modal/sfxFree/,2026-11-25,yes,no,NO (cannot redistribute item on its own),REJECTED for repo,usable inside a rendered video but raw files cannot live in a shared repo; CC0 alternatives cover the need
+Open Peeps,illustration,CC0,https://www.openpeeps.com,2026-11-25,yes,no,yes,NOT USED (style),hand-drawn line style clashes with geometric flat Look A
+3dicons,icons,CC0,https://3dicons.co,2026-11-25,yes,no,yes,NOT USED (style),3D clay renders break the flat look
+unDraw,illustration,unDraw License (custom),https://undraw.co/license,2026-11-25,yes,no,NO packs/redistribution; no AI/ML training,NOT USED,custom licence + generic SaaS style
+ManyPixels,illustration,ManyPixels License (custom),https://www.manypixels.co/gallery/license (text quoted via ASF list + lucky.graphics 2026-11-19),2026-11-25,yes,no,NO (no packs or otherwise),NOT USED,generic SaaS style; repo redistribution unclear
+Open Doodles,illustration,CC0 (site: free for commercial and personal use; no credit),https://www.opendoodles.com,2026-11-25,yes,no,yes,NOT USED (style),sketchy doodle style off-brand
+Flowbite illustrations,illustration,MIT,GitHub API license themesberg/flowbite-illustrations,2026-11-25,yes,keep notice,yes,NOT USED (style),web-UI marketing illustrations
+Phosphor icons,icons,MIT,GitHub API license phosphor-icons/core,2026-11-25,yes,keep notice,yes,ADOPTED (library; fill/duotone set alongside Lucide),assets/library/icons/phosphor + LICENSE
+Texturelabs grain,texture,Texturelabs Terms (custom),https://texturelabs.org/terms/,2026-11-25,yes,no,NO (no sharing/redistribution even free; no AI use),REJECTED asset; technique adopted,generated our own procedural grain (scripts/make_grain.py) instead
+Pocket TTS,tool,see TESTS_R5.md,,2026-11-25,,,,"NOTES ONLY",no voice change this round
+Zonos (ZONOS3-Mini),tool,see TESTS_R5.md,,2026-11-25,,,,"NOTES ONLY",no voice change this round

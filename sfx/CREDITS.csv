@@ -18,3 +18,7 @@ remotion/public/sfx/stamp.wav,sfx/papercut/stamp.wav,"papercut-explainer procedu
 remotion/public/sfx/count.wav,sfx/papercut/count.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
 remotion/public/sfx/pop3.wav,sfx/papercut/pop3.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
 remotion/public/sfx/micro.wav,sfx/papercut/click.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
+remotion/public/sfx/latch.wav,sfx/uisfx/mechanical_lock.ogg,UI SFX (uisfx 0.4.0 npm; mechanical/lock),CC0 1.0,https://github.com/romainsimon/uisfx/blob/main/LICENSE-AUDIO
+remotion/public/sfx/detent.wav,sfx/uisfx/mechanical_snap.ogg,UI SFX (uisfx 0.4.0 npm; mechanical/snap),CC0 1.0,https://github.com/romainsimon/uisfx/blob/main/LICENSE-AUDIO
+remotion/public/sfx/land.wav,sfx/uisfx/cinematic_drop.ogg,UI SFX (uisfx 0.4.0 npm; cinematic/drop),CC0 1.0,https://github.com/romainsimon/uisfx/blob/main/LICENSE-AUDIO
+remotion/public/sfx/step.wav,sfx/uisfx/mechanical_progress-step.ogg,UI SFX (uisfx 0.4.0 npm; mechanical/progress-step),CC0 1.0,https://github.com/romainsimon/uisfx/blob/main/LICENSE-AUDIO
