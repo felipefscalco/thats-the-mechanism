@@ -1,0 +1,78 @@
+# AGENTS.md — That's the Mechanism
+
+This is the **canonical** instruction set for any coding agent or LLM working in this repository (Claude, Gemini, Cursor, Copilot, Codex, or anything else). `CLAUDE.md`, `GEMINI.md`, `.cursor/rules/`, and `.github/copilot-instructions.md` only point here.
+
+Read this file and `docs/STYLE_BRIEF.md` before writing a script or touching Remotion code. Stage-specific procedures live in `skills/<name>/SKILL.md`.
+
+## What this repo is
+
+A local pipeline that turns a fact-checked script into a 35–55 second, 1080×1920 explainer Short with a cloned-or-synthetic voice, word-level captions, original Remotion animation, and licensed SFX. The channel is **That's the Mechanism**: one everyday thing, opened up.
+
+It is **not** a publisher. It does not call the YouTube, Instagram, or TikTok upload APIs.
+
+## Hard rules
+
+1. **Do not publish, schedule, or upload** a video, description, or comment anywhere. Stop at a reviewed MP4 + `metadata.md` entry and wait for a human.
+2. **Human approval at three gates:** the episode angle, the finished script (with sources), and the final video. Do not skip a gate.
+3. **Fact-check every factual claim with at least two independent sources.** Record them in `episodes/<slug>/sources.json`. If a claim cannot be sourced, cut it or flag it — never invent a number.
+4. **On-screen text is ≥ 30 px** on the 1080-wide stage (`<Label>` enforces this). Max two text levels on the stage; captions are a separate track.
+5. **Respect safe zones.** Content lives in y 290–1190. Captions 1222–1440. Chapter deck 1462–1552. Nothing important below y 1560 or in the right-hand platform column (x > 900 and y > 900).
+6. **No cross-fades between sections.** Transitions are world moves: push-through, whip, whipUp, or cut+punch.
+7. **Do not add media you cannot license.** Use the Kenney CC0 packs, the original synth cues, or new assets with a recorded license in `sfx/CREDITS.csv` / `LICENSES.md`. Do not pull random YouTube audio or copyrighted clips.
+8. **Do not commit secrets, tokens, `.env` files, model binaries, or rendered MP4s.** See `.gitignore`.
+9. **Do not treat `IceDemo` as a shippable episode.** It is a template smoke test.
+10. **Prefer editing the brand kit over forking it.** Shared look lives in `remotion/src/brand/`. Episode files only provide the subject and shot list.
+
+## Pipeline stages
+
+| # | Stage | Skill | Command / output |
+|---|---|---|---|
+| 1 | Scaffold | `skills/new-episode` | `scripts/new-episode.sh <slug> <CompId> <pillar> "HOOK" "SOURCE"` |
+| 2 | Script + fact-check | `skills/script-and-factcheck` | `episodes/<slug>/script.txt`, `brief.md`, `sources.json`, `shots.md` |
+| 3 | Voice | `skills/voice` | Kokoro TTS + loudnorm −14 LUFS → `narration.wav` |
+| 4 | Captions | `skills/captions` | whisper.cpp DTW → `captions.json` + `remotion/src/<slug>.captions.json` |
+| 5 | Animate | `skills/animate-remotion` | `remotion/src/episodes/<CompId>.tsx` from `templates/Episode.tsx.tmpl` |
+| 6 | SFX + mix | `skills/sfx-mix` | `scripts/mix_one.sh` + `<Sfx cue>` in the composition |
+| 7 | Render + QA loop | `skills/qa-loop` | `scripts/build-episode.sh` then `scripts/iterate.sh` |
+| 8 | Package metadata | `skills/package-metadata` | Title, description, hashtags, pinned comment, AI-label notes |
+
+`scripts/build-episode.sh <slug> <CompId>` runs stages 3–7 once. After you change animation or shots, `scripts/iterate.sh <N> <CompId>` re-lints, re-renders and re-QAs.
+
+## Setup
+
+```bash
+scripts/setup.sh --fast    # Node deps + Python venv (typecheck only)
+scripts/setup.sh           # also Kokoro models + whisper.cpp + small.en
+(cd remotion && npx tsc --noEmit -p .)
+(cd remotion && npm run lint)
+```
+
+Python must be `.venv-tts/bin/python` for TTS and captions (kokoro-onnx). The shell scripts already use that interpreter.
+
+## Style brief (summary)
+
+Full text: `docs/STYLE_BRIEF.md`. Non-negotiables:
+
+- Editorial engineering-diagram look, not cartoon 3D, not a slideshow.
+- Palette: ink `#0D0E12`, paper `#F3EFE6`, accent amber `#FFB020`, one pillar colour (tech `#4CC9F0`, engineering `#7BD389`, physics `#9B8CFF`, philosophy `#FF7AB6`). Red and green are reserved for fail / success.
+- Type: Space Grotesk (display), Inter (captions), JetBrains Mono (data).
+- Hook: the subject is on screen and moving at **0.3 s**; a visible change by 1.0 s. No title card first.
+- Something happens on the stage at least every **2 s** (lint also requires a beat every ≤ 3 s).
+- Structure: hook → tension → 2–3 mechanism beats → turn → card **"THAT'S THE MECHANISM."** → a 6–10 word callback → exact loop back to frame 0.
+- The spoken script must contain the line `That's the mechanism.`
+- One special moment per episode (a real proof on screen — e.g. a QR that actually scans).
+- Voice at −14 LUFS; SFX 10–16 dB under the voice (never closer than 8 dB); whoosh on every world move; signature sting on the catchphrase.
+
+## Acceptance checklist
+
+An episode is done only when **every automated check in `docs/ACCEPTANCE.md` PASSes** and a visual review of the transition/grid sheets finds no style failure (slideshow, empty half, camera into UI, clipped labels, triple push, late hook, dead air, SFX spam). Automated runner: `scripts/qa.py` → `qa/<Id>/report_it<N>.json`.
+
+Do not call a video “acceptable” from metrics alone. Look at `qa/<Id>/grid_it<N>.png` and `transitions_it<N>.png`.
+
+## Working agreements
+
+- Keep changes reviewable: one episode or one kit fix per change set when you can.
+- After animation edits run `(cd remotion && npx tsc --noEmit -p .)` before rendering.
+- Record timing with `scripts/metrics.py` (the build/iterate scripts already wrap stages).
+- If you add a tool or sound, document the license.
+- Suggested improvements that are **not** in this tree yet (ffmpeg-normalize, a second-model frame reviewer, Lucide icons, Qwen3-TTS / a voice clone) must not be described as if they already ship. Add them in a later change, with licenses checked.

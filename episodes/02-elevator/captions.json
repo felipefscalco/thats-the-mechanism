@@ -1,0 +1,592 @@
+[
+ {
+  "text": "An",
+  "start": 0.24,
+  "end": 0.14
+ },
+ {
+  "text": "elevator",
+  "start": 0.72,
+  "end": 0.73
+ },
+ {
+  "text": "doesn't",
+  "start": 1.02,
+  "end": 1.1
+ },
+ {
+  "text": "lift",
+  "start": 1.3399999999999999,
+  "end": 1.46
+ },
+ {
+  "text": "you.",
+  "start": 1.6600000000000001,
+  "end": 1.74
+ },
+ {
+  "text": "It",
+  "start": 2.1,
+  "end": 2.16
+ },
+ {
+  "text": "almost",
+  "start": 2.38,
+  "end": 2.52
+ },
+ {
+  "text": "balances",
+  "start": 2.94,
+  "end": 3.32
+ },
+ {
+  "text": "you.",
+  "start": 3.36,
+  "end": 3.43
+ },
+ {
+  "text": "On",
+  "start": 3.96,
+  "end": 4.08
+ },
+ {
+  "text": "the",
+  "start": 4.08,
+  "end": 4.32
+ },
+ {
+  "text": "other",
+  "start": 4.32,
+  "end": 4.6
+ },
+ {
+  "text": "side",
+  "start": 4.6,
+  "end": 4.72
+ },
+ {
+  "text": "of",
+  "start": 4.72,
+  "end": 4.86
+ },
+ {
+  "text": "the",
+  "start": 4.86,
+  "end": 5.22
+ },
+ {
+  "text": "cable",
+  "start": 5.24,
+  "end": 5.54
+ },
+ {
+  "text": "hangs",
+  "start": 5.72,
+  "end": 5.74
+ },
+ {
+  "text": "a",
+  "start": 5.96,
+  "end": 5.92
+ },
+ {
+  "text": "counterweight.",
+  "start": 6.24,
+  "end": 6.37
+ },
+ {
+  "text": "It's",
+  "start": 7.22,
+  "end": 7.14
+ },
+ {
+  "text": "built",
+  "start": 7.5,
+  "end": 7.63
+ },
+ {
+  "text": "to",
+  "start": 7.74,
+  "end": 7.79
+ },
+ {
+  "text": "match",
+  "start": 7.9799999999999995,
+  "end": 8.16
+ },
+ {
+  "text": "the",
+  "start": 8.200000000000001,
+  "end": 8.38
+ },
+ {
+  "text": "empty",
+  "start": 8.540000000000001,
+  "end": 8.66
+ },
+ {
+  "text": "car,",
+  "start": 8.96,
+  "end": 8.75
+ },
+ {
+  "text": "plus",
+  "start": 9.520000000000001,
+  "end": 9.45
+ },
+ {
+  "text": "about",
+  "start": 9.88,
+  "end": 9.83
+ },
+ {
+  "text": "40\u201350%",
+  "start": 10.4,
+  "end": 10.44
+ },
+ {
+  "text": "of",
+  "start": 11.56,
+  "end": 11.28
+ },
+ {
+  "text": "the",
+  "start": 11.680000000000001,
+  "end": 11.7
+ },
+ {
+  "text": "rated",
+  "start": 11.96,
+  "end": 12.360000000000001
+ },
+ {
+  "text": "load.",
+  "start": 12.360000000000001,
+  "end": 13.0
+ },
+ {
+  "text": "So",
+  "start": 13.100000000000001,
+  "end": 13.11
+ },
+ {
+  "text": "the",
+  "start": 13.24,
+  "end": 13.27
+ },
+ {
+  "text": "motor",
+  "start": 13.520000000000001,
+  "end": 13.54
+ },
+ {
+  "text": "never",
+  "start": 13.88,
+  "end": 13.81
+ },
+ {
+  "text": "hauls",
+  "start": 14.16,
+  "end": 13.92
+ },
+ {
+  "text": "the",
+  "start": 14.5,
+  "end": 14.23
+ },
+ {
+  "text": "full",
+  "start": 14.74,
+  "end": 14.46
+ },
+ {
+  "text": "weight.",
+  "start": 15.020000000000001,
+  "end": 14.67
+ },
+ {
+  "text": "It",
+  "start": 15.620000000000001,
+  "end": 15.14
+ },
+ {
+  "text": "only",
+  "start": 15.94,
+  "end": 15.42
+ },
+ {
+  "text": "fights",
+  "start": 16.3,
+  "end": 15.84
+ },
+ {
+  "text": "the",
+  "start": 16.54,
+  "end": 16.04
+ },
+ {
+  "text": "difference.",
+  "start": 16.9,
+  "end": 16.36
+ },
+ {
+  "text": "When",
+  "start": 17.64,
+  "end": 17.31
+ },
+ {
+  "text": "the",
+  "start": 17.8,
+  "end": 17.54
+ },
+ {
+  "text": "car",
+  "start": 18.04,
+  "end": 17.77
+ },
+ {
+  "text": "is",
+  "start": 18.22,
+  "end": 17.92
+ },
+ {
+  "text": "full,",
+  "start": 18.56,
+  "end": 18.23
+ },
+ {
+  "text": "the",
+  "start": 18.86,
+  "end": 18.61
+ },
+ {
+  "text": "motor",
+  "start": 19.099999999999998,
+  "end": 18.75
+ },
+ {
+  "text": "helps",
+  "start": 19.38,
+  "end": 19.39
+ },
+ {
+  "text": "it",
+  "start": 19.54,
+  "end": 19.52
+ },
+ {
+  "text": "up.",
+  "start": 19.759999999999998,
+  "end": 19.69
+ },
+ {
+  "text": "When",
+  "start": 20.34,
+  "end": 20.32
+ },
+ {
+  "text": "the",
+  "start": 20.48,
+  "end": 20.56
+ },
+ {
+  "text": "car",
+  "start": 20.8,
+  "end": 20.8
+ },
+ {
+  "text": "is",
+  "start": 21.04,
+  "end": 20.96
+ },
+ {
+  "text": "nearly",
+  "start": 21.34,
+  "end": 21.4
+ },
+ {
+  "text": "empty,",
+  "start": 21.86,
+  "end": 21.67
+ },
+ {
+  "text": "the",
+  "start": 22.279999999999998,
+  "end": 22.18
+ },
+ {
+  "text": "counterweight",
+  "start": 22.619999999999997,
+  "end": 22.52
+ },
+ {
+  "text": "is",
+  "start": 23.08,
+  "end": 23.1
+ },
+ {
+  "text": "the",
+  "start": 23.259999999999998,
+  "end": 23.28
+ },
+ {
+  "text": "heavier",
+  "start": 23.54,
+  "end": 23.43
+ },
+ {
+  "text": "side,",
+  "start": 24.0,
+  "end": 24.0
+ },
+ {
+  "text": "and",
+  "start": 24.419999999999998,
+  "end": 24.24
+ },
+ {
+  "text": "the",
+  "start": 24.54,
+  "end": 24.48
+ },
+ {
+  "text": "motor",
+  "start": 24.8,
+  "end": 24.87
+ },
+ {
+  "text": "holds",
+  "start": 25.14,
+  "end": 25.24
+ },
+ {
+  "text": "it",
+  "start": 25.32,
+  "end": 25.4
+ },
+ {
+  "text": "back.",
+  "start": 25.599999999999998,
+  "end": 25.66
+ },
+ {
+  "text": "Here's",
+  "start": 26.32,
+  "end": 26.32
+ },
+ {
+  "text": "the",
+  "start": 26.56,
+  "end": 26.71
+ },
+ {
+  "text": "strange",
+  "start": 26.939999999999998,
+  "end": 27.24
+ },
+ {
+  "text": "part.",
+  "start": 27.459999999999997,
+  "end": 27.55
+ },
+ {
+  "text": "Release",
+  "start": 28.16,
+  "end": 28.36
+ },
+ {
+  "text": "the",
+  "start": 28.36,
+  "end": 28.52
+ },
+ {
+  "text": "brake",
+  "start": 28.58,
+  "end": 28.779999999999998
+ },
+ {
+  "text": "on",
+  "start": 28.779999999999998,
+  "end": 28.919999999999998
+ },
+ {
+  "text": "an",
+  "start": 28.919999999999998,
+  "end": 29.24
+ },
+ {
+  "text": "empty",
+  "start": 29.24,
+  "end": 29.43
+ },
+ {
+  "text": "car,",
+  "start": 29.619999999999997,
+  "end": 29.82
+ },
+ {
+  "text": "and",
+  "start": 29.82,
+  "end": 29.939999999999998
+ },
+ {
+  "text": "it",
+  "start": 29.939999999999998,
+  "end": 30.08
+ },
+ {
+  "text": "wouldn't",
+  "start": 30.08,
+  "end": 30.54
+ },
+ {
+  "text": "fall.",
+  "start": 30.56,
+  "end": 30.83
+ },
+ {
+  "text": "It",
+  "start": 31.099999999999998,
+  "end": 31.14
+ },
+ {
+  "text": "would",
+  "start": 31.22,
+  "end": 31.49
+ },
+ {
+  "text": "rise.",
+  "start": 31.64,
+  "end": 31.77
+ },
+ {
+  "text": "That's",
+  "start": 32.46,
+  "end": 32.25
+ },
+ {
+  "text": "why",
+  "start": 32.760000000000005,
+  "end": 32.56
+ },
+ {
+  "text": "a",
+  "start": 32.96,
+  "end": 32.61
+ },
+ {
+  "text": "modest",
+  "start": 33.300000000000004,
+  "end": 32.97
+ },
+ {
+  "text": "motor",
+  "start": 33.68,
+  "end": 33.3
+ },
+ {
+  "text": "can",
+  "start": 33.940000000000005,
+  "end": 33.46
+ },
+ {
+  "text": "move",
+  "start": 34.120000000000005,
+  "end": 33.73
+ },
+ {
+  "text": "a",
+  "start": 34.28,
+  "end": 33.75
+ },
+ {
+  "text": "full",
+  "start": 34.52,
+  "end": 34.06
+ },
+ {
+  "text": "office",
+  "start": 34.88,
+  "end": 34.44
+ },
+ {
+  "text": "of",
+  "start": 35.06,
+  "end": 34.52
+ },
+ {
+  "text": "people,",
+  "start": 35.46,
+  "end": 35.0
+ },
+ {
+  "text": "all",
+  "start": 36.0,
+  "end": 35.36
+ },
+ {
+  "text": "day",
+  "start": 36.24,
+  "end": 35.92
+ },
+ {
+  "text": "long.",
+  "start": 36.660000000000004,
+  "end": 36.53
+ },
+ {
+  "text": "That's",
+  "start": 37.24,
+  "end": 37.19
+ },
+ {
+  "text": "the",
+  "start": 37.46,
+  "end": 37.35
+ },
+ {
+  "text": "mechanism.",
+  "start": 37.900000000000006,
+  "end": 37.84
+ },
+ {
+  "text": "An",
+  "start": 38.56,
+  "end": 38.18
+ },
+ {
+  "text": "elevator",
+  "start": 38.980000000000004,
+  "end": 38.66
+ },
+ {
+  "text": "is",
+  "start": 39.300000000000004,
+  "end": 39.1
+ },
+ {
+  "text": "a",
+  "start": 39.5,
+  "end": 39.19
+ },
+ {
+  "text": "scale,",
+  "start": 39.82,
+  "end": 39.52
+ },
+ {
+  "text": "not",
+  "start": 40.06,
+  "end": 40.11
+ },
+ {
+  "text": "a",
+  "start": 40.24,
+  "end": 40.2
+ },
+ {
+  "text": "crane.",
+  "start": 40.52,
+  "end": 40.92
+ }
+]

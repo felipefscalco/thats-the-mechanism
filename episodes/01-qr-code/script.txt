@@ -1,0 +1,11 @@
+A logo should break this QR code. Your camera reads it anyway.
+
+When the code is generated, your link is cut into bytes, and the encoder adds extra bytes calculated from the data itself. That's Reed-Solomon error correction, the same math that kept scratched CDs playing.
+
+Those extra bytes are a recipe for rebuilding whatever goes missing. At the highest level, H, a scanner can restore about thirty percent of the code's bytes.
+
+So a logo in the middle is just damage the code was built to survive. In real tests, about fifteen percent of the area is safe. Glare and scratches spend the same budget.
+
+But cover one of the three big corner squares, and it's over. Those aren't data. They're how your camera finds the code.
+
+That's the mechanism. A QR code carries its own spare parts.

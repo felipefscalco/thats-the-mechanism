@@ -1,0 +1,10 @@
+---
+description: That's the Mechanism pipeline — follow AGENTS.md
+alwaysApply: true
+---
+
+Follow **AGENTS.md** at the repository root. It is the canonical instruction set for this project (pipeline stages, hard rules, style brief, acceptance checklist, commands).
+
+Stage procedures: `skills/<name>/SKILL.md`. Style: `docs/STYLE_BRIEF.md`. Checklist: `docs/ACCEPTANCE.md`.
+
+Hard rules: do not publish or upload; fact-check every claim with 2+ sources; on-screen text ≥ 30 px; respect safe zones; no cross-fades; do not commit secrets, models, or MP4s; IceDemo is not shippable.

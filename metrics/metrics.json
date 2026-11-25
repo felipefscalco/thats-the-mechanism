@@ -1,0 +1,218 @@
+{
+  "generated": "2026-11-25T14:31:45-03:00",
+  "cost_usd_total": 0.0,
+  "llm_tokens": "not available to the pipeline (authoring bot's token usage is not exposed)",
+  "episodes": {
+    "01-qr-code": {
+      "stages": {
+        "qa": {
+          "runs": 7,
+          "wall_s_total": 342.43,
+          "wall_s_last": 48.6,
+          "cpu_s_total": 448.46,
+          "peak_rss_mb": 2912,
+          "out_mb_last": null
+        },
+        "render": {
+          "runs": 6,
+          "wall_s_total": 205.95,
+          "wall_s_last": 34.89,
+          "cpu_s_total": 455.92,
+          "peak_rss_mb": 3606,
+          "out_mb_last": 12.73
+        },
+        "captions": {
+          "runs": 1,
+          "wall_s_total": 7.32,
+          "wall_s_last": 7.32,
+          "cpu_s_total": 35.55,
+          "peak_rss_mb": 935,
+          "out_mb_last": 0.01
+        },
+        "mix": {
+          "runs": 1,
+          "wall_s_total": 1.26,
+          "wall_s_last": 1.26,
+          "cpu_s_total": 1.45,
+          "peak_rss_mb": 54,
+          "out_mb_last": 9.48
+        },
+        "tts": {
+          "runs": 1,
+          "wall_s_total": 7.88,
+          "wall_s_last": 7.88,
+          "cpu_s_total": 51.14,
+          "peak_rss_mb": 783,
+          "out_mb_last": 2.37
+        }
+      },
+      "qa_iterations": 7,
+      "render_iterations": 7,
+      "cost_usd": 0.0,
+      "notes": {
+        "script": "authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available",
+        "render_it1": "iteration-1 renders ran before instrumentation (~1 min each, from file mtimes)",
+        "tts": "re-timed into /tmp (output bit-identical to the round-1 narration, so the episode files were not replaced)"
+      }
+    },
+    "02-elevator": {
+      "stages": {
+        "qa": {
+          "runs": 5,
+          "wall_s_total": 196.17,
+          "wall_s_last": 38.58,
+          "cpu_s_total": 298.17,
+          "peak_rss_mb": 2532,
+          "out_mb_last": null
+        },
+        "render": {
+          "runs": 4,
+          "wall_s_total": 105.23,
+          "wall_s_last": 26.2,
+          "cpu_s_total": 224.56,
+          "peak_rss_mb": 3674,
+          "out_mb_last": 7.83
+        },
+        "captions": {
+          "runs": 1,
+          "wall_s_total": 6.57,
+          "wall_s_last": 6.57,
+          "cpu_s_total": 34.11,
+          "peak_rss_mb": 951,
+          "out_mb_last": 0.01
+        },
+        "mix": {
+          "runs": 1,
+          "wall_s_total": 1.26,
+          "wall_s_last": 1.26,
+          "cpu_s_total": 1.23,
+          "peak_rss_mb": 54,
+          "out_mb_last": 7.59
+        },
+        "tts": {
+          "runs": 1,
+          "wall_s_total": 7.1,
+          "wall_s_last": 7.1,
+          "cpu_s_total": 44.2,
+          "peak_rss_mb": 702,
+          "out_mb_last": 1.9
+        }
+      },
+      "qa_iterations": 5,
+      "render_iterations": 5,
+      "cost_usd": 0.0,
+      "notes": {
+        "script": "authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available",
+        "render_it1": "iteration-1 renders ran before instrumentation (~1 min each, from file mtimes)",
+        "tts": "re-timed into /tmp (output bit-identical to the round-1 narration, so the episode files were not replaced)"
+      }
+    },
+    "03-sky": {
+      "stages": {
+        "qa": {
+          "runs": 5,
+          "wall_s_total": 197.25,
+          "wall_s_last": 39.07,
+          "cpu_s_total": 292.24,
+          "peak_rss_mb": 2605,
+          "out_mb_last": null
+        },
+        "render": {
+          "runs": 4,
+          "wall_s_total": 114.04,
+          "wall_s_last": 27.45,
+          "cpu_s_total": 257.37,
+          "peak_rss_mb": 3750,
+          "out_mb_last": 9.47
+        },
+        "captions": {
+          "runs": 1,
+          "wall_s_total": 6.31,
+          "wall_s_last": 6.31,
+          "cpu_s_total": 32.86,
+          "peak_rss_mb": 945,
+          "out_mb_last": 0.01
+        },
+        "mix": {
+          "runs": 1,
+          "wall_s_total": 1.26,
+          "wall_s_last": 1.26,
+          "cpu_s_total": 1.36,
+          "peak_rss_mb": 54,
+          "out_mb_last": 8.11
+        },
+        "tts": {
+          "runs": 1,
+          "wall_s_total": 7.37,
+          "wall_s_last": 7.37,
+          "cpu_s_total": 46.7,
+          "peak_rss_mb": 791,
+          "out_mb_last": 2.03
+        }
+      },
+      "qa_iterations": 5,
+      "render_iterations": 5,
+      "cost_usd": 0.0,
+      "notes": {
+        "script": "authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available",
+        "render_it1": "iteration-1 renders ran before instrumentation (~1 min each, from file mtimes)",
+        "tts": "re-timed into /tmp (output bit-identical to the round-1 narration, so the episode files were not replaced)"
+      }
+    },
+    "04-ice-demo": {
+      "stages": {
+        "tts": {
+          "runs": 1,
+          "wall_s_total": 4.83,
+          "wall_s_last": 4.83,
+          "cpu_s_total": 29.81,
+          "peak_rss_mb": 670,
+          "out_mb_last": 1.38
+        },
+        "loudnorm": {
+          "runs": 1,
+          "wall_s_total": 0.76,
+          "wall_s_last": 0.76,
+          "cpu_s_total": 0.56,
+          "peak_rss_mb": 79,
+          "out_mb_last": 2.75
+        },
+        "captions": {
+          "runs": 1,
+          "wall_s_total": 6.07,
+          "wall_s_last": 6.07,
+          "cpu_s_total": 30.25,
+          "peak_rss_mb": 912,
+          "out_mb_last": 0.0
+        },
+        "mix": {
+          "runs": 1,
+          "wall_s_total": 1.01,
+          "wall_s_last": 1.01,
+          "cpu_s_total": 1.0,
+          "peak_rss_mb": 54,
+          "out_mb_last": 5.5
+        },
+        "render": {
+          "runs": 2,
+          "wall_s_total": 39.39,
+          "wall_s_last": 18.28,
+          "cpu_s_total": 95.8,
+          "peak_rss_mb": 3332,
+          "out_mb_last": 7.31
+        },
+        "qa": {
+          "runs": 2,
+          "wall_s_total": 47.8,
+          "wall_s_last": 23.12,
+          "cpu_s_total": 64.17,
+          "peak_rss_mb": 2134,
+          "out_mb_last": null
+        }
+      },
+      "qa_iterations": 2,
+      "render_iterations": 2,
+      "cost_usd": 0.0
+    }
+  }
+}

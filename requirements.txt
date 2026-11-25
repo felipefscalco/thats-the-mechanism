@@ -1,0 +1,6 @@
+# Python deps for TTS, SFX prep, lint, QA, and metrics.
+# Install into .venv-tts:  python3 -m venv .venv-tts && .venv-tts/bin/pip install -r requirements.txt
+kokoro-onnx>=0.4.0
+soundfile>=0.12
+numpy>=1.26
+scipy>=1.11

@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.venv-tts/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.Python
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets/
+
+# Downloaded models and built trees (scripts/setup.sh)
+models/*
+!models/README.md
+tools/whisper.cpp/
+
+# Generated media (rebuild with the pipeline)
+renders/*
+!renders/.gitkeep
+frames/
+stills/
+episodes/**/*.wav
+remotion/public/*.wav
+!remotion/public/sfx/
+!remotion/public/sfx/**
+qa/**/*.wav
+qa/**/*.png
+qa/**/*.log
+remotion/out/
+remotion/dist/
+
+# Logs and caches
+*.log
+.cache/
+.npm/
+.turbo/
+coverage/

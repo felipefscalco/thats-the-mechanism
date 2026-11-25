@@ -1,0 +1,16 @@
+{
+  "topic": "Why a QR code still works with a logo on top",
+  "claims": [
+    {"claim": "QR codes use Reed-Solomon error correction; level H restores roughly 30% of codewords (L 7%, M 15%, Q 25%, H 30%).",
+     "sources": ["https://www.blissqr.com/posts/qr-code-error-correction/ (citing DENSO WAVE's L/M/Q/H restoration rates)", "https://mostlyqr.com/blog/qr-code-logo-size", "https://www.qrcode.com/en/about/error_correction.html (DENSO WAVE, inventor)"], "confidence": "high"},
+    {"claim": "30% is a share of codewords, not of visible area; measured safe centred logo at level H is ~15-17% of the area.",
+     "sources": ["https://mostlyqr.com/blog/qr-code-logo-size (17% centred patch decoded, 15% recommended)", "https://qrdx.dev/blog/qr-code-scan-study (H: 15.5% of area read in 80%+ of captures)", "https://useqr.app/docs/spec/how-logos-work-without-breaking-a-code (~20% safe after real-world margin)"], "confidence": "high"},
+    {"claim": "Glare, dirt, scratches consume the same correction budget.",
+     "sources": ["https://useqr.app/docs/spec/how-logos-work-without-breaking-a-code", "https://www.blissqr.com/posts/qr-code-error-correction/"], "confidence": "high"},
+    {"claim": "Finder patterns are not covered by error correction; covering one breaks detection.",
+     "sources": ["https://mostlyqr.com/blog/qr-code-logo-size (top-left finder patch fails at 1% at level H)", "https://useqr.app/docs/spec/how-logos-work-without-breaking-a-code"], "confidence": "high"},
+    {"claim": "Reed-Solomon codes (1960) also protect audio CDs (CIRC).",
+     "sources": ["https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction", "https://en.wikipedia.org/wiki/Cross-interleaved_Reed%E2%80%93Solomon_coding"], "confidence": "high"}
+  ],
+  "verification_extra": "The QR drawn in the video is a real level-H code for https://youtube.com/@thatsthemechanism generated with node-qrcode (MIT)."
+}

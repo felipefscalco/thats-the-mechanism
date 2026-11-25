@@ -1,0 +1,12 @@
+{
+  "topic": "An elevator almost balances you",
+  "claims": [
+    {"claim": "A traction elevator counterweight = empty car weight + 40-50% of the rated load (the 'overbalance').",
+     "sources": ["https://www.tkelevator.com/us-en/tools/classroom-on-demand/counterweights.html (TK Elevator)", "https://elevatorworld.com/article/deadweight-dead-wrong/ (Elevator World: 40-42.5% traditionally, 45-50% on newer PM gearless)", "https://hsmuniversity.org/us/course/elv-230-traction-elevators-machines-and-ropes/lesson-4-counterweight-balance-and-compensation"], "confidence": "high"},
+    {"claim": "The machine only lifts/holds the unbalance (difference); full car = car side heavier, empty car = counterweight side heavier.",
+     "sources": ["https://hsmuniversity.org/us/course/elv-230-traction-elevators-machines-and-ropes/lesson-4-counterweight-balance-and-compensation", "https://hsmuniversity.org/us/course/elv-120-hoistway-construction-and-rail-installation/lesson-9-counterweight-frame-and-fillers-first-look-at-the-car-sling"], "confidence": "high"},
+    {"claim": "With an empty car, a released brake would let the car rise and the counterweight fall.",
+     "sources": ["https://hsmuniversity.org/us/course/elv-110-the-elevator-industry-and-safety/lesson-3-how-an-elevator-works", "https://hsmuniversity.org/us/course/elv-230-traction-elevators-machines-and-ropes/lesson-4-counterweight-balance-and-compensation (empty car: counterweight side heavier by kQ)"], "confidence": "high"}
+  ],
+  "note": "Bars in the video use the HSM worked example (car 3,300 lb, rated 3,500 lb, 45% overbalance, CW 4,875 lb). Applies to traction elevators, not hydraulic ones."
+}

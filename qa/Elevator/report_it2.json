@@ -1,0 +1,105 @@
+{
+  "probe": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30.0,
+    "vcodec": "h264",
+    "acodec": "aac",
+    "sr": "48000",
+    "dur": 41.47,
+    "mb": 7.3
+  },
+  "loudness": {
+    "I": -15.0,
+    "TP": -1.7,
+    "LRA": 2.0
+  },
+  "sfx": {
+    "voice_rms_db": -18.4,
+    "events": 23,
+    "gap_db_median": 14.8,
+    "gap_db_min": 9.1,
+    "gap_db_max": 26.1,
+    "sfx_per_s": 0.55
+  },
+  "motion": {
+    "longest_hold_s": 5.57,
+    "hold_starts_s": 7.33,
+    "mean_diff": 4.23
+  },
+  "hook": {
+    "bright_frac_at_0_3s": 0.035,
+    "change_0_to_1s": 5.83
+  },
+  "loop": {
+    "seam_diff": 0.45,
+    "median_step": 0.36,
+    "p95_step": 4.68,
+    "psnr_last_vs_first": 33.6
+  },
+  "checks": [
+    {
+      "check": "format 1080x1920@30 h264+aac, 35-55 s",
+      "ok": true,
+      "detail": {
+        "w": 1080,
+        "h": 1920,
+        "fps": 30.0,
+        "vcodec": "h264",
+        "acodec": "aac",
+        "sr": "48000",
+        "dur": 41.47,
+        "mb": 7.3
+      }
+    },
+    {
+      "check": "loudness -15.5..-13 LUFS, true peak <= -1 dBTP",
+      "ok": true,
+      "detail": {
+        "I": -15.0,
+        "TP": -1.7,
+        "LRA": 2.0
+      }
+    },
+    {
+      "check": "SFX median 10-16 dB under voice, none louder than voice-8 dB",
+      "ok": true,
+      "detail": {
+        "voice_rms_db": -18.4,
+        "events": 23,
+        "gap_db_median": 14.8,
+        "gap_db_min": 9.1,
+        "gap_db_max": 26.1,
+        "sfx_per_s": 0.55
+      }
+    },
+    {
+      "check": "motion: no stage hold > 2.0 s",
+      "ok": false,
+      "detail": {
+        "longest_hold_s": 5.57,
+        "hold_starts_s": 7.33,
+        "mean_diff": 4.23
+      }
+    },
+    {
+      "check": "hook: subject on screen at 0.3 s and visible change by 1 s",
+      "ok": true,
+      "detail": {
+        "bright_frac_at_0_3s": 0.035,
+        "change_0_to_1s": 5.83
+      }
+    },
+    {
+      "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+      "ok": true,
+      "detail": {
+        "seam_diff": 0.45,
+        "median_step": 0.36,
+        "p95_step": 4.68,
+        "psnr_last_vs_first": 33.6
+      }
+    }
+  ],
+  "iteration": 2
+}
