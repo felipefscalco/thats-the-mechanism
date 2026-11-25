@@ -1,9 +1,9 @@
-#!/workspace/thats-the-mechanism/.venv-tts/bin/python
+#!/usr/bin/env python3
 """Automated acceptance QA for one rendered episode (see docs/ACCEPTANCE.md).
 Usage: scripts/qa.py <CompositionId> <slug> <iteration> [--no-stems]
 Writes qa/<Id>/report_it<N>.json, transitions_it<N>.png (dense frames around every shot boundary + the loop seam),
 grid_it<N>.png (one frame per 1.5 s). Prints PASS/FAIL per automated check; visual checks are listed for the reviewer."""
-import json, re, subprocess, sys
+import json, os, re, subprocess, sys
 from pathlib import Path
 import numpy as np
 import soundfile as sf
@@ -12,8 +12,11 @@ from shotlib import ROOT, words, phrase_time, shots
 
 ID, SLUG, IT = sys.argv[1], sys.argv[2], int(sys.argv[3])
 STEMS = "--no-stems" not in sys.argv
-MP4 = ROOT / "renders" / f"{ID}_v2.mp4"
-OUT = ROOT / "qa" / ID; OUT.mkdir(parents=True, exist_ok=True)
+SUF = os.environ.get("SUF", "v2")
+MP4 = ROOT / "renders" / f"{ID}_{SUF}.mp4"
+# QA_DIR overrides the folder under qa/<Id>/ (e.g. QA_DIR=v4/baseline_v3 to re-check an old render with new checks without touching its QA)
+OUT = ROOT / "qa" / ID / os.environ.get("QA_DIR", "" if SUF == "v2" else SUF); OUT.mkdir(parents=True, exist_ok=True)
+LOOP_FRAMES, T_FRAMES = 14, 10  # keep in sync with brand/EpisodeShell.tsx and brand/Shot.tsx
 sh = lambda c: subprocess.run(c, shell=True, capture_output=True, text=True)
 res, checks = {}, []
 def check(name, ok, detail): checks.append(dict(check=name, ok=bool(ok), detail=detail))
@@ -23,7 +26,7 @@ pr = json.loads(sh(f"ffprobe -v error -show_streams -show_format -of json {MP4}"
 v = next(s for s in pr["streams"] if s["codec_type"] == "video"); a = next(s for s in pr["streams"] if s["codec_type"] == "audio")
 dur = float(pr["format"]["duration"]); fps = eval(v["r_frame_rate"])
 res["probe"] = dict(w=v["width"], h=v["height"], fps=fps, vcodec=v["codec_name"], acodec=a["codec_name"], sr=a["sample_rate"], dur=round(dur, 2), mb=round(int(pr["format"]["size"]) / 2**20, 2))
-check("format 1080x1920@30 h264+aac, 35-55 s", v["width"] == 1080 and v["height"] == 1920 and abs(fps - 30) < 0.01 and a["codec_name"] == "aac" and 35 <= dur <= 55, res["probe"])
+check("format 1080x1920@30 h264+aac 48 kHz, 35-55 s", v["width"] == 1080 and v["height"] == 1920 and abs(fps - 30) < 0.01 and a["codec_name"] == "aac" and a["sample_rate"] == "48000" and 35 <= dur <= 55, res["probe"])
 
 # 2. loudness
 e = sh(f"ffmpeg -nostats -i {MP4} -af ebur128=peak=true -f null - 2>&1").stdout
@@ -46,6 +49,16 @@ if STEMS:
     gaps = np.array([voice_lvl - sx[i] for i in peaks])
     res["sfx"] = dict(voice_rms_db=round(voice_lvl, 1), events=len(peaks), gap_db_median=round(float(np.median(gaps)), 1), gap_db_min=round(float(gaps.min()), 1),
                       gap_db_max=round(float(gaps.max()), 1), sfx_per_s=round(len(peaks) / dur, 2))
+    # onset density: 50 ms windows, rise > 6 dB over the previous 150 ms floor, above -55 dBFS, >= 80 ms apart
+    x, sr = sf.read(OUT / "stem_sfx.wav"); x = x.mean(1) if x.ndim > 1 else x
+    w5 = int(0.05 * sr); e5 = np.array([20 * np.log10(np.sqrt(np.mean(x[i:i + w5] ** 2)) + 1e-9) for i in range(0, len(x) - w5, w5)])
+    ons, last = [], -99
+    for i in range(3, len(e5)):
+        if e5[i] > -55 and e5[i] - e5[i - 3:i].min() > 6 and e5[i] >= e5[i - 1] and (i - last) * 0.05 >= 0.08:
+            ons.append(i); last = i
+    res["sfx"]["onsets"] = len(ons); res["sfx"]["onsets_per_s"] = round(len(ons) / dur, 2)
+    # round 4: the target band is now the gate (L-6/L-13: 1.77/s on QR read as clutter)
+    check("SFX onset density 1.2-1.5 /s", 1.2 <= len(ons) / dur <= 1.5, dict(onsets_per_s=res["sfx"]["onsets_per_s"], onsets=len(ons)))
     check("SFX median 10-16 dB under voice, none louder than voice-8 dB", 10 <= np.median(gaps) <= 16 and gaps.min() >= 8, res["sfx"])
 
 # 4. motion on the stage ROI (y 290..1190)
@@ -61,11 +74,27 @@ for i, s in enumerate(still):
 res["motion"] = dict(longest_hold_s=round(longest / fps, 2), hold_starts_s=round(at_ / fps, 2), mean_diff=round(float(d.mean()), 2))
 check("motion: no stage hold > 2.0 s", longest / fps <= 2.0, res["motion"])
 
+# 4b. end card hold (round 4, from L-9): (a) the "THAT'S THE MECHANISM." card is up long enough to read,
+#     (b) the payoff state is complete and settled >= 1.5 s before the loop whip starts.
+ws_all = words(SLUG)
+card_at = phrase_time(ws_all, "That's the mechanism")
+k_mech = next(i for i, w in enumerate(ws_all) if w["start"] >= card_at and "mechanism" in w["text"].lower())
+card_until = ws_all[k_mech + 1]["start"] if k_mech + 1 < len(ws_all) else dur
+whip = len(fr) - LOOP_FRAMES - T_FRAMES  # first frame of the loop whip (LoopBack starts at loopFrom - T_FRAMES)
+ref = fr[whip - 1]; k = whip - 1
+while k > 0 and np.abs(fr[k] - ref).mean() < 6.0: k -= 1
+settled = (whip - 1 - k) / fps
+res["end_card"] = dict(card_s=round(card_until - card_at, 2), payoff_settled_s=round(settled, 2), payoff_settled_from_s=round((k + 1) / fps, 2), whip_at_s=round(whip / fps, 2))
+check("end card: catchphrase card >= 1.0 s and payoff settled >= 1.5 s before loop", card_until - card_at >= 1.0 and settled >= 1.5, res["end_card"])
+
 # 5. hook visual in the first second (subject already drawn at 0.3 s and stage changes before 1 s)
 f9 = fr[9]; bright = float((f9 > 90).mean())
 moved = float(np.abs(fr[29] - fr[0]).mean())
 res["hook"] = dict(bright_frac_at_0_3s=round(bright, 3), change_0_to_1s=round(moved, 2))
 check("hook: subject on screen at 0.3 s and visible change by 1 s", bright > 0.02 and moved > 1.0, res["hook"])
+# round 4 (L-14): frame 0 must read as a bright, finished picture (the thumbnail/first impression); v3 Elevator was 0.04
+b0 = float((fr[0] > 90).mean()); res["hook"]["bright_frac_at_0s"] = round(b0, 3)
+check("hook: frame 0 bright (>= 12% of stage pixels > 90/255) and at 0.3 s", b0 >= 0.12 and bright >= 0.12, dict(bright_frac_at_0s=round(b0, 3), bright_frac_at_0_3s=round(bright, 3)))
 
 # 6. exact loop: seam jump (last -> first) vs normal frame-to-frame motion, full frame
 full = subprocess.run(f"ffmpeg -v error -i {MP4} -vf scale=270:480,format=gray -f rawvideo -", shell=True, capture_output=True).stdout
@@ -74,6 +103,22 @@ cons = np.abs(np.diff(ff, axis=0)).mean(axis=(1, 2)); seam = float(np.abs(ff[-1]
 mse = float(((ff[-1] - ff[0]) ** 2).mean()); psnr = 99.0 if mse == 0 else 10 * np.log10(255 ** 2 / mse)
 res["loop"] = dict(seam_diff=round(seam, 2), median_step=round(float(np.median(cons)), 2), p95_step=round(float(np.percentile(cons, 95)), 2), psnr_last_vs_first=round(psnr, 1))
 check("loop: seam jump <= p95 frame step (and PSNR >= 25 dB)", seam <= np.percentile(cons, 95) and psnr >= 25, res["loop"])
+
+# 6b. label contrast, WCAG >= 4.5:1 on real pixels (round 4, from L-8/L-13; scripts/contrast.py)
+if "--no-contrast" not in sys.argv:
+    cr = subprocess.run([sys.executable, str(ROOT / "scripts" / "contrast.py"), ID, str(MP4), str(OUT)], capture_output=True, text=True)
+    try:
+        c = json.loads((OUT / "contrast.json").read_text()); res["contrast"] = c
+        check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", c["ok"], dict(min=c["min_ratio"], p10=c["p10_ratio"], failures=[(f["t_start_s"], f["worst_ratio"]) for f in c["held_failures"]]))
+    except Exception as e:
+        check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", False, dict(error=str(e), stderr=cr.stderr[-400:]))
+
+# 6c. label minimum readable font size (routed from critic repeated finding across all episodes)
+ep_tsx = ROOT / "remotion" / "src" / "episodes" / f"{ID}.tsx"
+if ep_tsx.exists():
+    small_labels = [int(m) for m in re.findall(r"<Label[^>]*\bsize=\{(\d+)\}", ep_tsx.read_text()) if int(m) < 30]
+    res["label_sizes"] = dict(min_allowed=30, small_labels=small_labels)
+    check("labels: minimum font size >= 30 px on all <Label> elements", len(small_labels) == 0, res["label_sizes"])
 
 # 7. visual review sheets
 def sheets():
@@ -84,8 +129,11 @@ def sheets():
         if k == len(bounds) - 1: ts = [dur - 0.5, dur - 0.4, dur - 0.3, dur - 0.2, dur - 0.1, dur - 0.04, 0.0, 0.1]  # loop seam -> frame 0
         files = []
         for j, tt in enumerate(ts):
-            p = OUT / f"_t{k}_{j}.png"; seek = f"-sseof -0.07" if tt > dur - 0.1 else f"-ss {tt:.3f}"
-            sh(f"ffmpeg -v error -y {seek} -i {MP4} -frames:v 1 -update 1 -vf scale=270:-1 {p}"); files.append(p)
+            p = OUT / f"_t{k}_{j}.png"; seek = f"-sseof -{max(0.05, dur - tt + 0.04):.2f}" if tt >= dur - 0.18 else f"-ss {tt:.3f}"
+            sh(f"ffmpeg -v error -y {seek} -i {MP4} -frames:v 1 -update 1 -vf scale=270:-1 {p}")
+            if not p.exists():
+                sh(f"ffmpeg -v error -y -sseof -0.15 -i {MP4} -frames:v 1 -update 1 -vf scale=270:-1 {p}")
+            files.append(p)
         r = OUT / f"_row{k}.png"; sh("ffmpeg -v error -y " + " ".join(f"-i {p}" for p in files) + f" -filter_complex hstack=inputs={len(files)} {r}"); rows.append(r)
     sh("ffmpeg -v error -y " + " ".join(f"-i {r}" for r in rows) + f" -filter_complex vstack=inputs={len(rows)} {OUT}/transitions_it{IT}.png")
     sh(f"ffmpeg -v error -y -i {MP4} -vf fps=1/1.5,scale=216:-1,tile=8x5 -frames:v 1 {OUT}/grid_it{IT}.png")
