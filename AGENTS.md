@@ -76,3 +76,8 @@ Do not call a video “acceptable” from metrics alone. Look at `qa/<Id>/grid_i
 - Record timing with `scripts/metrics.py` (the build/iterate scripts already wrap stages).
 - If you add a tool or sound, document the license.
 - Suggested improvements that are **not** in this tree yet (ffmpeg-normalize, a second-model frame reviewer, Lucide icons, Qwen3-TTS / a voice clone) must not be described as if they already ship. Add them in a later change, with licenses checked.
+
+## Review memory (mandatory)
+- Before any work on an episode or the kit, read `docs/LESSONS.md` and check the work against every Prevention line.
+- After every review or QA iteration, append each finding to `docs/LESSONS.md` (format in that file) and each non-bug idea to `docs/BACKLOG.md`. A repeated finding is a regression: reopen the entry and add an automated check.
+- Commit the log updates together with the fix.

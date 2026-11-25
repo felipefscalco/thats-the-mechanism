@@ -44,3 +44,6 @@ This look-then-fix loop is intentional (same idea as claude-drawing-skill). Pref
 - Do not declare the video “acceptable” from JSON alone.
 - Do not publish. After PASS + a clean visual pass, go to `package-metadata` and wait for **human approval of the final video**.
 - If you change `remotion/src/brand/`, re-QA every active episode, not just the one you were editing (the IceDemo loop bug was a kit defect).
+
+## Log what you found
+Before reviewing, read `docs/LESSONS.md`. After each iteration, append findings there (problem, root cause, fix, prevention, status) and ideas to `docs/BACKLOG.md`. Never fix something silently.
