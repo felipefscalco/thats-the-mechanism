@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 420" width="360" height="420"><defs><filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="6" dy="8" stdDeviation="5" flood-color="#05060A" flood-opacity="0.45"/></filter></defs><g filter="url(#sh)">
+<rect x="150" y="60" width="34" height="350" fill="#FFB020"/><rect x="167" y="60" width="17" height="350" fill="#C98410"/>
+<path d="M150,80 L184,100" stroke="#C98410" stroke-width="5"/><path d="M150,120 L184,140" stroke="#C98410" stroke-width="5"/><path d="M150,160 L184,180" stroke="#C98410" stroke-width="5"/><path d="M150,200 L184,220" stroke="#C98410" stroke-width="5"/><path d="M150,240 L184,260" stroke="#C98410" stroke-width="5"/><path d="M150,280 L184,300" stroke="#C98410" stroke-width="5"/><path d="M150,320 L184,340" stroke="#C98410" stroke-width="5"/><path d="M150,360 L184,380" stroke="#C98410" stroke-width="5"/>
+<rect x="20" y="40" width="330" height="26" fill="#FFB020"/><rect x="20" y="53" width="330" height="13" fill="#C98410"/>
+<rect x="20" y="66" width="60" height="44" rx="4" fill="#5E6678"/><rect x="150" y="10" width="34" height="34" fill="#9AA3B5"/>
+<rect x="300" y="66" width="4" height="170" fill="#CFC8B8"/><rect x="278" y="236" width="48" height="40" rx="6" fill="#9AA3B5"/>
+<rect x="110" y="400" width="114" height="16" fill="#3A3F4E"/></g></svg>

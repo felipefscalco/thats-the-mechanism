@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" width="260" height="260"><defs><filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="6" dy="8" stdDeviation="5" flood-color="#05060A" flood-opacity="0.45"/></filter></defs><g transform="translate(130 130)" filter="url(#sh)"><circle r="120" fill="#9AA3B5"/>
+<path d="M0,-120 A120,120 0 0,1 120,0 L0,0 Z" fill="#4CC9F0" opacity="0.55"/><path d="M0,120 A120,120 0 0,1 -120,0 L0,0 Z" fill="#FF7AB6" opacity="0.35"/>
+<circle r="40" fill="#CFC8B8"/><circle r="16" fill="#0D0E12"/><path d="M-80,-40 L40,70" stroke="#0D0E12" stroke-width="4" opacity="0.6"/><path d="M-30,-95 L90,-20" stroke="#0D0E12" stroke-width="3" opacity="0.5"/></g></svg>

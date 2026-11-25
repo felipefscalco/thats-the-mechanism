@@ -1,0 +1,128 @@
+{
+ "canvas": {
+  "width": 1210,
+  "height": 1138,
+  "fps": 20,
+  "frames": 41
+ },
+ "signature": "@thatsthemechanism",
+ "title": {
+  "prefix": "The internals of",
+  "highlight": "a QR code",
+  "subtitle": "why a logo does not break it"
+ },
+ "input_title": "Input",
+ "inputs": [
+  {
+   "label": "Link",
+   "icon": "file",
+   "color": "#4CC9F0"
+  },
+  {
+   "label": "Logo",
+   "icon": "package",
+   "color": "#FFB020"
+  }
+ ],
+ "core": {
+  "title": "Encoder",
+  "subtitle": "(Reed-Solomon, level H)",
+  "cards": [
+   {
+    "title": "Cut",
+    "body": "link into\ndata bytes",
+    "icon": "hash"
+   },
+   {
+    "title": "Repair",
+    "body": "add bytes from\nthe data itself",
+    "icon": "shield"
+   },
+   {
+    "title": "Draw",
+    "body": "modules +\nfinder squares",
+    "icon": "scan"
+   }
+  ]
+ },
+ "decision": {
+  "title": "Scan?",
+  "body": "≤30% damage\nfinders intact"
+ },
+ "output": {
+  "label": "Link opens",
+  "icon": "file"
+ },
+ "loop_label": "Missing bytes are rebuilt from the repair bytes",
+ "retry_label": "No / a finder square covered",
+ "left_panel": {
+  "title": "Memory Sources",
+  "badge": "read only",
+  "cards": [
+   {
+    "title": "Codex",
+    "body": "MEMORY.md, skills\nrollout summaries",
+    "icon": "folder"
+   },
+   {
+    "title": "Claude Code",
+    "body": "CLAUDE.md\nmemory topic files",
+    "icon": "file"
+   },
+   {
+    "title": "Project",
+    "body": "runbook and local rules",
+    "icon": "file"
+   }
+  ]
+ },
+ "center_panel": {
+  "title": "Archive Layers",
+  "subtitle": "(local, readable, traceable storage)",
+  "footer": "Redact + Dedup",
+  "cards": [
+   {
+    "title": "Sources",
+    "body": "redacted raw\nsnapshots",
+    "icon": "folder"
+   },
+   {
+    "title": "Records",
+    "body": "Markdown\nmemory cards",
+    "icon": "file"
+   },
+   {
+    "title": "Versions",
+    "body": "sha256\nimmutable",
+    "icon": "hash"
+   },
+   {
+    "title": "Manifest",
+    "body": "SQLite\nindex",
+    "icon": "db"
+   }
+  ]
+ },
+ "right_panel": {
+  "title": "Memory Pack",
+  "incoming_label": "Compile",
+  "return_label": "Reusable",
+  "cards": [
+   {
+    "title": "Bootstrap",
+    "body": "startup context\nfor new agents",
+    "icon": "package"
+   },
+   {
+    "title": "Project Cases",
+    "body": "restore project\nhistory quickly",
+    "icon": "file"
+   },
+   {
+    "title": "User + Skills",
+    "body": "preferences,\nrunbooks, conflicts",
+    "icon": "file"
+   }
+  ]
+ }
+}
