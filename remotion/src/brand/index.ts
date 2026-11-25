@@ -8,3 +8,6 @@ export * from "./Chrome";
 export * from "./Outro";
 export * from "./EpisodeShell";
 export * from "./Kit";
+export * from "./Depth";
+export * from "./Hero3D";
+export * from "./ProofCard";

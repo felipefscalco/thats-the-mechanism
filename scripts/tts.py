@@ -1,6 +1,8 @@
 import sys, soundfile as sf, numpy as np
 from kokoro_onnx import Kokoro
-k = Kokoro("models/kokoro-v1.0.onnx", "models/voices-v1.0.bin")
+import os
+R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+k = Kokoro(f"{R}/models/kokoro-v1.0.onnx", f"{R}/models/voices-v1.0.bin")
 voice, speed = sys.argv[1], float(sys.argv[2])
 for path in sys.argv[3:]:
     text = open(path).read().strip()

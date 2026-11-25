@@ -10,3 +10,11 @@ remotion/public/sfx/whoosh.wav,sfx/synth/whoosh.wav,Self-synthesised (scripts/sy
 remotion/public/sfx/riser.wav,sfx/synth/riser.wav,Self-synthesised (scripts/synth_sfx.py),"Original, CC0 (ours)",-
 remotion/public/sfx/sting.wav,sfx/synth/sting.wav,Self-synthesised (scripts/synth_sfx.py),"Original, CC0 (ours)",-
 remotion/public/sfx/tick.wav,sfx/synth/tick.wav,Self-synthesised (scripts/synth_sfx.py),"Original, CC0 (ours)",-
+remotion/public/sfx/swish.wav,sfx/papercut/slide.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
+remotion/public/sfx/whip.wav,sfx/papercut/whip.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
+remotion/public/sfx/cut.wav,sfx/papercut/cut.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
+remotion/public/sfx/glint.wav,sfx/papercut/glint.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
+remotion/public/sfx/stamp.wav,sfx/papercut/stamp.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
+remotion/public/sfx/count.wav,sfx/papercut/count.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
+remotion/public/sfx/pop3.wav,sfx/papercut/pop3.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer
+remotion/public/sfx/micro.wav,sfx/papercut/click.wav,"papercut-explainer procedural SFX (github.com/0xS4N4TG/papercut-explainer), rendered by tools/papercut-sfx/render_each.mjs",MIT (c) 2026 sanat,https://github.com/0xS4N4TG/papercut-explainer

@@ -1,5 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, Sequence, useCurrentFrame } from "remotion";
+import { ShotLayers } from "./Depth";
+import { Cue, SfxTrack, cue } from "./Sfx";
 
 /** Camera moves are punctuation (huashu-art-motion 镜头语言):
  *  push = slow push 0.6-1.5 s to lead the eye; pull = pull-out to show context / close a section;
@@ -48,19 +50,24 @@ export const Shot: React.FC<{
   from: number; to: number; inT?: Trans; outT?: Trans; cam?: CamMove[]; name?: string; children: React.ReactNode;
   /** screen-space layer (pills, verdicts): moves with the transition but NOT with the camera, so punches never push it into captions */
   hud?: React.ReactNode;
-}> = ({ from, to, inT = "push", outT = "push", cam = [], name, children, hud }) => {
+  /** depth layers (parallax plates, shadow, bokeh); default on */
+  depth?: boolean;
+  /** automatic camera/transition SFX; default on */
+  quiet?: boolean;
+}> = ({ from, to, inT = "push", outT = "push", cam = [], name, children, hud, depth = true, quiet = false }) => {
   const hi = inT === "none" || inT === "cut" ? 0 : T_FRAMES / 2;
   const ho = outT === "none" || outT === "cut" ? 0 : T_FRAMES / 2;
   const start = Math.max(0, Math.round(from - hi));
   const end = Math.round(to + ho);
   return (
     <Sequence from={start} durationInFrames={Math.max(1, end - start)} name={name} layout="none">
-      <ShotInner offset={start} from={from} to={to} inT={inT} outT={outT} cam={cam} hud={hud}>{children}</ShotInner>
+      <ShotInner offset={start} from={from} to={to} inT={inT} outT={outT} cam={cam} hud={hud} depth={depth}>{children}</ShotInner>
+      {!quiet && <SfxTrack cues={camCues(cam, inT, from).map((c) => ({ ...c, at: c.at - start }))} />}
     </Sequence>
   );
 };
-const ShotInner: React.FC<{ offset: number; from: number; to: number; inT: Trans; outT: Trans; cam: CamMove[]; children: React.ReactNode; hud?: React.ReactNode }> =
-  ({ offset, from, to, inT, outT, cam, children, hud }) => {
+const ShotInner: React.FC<{ offset: number; from: number; to: number; inT: Trans; outT: Trans; cam: CamMove[]; children: React.ReactNode; hud?: React.ReactNode; depth: boolean }> =
+  ({ offset, from, to, inT, outT, cam, children, hud, depth }) => {
     const g = useCurrentFrame() + offset; // global frame
     const h = T_FRAMES / 2;
     let st: React.CSSProperties = {};
@@ -75,10 +82,22 @@ const ShotInner: React.FC<{ offset: number; from: number; to: number; inT: Trans
     const c = camState(g, cam);
     return (
       <AbsoluteFill style={{ ...st, transformOrigin: "50% 40%" }}>
-        <AbsoluteFill style={{ transform: `translate(${c.x}px, ${c.y}px) scale(${c.s})`, transformOrigin: "540px 740px" }}>
-          {children}
-        </AbsoluteFill>
+        <ShotLayers seed={from} g={g} cam={c} depth={depth}>{children}</ShotLayers>
         {hud}
       </AbsoluteFill>
     );
   };
+
+/** Every camera move gets a sound (Kurzgesagt-style density, papercut "slide"/"whip"/"stamp"+"glint"):
+ *  push/pull/glide = soft swish, punch = layered reveal; whip/cut transitions get their own swoosh. */
+export const camCues = (cam: CamMove[], inT: Trans, from: number): Cue[] => {
+  const out: Cue[] = [];
+  for (const m of cam) {
+    if (m.dur === 1) continue; // instantaneous framing, not a move
+    if (m.kind === "punch") out.push(cue(m.at, "stamp", 0.55), cue(m.at + 2, "glint", 0.5));
+    else if (m.kind !== "settle") out.push(cue(m.at, "swish", m.kind === "pull" ? 0.7 : 0.6));
+  }
+  if (inT === "whip" || inT === "whipUp") out.push(cue(from - T_FRAMES / 2, "whip", 0.75));
+  if (inT === "cut") out.push(cue(from, "cut", 0.8));
+  return out;
+};

@@ -1,592 +1,607 @@
 [
  {
-  "text": "An",
-  "start": 0.24,
-  "end": 0.14
+  "text": "This",
+  "start": 0.2,
+  "end": 0.3
+ },
+ {
+  "text": "is",
+  "start": 0.36,
+  "end": 0.45
+ },
+ {
+  "text": "the",
+  "start": 0.5,
+  "end": 0.62
  },
  {
   "text": "elevator",
-  "start": 0.72,
-  "end": 0.73
+  "start": 0.9600000000000001,
+  "end": 1.27
  },
  {
-  "text": "doesn't",
-  "start": 1.02,
-  "end": 1.1
+  "text": "that",
+  "start": 1.2799999999999998,
+  "end": 1.57
  },
  {
-  "text": "lift",
-  "start": 1.3399999999999999,
-  "end": 1.46
+  "text": "barely",
+  "start": 1.6400000000000001,
+  "end": 1.96
+ },
+ {
+  "text": "lifts",
+  "start": 1.96,
+  "end": 2.3
  },
  {
   "text": "you.",
-  "start": 1.6600000000000001,
-  "end": 1.74
+  "start": 2.3,
+  "end": 2.63
  },
  {
   "text": "It",
-  "start": 2.1,
-  "end": 2.16
+  "start": 2.7399999999999998,
+  "end": 3.02
  },
  {
   "text": "almost",
-  "start": 2.38,
-  "end": 2.52
+  "start": 3.02,
+  "end": 3.5
  },
  {
   "text": "balances",
-  "start": 2.94,
-  "end": 3.32
+  "start": 3.58,
+  "end": 3.9799999999999995
  },
  {
   "text": "you.",
-  "start": 3.36,
-  "end": 3.43
+  "start": 3.9799999999999995,
+  "end": 4.4
  },
  {
   "text": "On",
-  "start": 3.96,
-  "end": 4.08
+  "start": 4.58,
+  "end": 4.66
  },
  {
   "text": "the",
-  "start": 4.08,
-  "end": 4.32
+  "start": 4.7,
+  "end": 4.78
  },
  {
   "text": "other",
-  "start": 4.32,
-  "end": 4.6
+  "start": 4.9399999999999995,
+  "end": 5.1
  },
  {
   "text": "side",
-  "start": 4.6,
-  "end": 4.72
+  "start": 5.22,
+  "end": 5.34
  },
  {
   "text": "of",
-  "start": 4.72,
-  "end": 4.86
+  "start": 5.34,
+  "end": 5.4799999999999995
  },
  {
   "text": "the",
-  "start": 4.86,
-  "end": 5.22
+  "start": 5.4799999999999995,
+  "end": 5.73
  },
  {
   "text": "cable",
-  "start": 5.24,
-  "end": 5.54
+  "start": 5.84,
+  "end": 6.08
  },
  {
   "text": "hangs",
-  "start": 5.72,
-  "end": 5.74
+  "start": 6.34,
+  "end": 6.42
  },
  {
   "text": "a",
-  "start": 5.96,
-  "end": 5.92
+  "start": 6.58,
+  "end": 6.66
  },
  {
   "text": "counterweight.",
-  "start": 6.24,
-  "end": 6.37
+  "start": 6.86,
+  "end": 6.94
  },
  {
   "text": "It's",
-  "start": 7.22,
-  "end": 7.14
+  "start": 7.82,
+  "end": 7.9
  },
  {
   "text": "built",
-  "start": 7.5,
-  "end": 7.63
+  "start": 8.100000000000001,
+  "end": 8.3
  },
  {
   "text": "to",
-  "start": 7.74,
-  "end": 7.79
+  "start": 8.360000000000001,
+  "end": 8.51
  },
  {
   "text": "match",
-  "start": 7.9799999999999995,
-  "end": 8.16
+  "start": 8.600000000000001,
+  "end": 8.82
  },
  {
   "text": "the",
-  "start": 8.200000000000001,
-  "end": 8.38
+  "start": 8.82,
+  "end": 9.11
  },
  {
   "text": "empty",
-  "start": 8.540000000000001,
-  "end": 8.66
+  "start": 9.16,
+  "end": 9.5
  },
  {
   "text": "car,",
-  "start": 8.96,
-  "end": 8.75
+  "start": 9.58,
+  "end": 9.67
  },
  {
   "text": "plus",
-  "start": 9.520000000000001,
-  "end": 9.45
+  "start": 10.14,
+  "end": 10.22
  },
  {
   "text": "about",
-  "start": 9.88,
-  "end": 9.83
+  "start": 10.5,
+  "end": 10.75
  },
  {
-  "text": "40\u201350%",
-  "start": 10.4,
-  "end": 10.44
+  "text": "40-50%",
+  "start": 11.0,
+  "end": 11.3
  },
  {
   "text": "of",
-  "start": 11.56,
-  "end": 11.28
+  "start": 12.180000000000001,
+  "end": 12.260000000000002
  },
  {
   "text": "the",
-  "start": 11.680000000000001,
-  "end": 11.7
+  "start": 12.3,
+  "end": 12.49
  },
  {
   "text": "rated",
-  "start": 11.96,
-  "end": 12.360000000000001
+  "start": 12.58,
+  "end": 12.9
  },
  {
   "text": "load.",
-  "start": 12.360000000000001,
-  "end": 13.0
+  "start": 12.98,
+  "end": 13.22
  },
  {
   "text": "So",
-  "start": 13.100000000000001,
-  "end": 13.11
+  "start": 13.72,
+  "end": 13.8
  },
  {
   "text": "the",
-  "start": 13.24,
-  "end": 13.27
+  "start": 13.88,
+  "end": 13.96
  },
  {
   "text": "motor",
-  "start": 13.520000000000001,
-  "end": 13.54
+  "start": 14.14,
+  "end": 14.22
  },
  {
   "text": "never",
-  "start": 13.88,
-  "end": 13.81
+  "start": 14.5,
+  "end": 14.58
  },
  {
   "text": "hauls",
-  "start": 14.16,
-  "end": 13.92
+  "start": 14.780000000000001,
+  "end": 14.860000000000001
  },
  {
   "text": "the",
-  "start": 14.5,
-  "end": 14.23
+  "start": 15.120000000000001,
+  "end": 15.200000000000001
  },
  {
   "text": "full",
-  "start": 14.74,
-  "end": 14.46
+  "start": 15.360000000000001,
+  "end": 15.440000000000001
  },
  {
   "text": "weight.",
-  "start": 15.020000000000001,
-  "end": 14.67
+  "start": 15.620000000000001,
+  "end": 15.8
  },
  {
   "text": "It",
-  "start": 15.620000000000001,
-  "end": 15.14
+  "start": 16.24,
+  "end": 16.319999999999997
  },
  {
   "text": "only",
-  "start": 15.94,
-  "end": 15.42
+  "start": 16.56,
+  "end": 16.639999999999997
  },
  {
   "text": "fights",
-  "start": 16.3,
-  "end": 15.84
+  "start": 16.919999999999998,
+  "end": 16.999999999999996
  },
  {
   "text": "the",
-  "start": 16.54,
-  "end": 16.04
+  "start": 17.16,
+  "end": 17.24
  },
  {
   "text": "difference.",
-  "start": 16.9,
-  "end": 16.36
+  "start": 17.52,
+  "end": 17.599999999999998
  },
  {
   "text": "When",
-  "start": 17.64,
-  "end": 17.31
+  "start": 18.259999999999998,
+  "end": 18.36
  },
  {
   "text": "the",
-  "start": 17.8,
-  "end": 17.54
+  "start": 18.4,
+  "end": 18.56
  },
  {
   "text": "car",
-  "start": 18.04,
-  "end": 17.77
+  "start": 18.66,
+  "end": 18.78
  },
  {
   "text": "is",
-  "start": 18.22,
-  "end": 17.92
+  "start": 18.84,
+  "end": 18.92
  },
  {
   "text": "full,",
-  "start": 18.56,
-  "end": 18.23
+  "start": 19.18,
+  "end": 19.259999999999998
  },
  {
   "text": "the",
-  "start": 18.86,
-  "end": 18.61
+  "start": 19.459999999999997,
+  "end": 19.54
  },
  {
   "text": "motor",
-  "start": 19.099999999999998,
-  "end": 18.75
+  "start": 19.72,
+  "end": 19.9
  },
  {
   "text": "helps",
-  "start": 19.38,
-  "end": 19.39
+  "start": 20.0,
+  "end": 20.16
  },
  {
   "text": "it",
-  "start": 19.54,
-  "end": 19.52
+  "start": 20.16,
+  "end": 20.38
  },
  {
   "text": "up.",
-  "start": 19.759999999999998,
-  "end": 19.69
+  "start": 20.38,
+  "end": 20.46
  },
  {
   "text": "When",
-  "start": 20.34,
-  "end": 20.32
+  "start": 20.98,
+  "end": 21.099999999999998
  },
  {
   "text": "the",
-  "start": 20.48,
-  "end": 20.56
+  "start": 21.099999999999998,
+  "end": 21.23
  },
  {
   "text": "car",
-  "start": 20.8,
-  "end": 20.8
+  "start": 21.439999999999998,
+  "end": 21.54
  },
  {
   "text": "is",
-  "start": 21.04,
-  "end": 20.96
+  "start": 21.66,
+  "end": 21.74
  },
  {
   "text": "nearly",
-  "start": 21.34,
-  "end": 21.4
+  "start": 21.959999999999997,
+  "end": 22.07
  },
  {
   "text": "empty,",
-  "start": 21.86,
-  "end": 21.67
+  "start": 22.48,
+  "end": 22.72
  },
  {
   "text": "the",
-  "start": 22.279999999999998,
-  "end": 22.18
+  "start": 22.9,
+  "end": 22.979999999999997
  },
  {
   "text": "counterweight",
-  "start": 22.619999999999997,
-  "end": 22.52
+  "start": 23.22,
+  "end": 23.42
  },
  {
   "text": "is",
-  "start": 23.08,
-  "end": 23.1
+  "start": 23.7,
+  "end": 23.88
  },
  {
   "text": "the",
-  "start": 23.259999999999998,
-  "end": 23.28
+  "start": 23.88,
+  "end": 24.16
  },
  {
   "text": "heavier",
-  "start": 23.54,
-  "end": 23.43
+  "start": 24.16,
+  "end": 24.619999999999997
  },
  {
   "text": "side,",
-  "start": 24.0,
-  "end": 24.0
+  "start": 24.619999999999997,
+  "end": 24.96
  },
  {
   "text": "and",
-  "start": 24.419999999999998,
-  "end": 24.24
+  "start": 25.04,
+  "end": 25.119999999999997
  },
  {
   "text": "the",
-  "start": 24.54,
-  "end": 24.48
+  "start": 25.16,
+  "end": 25.38
  },
  {
   "text": "motor",
-  "start": 24.8,
-  "end": 24.87
+  "start": 25.419999999999998,
+  "end": 25.73
  },
  {
   "text": "holds",
-  "start": 25.14,
-  "end": 25.24
+  "start": 25.74,
+  "end": 25.939999999999998
  },
  {
   "text": "it",
-  "start": 25.32,
-  "end": 25.4
+  "start": 25.939999999999998,
+  "end": 26.22
  },
  {
   "text": "back.",
-  "start": 25.599999999999998,
-  "end": 25.66
+  "start": 26.24,
+  "end": 26.5
  },
  {
   "text": "Here's",
-  "start": 26.32,
-  "end": 26.32
+  "start": 26.939999999999998,
+  "end": 27.019999999999996
  },
  {
   "text": "the",
-  "start": 26.56,
-  "end": 26.71
+  "start": 27.18,
+  "end": 27.34
  },
  {
   "text": "strange",
-  "start": 26.939999999999998,
-  "end": 27.24
+  "start": 27.56,
+  "end": 27.88
  },
  {
   "text": "part.",
-  "start": 27.459999999999997,
-  "end": 27.55
+  "start": 28.08,
+  "end": 28.16
  },
  {
   "text": "Release",
-  "start": 28.16,
-  "end": 28.36
+  "start": 28.759999999999998,
+  "end": 28.9
  },
  {
   "text": "the",
-  "start": 28.36,
-  "end": 28.52
+  "start": 28.98,
+  "end": 29.06
  },
  {
   "text": "brake",
-  "start": 28.58,
-  "end": 28.779999999999998
+  "start": 29.2,
+  "end": 29.4
  },
  {
   "text": "on",
-  "start": 28.779999999999998,
-  "end": 28.919999999999998
+  "start": 29.4,
+  "end": 29.56
  },
  {
   "text": "an",
-  "start": 28.919999999999998,
-  "end": 29.24
+  "start": 29.56,
+  "end": 29.76
  },
  {
   "text": "empty",
-  "start": 29.24,
-  "end": 29.43
+  "start": 29.86,
+  "end": 30.12
  },
  {
   "text": "car,",
-  "start": 29.619999999999997,
-  "end": 29.82
+  "start": 30.24,
+  "end": 30.4
  },
  {
   "text": "and",
-  "start": 29.82,
-  "end": 29.939999999999998
+  "start": 30.439999999999998,
+  "end": 30.519999999999996
  },
  {
   "text": "it",
-  "start": 29.939999999999998,
-  "end": 30.08
+  "start": 30.56,
+  "end": 30.639999999999997
  },
  {
   "text": "wouldn't",
-  "start": 30.08,
-  "end": 30.54
+  "start": 30.7,
+  "end": 30.779999999999998
  },
  {
   "text": "fall.",
-  "start": 30.56,
-  "end": 30.83
+  "start": 31.18,
+  "end": 31.29
  },
  {
   "text": "It",
-  "start": 31.099999999999998,
-  "end": 31.14
+  "start": 31.72,
+  "end": 31.799999999999997
  },
  {
   "text": "would",
-  "start": 31.22,
-  "end": 31.49
+  "start": 31.86,
+  "end": 32.22
  },
  {
   "text": "rise.",
-  "start": 31.64,
-  "end": 31.77
+  "start": 32.24,
+  "end": 32.59
  },
  {
   "text": "That's",
-  "start": 32.46,
-  "end": 32.25
+  "start": 33.080000000000005,
+  "end": 33.160000000000004
  },
  {
   "text": "why",
-  "start": 32.760000000000005,
-  "end": 32.56
+  "start": 33.38,
+  "end": 33.51
  },
  {
   "text": "a",
-  "start": 32.96,
-  "end": 32.61
+  "start": 33.580000000000005,
+  "end": 33.660000000000004
  },
  {
   "text": "modest",
-  "start": 33.300000000000004,
-  "end": 32.97
+  "start": 33.92,
+  "end": 34.0
  },
  {
   "text": "motor",
-  "start": 33.68,
-  "end": 33.3
+  "start": 34.300000000000004,
+  "end": 34.4
  },
  {
   "text": "can",
-  "start": 33.940000000000005,
-  "end": 33.46
+  "start": 34.56,
+  "end": 34.64
  },
  {
   "text": "move",
-  "start": 34.120000000000005,
-  "end": 33.73
+  "start": 34.74,
+  "end": 34.82
  },
  {
   "text": "a",
-  "start": 34.28,
-  "end": 33.75
- },
- {
-  "text": "full",
-  "start": 34.52,
-  "end": 34.06
- },
- {
-  "text": "office",
-  "start": 34.88,
-  "end": 34.44
- },
- {
-  "text": "of",
-  "start": 35.06,
-  "end": 34.52
- },
- {
-  "text": "people,",
-  "start": 35.46,
+  "start": 34.92,
   "end": 35.0
  },
  {
+  "text": "full",
+  "start": 35.14,
+  "end": 35.28
+ },
+ {
+  "text": "office",
+  "start": 35.480000000000004,
+  "end": 35.6
+ },
+ {
+  "text": "of",
+  "start": 35.68,
+  "end": 35.96
+ },
+ {
+  "text": "people,",
+  "start": 36.04,
+  "end": 36.47
+ },
+ {
   "text": "all",
-  "start": 36.0,
-  "end": 35.36
+  "start": 36.620000000000005,
+  "end": 36.77
  },
  {
   "text": "day",
-  "start": 36.24,
-  "end": 35.92
+  "start": 36.86,
+  "end": 36.96
  },
  {
   "text": "long.",
-  "start": 36.660000000000004,
-  "end": 36.53
+  "start": 37.24,
+  "end": 37.37
  },
  {
   "text": "That's",
-  "start": 37.24,
-  "end": 37.19
+  "start": 37.86,
+  "end": 37.96
  },
  {
   "text": "the",
-  "start": 37.46,
-  "end": 37.35
+  "start": 38.080000000000005,
+  "end": 38.3
  },
  {
   "text": "mechanism.",
-  "start": 37.900000000000006,
-  "end": 37.84
+  "start": 38.5,
+  "end": 38.93
  },
  {
   "text": "An",
-  "start": 38.56,
-  "end": 38.18
+  "start": 39.18,
+  "end": 39.29
  },
  {
   "text": "elevator",
-  "start": 38.980000000000004,
-  "end": 38.66
+  "start": 39.6,
+  "end": 39.85
  },
  {
   "text": "is",
-  "start": 39.300000000000004,
-  "end": 39.1
+  "start": 39.92,
+  "end": 40.0
  },
  {
   "text": "a",
-  "start": 39.5,
-  "end": 39.19
+  "start": 40.160000000000004,
+  "end": 40.24
  },
  {
   "text": "scale,",
-  "start": 39.82,
-  "end": 39.52
+  "start": 40.440000000000005,
+  "end": 40.52
  },
  {
   "text": "not",
-  "start": 40.06,
-  "end": 40.11
+  "start": 40.68,
+  "end": 40.76
  },
  {
   "text": "a",
-  "start": 40.24,
-  "end": 40.2
+  "start": 40.84,
+  "end": 40.92
  },
  {
   "text": "crane.",
-  "start": 40.52,
-  "end": 40.92
+  "start": 41.14,
+  "end": 41.54
  }
 ]

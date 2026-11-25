@@ -62,6 +62,6 @@ for ep in sys.argv[1:]:
                 out[i:i + len(p)] = [dict(text=disp, start=out[i]["start"], end=out[i + len(p) - 1]["end"])]
             i += 1
     for i in range(len(out) - 1):  # end = min(own end, next start) so highlight never overlaps
-        out[i]["end"] = min(out[i]["end"], out[i + 1]["start"])
+        out[i]["end"] = min(max(out[i]["end"], out[i]["start"] + 0.08), out[i + 1]["start"])  # DTW start can land after the segment end
     json.dump(out, open(f"{ep}/captions.json", "w"), indent=1)
     print(ep, engine, len(out), "words; script", len(script), "last end", out[-1]["end"])

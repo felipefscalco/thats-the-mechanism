@@ -1,692 +1,697 @@
 [
  {
-  "text": "A",
-  "start": 0.24,
-  "end": 0.09
- },
- {
-  "text": "logo",
-  "start": 0.54,
-  "end": 0.46
- },
- {
-  "text": "should",
-  "start": 0.84,
-  "end": 0.92
- },
- {
-  "text": "break",
-  "start": 1.06,
-  "end": 1.2999999999999998
- },
- {
-  "text": "this",
-  "start": 1.2999999999999998,
-  "end": 1.62
+  "text": "This",
+  "start": 0.2,
+  "end": 0.32
  },
  {
   "text": "QR",
-  "start": 1.62,
-  "end": 2.03
- },
- {
-  "text": "code.",
-  "start": 2.08,
-  "end": 2.11
- },
- {
-  "text": "Your",
-  "start": 2.6599999999999997,
-  "end": 2.96
- },
- {
-  "text": "camera",
-  "start": 3.02,
-  "end": 3.32
- },
- {
-  "text": "reads",
-  "start": 3.36,
-  "end": 3.54
- },
- {
-  "text": "it",
-  "start": 3.54,
-  "end": 3.74
- },
- {
-  "text": "anyway.",
-  "start": 3.88,
-  "end": 4.02
- },
- {
-  "text": "When",
-  "start": 4.56,
-  "end": 4.61
- },
- {
-  "text": "the",
-  "start": 4.7,
-  "end": 4.83
+  "start": 0.56,
+  "end": 0.64
  },
  {
   "text": "code",
-  "start": 4.92,
-  "end": 5.1
+  "start": 0.9600000000000001,
+  "end": 1.04
  },
  {
-  "text": "is",
-  "start": 5.1,
-  "end": 5.25
- },
- {
-  "text": "generated,",
-  "start": 5.72,
-  "end": 5.91
- },
- {
-  "text": "your",
-  "start": 6.3,
-  "end": 6.39
- },
- {
-  "text": "link",
-  "start": 6.5,
-  "end": 6.53
- },
- {
-  "text": "is",
-  "start": 6.72,
-  "end": 6.9
- },
- {
-  "text": "cut",
-  "start": 6.9399999999999995,
-  "end": 7.07
- },
- {
-  "text": "into",
-  "start": 7.16,
-  "end": 7.48
- },
- {
-  "text": "bytes,",
-  "start": 7.52,
-  "end": 7.92
- },
- {
-  "text": "and",
-  "start": 8.120000000000001,
-  "end": 8.23
- },
- {
-  "text": "the",
-  "start": 8.24,
-  "end": 8.31
- },
- {
-  "text": "encoder",
-  "start": 8.4,
-  "end": 8.43
- },
- {
-  "text": "adds",
-  "start": 9.040000000000001,
-  "end": 9.2
- },
- {
-  "text": "extra",
-  "start": 9.46,
-  "end": 9.53
- },
- {
-  "text": "bytes",
-  "start": 9.780000000000001,
-  "end": 9.92
- },
- {
-  "text": "calculated",
-  "start": 10.42,
-  "end": 10.65
- },
- {
-  "text": "from",
-  "start": 10.72,
-  "end": 10.860000000000001
- },
- {
-  "text": "the",
-  "start": 10.860000000000001,
-  "end": 11.09
- },
- {
-  "text": "data",
-  "start": 11.120000000000001,
-  "end": 11.41
+  "text": "repairs",
+  "start": 1.4,
+  "end": 1.49
  },
  {
   "text": "itself.",
-  "start": 11.56,
-  "end": 11.89
+  "start": 1.88,
+  "end": 1.96
  },
  {
-  "text": "That's",
-  "start": 12.46,
-  "end": 12.4
- },
- {
-  "text": "Reed-Solomon",
-  "start": 12.940000000000001,
-  "end": 12.87
- },
- {
-  "text": "error",
-  "start": 13.82,
-  "end": 13.83
- },
- {
-  "text": "correction,",
-  "start": 14.38,
-  "end": 14.6
- },
- {
-  "text": "the",
-  "start": 14.940000000000001,
-  "end": 15.04
- },
- {
-  "text": "same",
-  "start": 15.260000000000002,
-  "end": 15.36
- },
- {
-  "text": "math",
-  "start": 15.600000000000001,
-  "end": 15.7
- },
- {
-  "text": "that",
-  "start": 15.9,
-  "end": 15.9
- },
- {
-  "text": "kept",
-  "start": 16.119999999999997,
-  "end": 16.24
- },
- {
-  "text": "scratched",
-  "start": 16.64,
-  "end": 17.16
- },
- {
-  "text": "CDs",
-  "start": 17.16,
-  "end": 17.41
- },
- {
-  "text": "playing.",
-  "start": 17.64,
-  "end": 18.2
- },
- {
-  "text": "Those",
-  "start": 18.439999999999998,
-  "end": 18.84
- },
- {
-  "text": "extra",
-  "start": 18.9,
-  "end": 19.16
- },
- {
-  "text": "bytes",
-  "start": 19.2,
-  "end": 19.4
- },
- {
-  "text": "are",
-  "start": 19.4,
-  "end": 19.58
- },
- {
-  "text": "a",
-  "start": 19.58,
-  "end": 19.72
- },
- {
-  "text": "recipe",
-  "start": 19.9,
-  "end": 20.11
- },
- {
-  "text": "for",
-  "start": 20.279999999999998,
-  "end": 20.26
- },
- {
-  "text": "rebuilding",
-  "start": 20.779999999999998,
-  "end": 20.96
- },
- {
-  "text": "whatever",
-  "start": 21.14,
-  "end": 21.45
- },
- {
-  "text": "goes",
-  "start": 21.5,
-  "end": 21.83
- },
- {
-  "text": "missing.",
-  "start": 21.939999999999998,
-  "end": 22.19
- },
- {
-  "text": "At",
-  "start": 22.68,
-  "end": 22.73
- },
- {
-  "text": "the",
-  "start": 22.82,
-  "end": 22.98
- },
- {
-  "text": "highest",
-  "start": 23.16,
-  "end": 23.48
- },
- {
-  "text": "level,",
-  "start": 23.54,
-  "end": 23.96
- },
- {
-  "text": "H,",
-  "start": 24.0,
-  "end": 24.24
- },
- {
-  "text": "a",
-  "start": 24.64,
-  "end": 24.45
- },
- {
-  "text": "scanner",
-  "start": 25.02,
-  "end": 24.77
- },
- {
-  "text": "can",
-  "start": 25.32,
-  "end": 25.32
- },
- {
-  "text": "restore",
-  "start": 25.84,
-  "end": 25.92
- },
- {
-  "text": "about",
-  "start": 26.2,
-  "end": 26.34
- },
- {
-  "text": "30%",
-  "start": 26.72,
-  "end": 26.58
- },
- {
-  "text": "of",
-  "start": 27.259999999999998,
-  "end": 27.1
- },
- {
-  "text": "the",
-  "start": 27.38,
-  "end": 27.31
- },
- {
-  "text": "code's",
-  "start": 27.599999999999998,
-  "end": 27.69
- },
- {
-  "text": "bytes.",
-  "start": 28.04,
-  "end": 28.28
- },
- {
-  "text": "So",
-  "start": 28.84,
-  "end": 28.79
- },
- {
-  "text": "a",
-  "start": 28.98,
-  "end": 28.86
- },
- {
-  "text": "logo",
-  "start": 29.259999999999998,
-  "end": 29.16
- },
- {
-  "text": "in",
-  "start": 29.58,
-  "end": 29.31
- },
- {
-  "text": "the",
-  "start": 29.68,
-  "end": 29.53
- },
- {
-  "text": "middle",
-  "start": 29.9,
-  "end": 30.0
- },
- {
-  "text": "is",
-  "start": 30.099999999999998,
-  "end": 30.1
- },
- {
-  "text": "just",
-  "start": 30.3,
-  "end": 30.45
- },
- {
-  "text": "damage",
-  "start": 30.74,
-  "end": 30.75
- },
- {
-  "text": "the",
-  "start": 31.0,
-  "end": 31.14
- },
- {
-  "text": "code",
-  "start": 31.32,
-  "end": 31.4
- },
- {
-  "text": "was",
-  "start": 31.54,
-  "end": 31.67
- },
- {
-  "text": "built",
-  "start": 31.779999999999998,
-  "end": 32.02
- },
- {
-  "text": "to",
-  "start": 32.02,
-  "end": 32.2
- },
- {
-  "text": "survive.",
-  "start": 32.42,
-  "end": 32.66
- },
- {
-  "text": "In",
-  "start": 33.2,
-  "end": 33.21
- },
- {
-  "text": "real",
-  "start": 33.480000000000004,
-  "end": 33.55
- },
- {
-  "text": "tests,",
-  "start": 33.980000000000004,
-  "end": 33.96
- },
- {
-  "text": "about",
-  "start": 34.620000000000005,
-  "end": 34.58
- },
- {
-  "text": "15%",
-  "start": 35.1,
-  "end": 35.1
- },
- {
-  "text": "of",
-  "start": 35.64,
-  "end": 35.26
- },
- {
-  "text": "the",
-  "start": 35.760000000000005,
-  "end": 35.61
- },
- {
-  "text": "area",
-  "start": 36.080000000000005,
-  "end": 35.95
- },
- {
-  "text": "is",
-  "start": 36.34,
-  "end": 36.12
- },
- {
-  "text": "safe.",
-  "start": 36.74,
-  "end": 36.46
- },
- {
-  "text": "Glare",
-  "start": 37.52,
-  "end": 36.96
- },
- {
-  "text": "and",
-  "start": 37.86,
-  "end": 37.47
- },
- {
-  "text": "scratches",
-  "start": 38.38,
-  "end": 38.23
- },
- {
-  "text": "spend",
-  "start": 38.82,
-  "end": 38.65
- },
- {
-  "text": "the",
-  "start": 39.0,
-  "end": 38.9
- },
- {
-  "text": "same",
-  "start": 39.260000000000005,
-  "end": 39.02
- },
- {
-  "text": "budget.",
-  "start": 39.64,
-  "end": 39.81
- },
- {
-  "text": "But",
-  "start": 40.28,
-  "end": 40.27
- },
- {
-  "text": "cover",
-  "start": 40.5,
-  "end": 40.59
- },
- {
-  "text": "one",
-  "start": 40.74,
-  "end": 40.78
- },
- {
-  "text": "of",
-  "start": 40.86,
-  "end": 40.9
- },
- {
-  "text": "the",
-  "start": 41.0,
-  "end": 41.03
- },
- {
-  "text": "three",
-  "start": 41.24,
-  "end": 41.41
- },
- {
-  "text": "big",
-  "start": 41.480000000000004,
-  "end": 41.57
- },
- {
-  "text": "corner",
-  "start": 41.78,
-  "end": 41.97
- },
- {
-  "text": "squares,",
-  "start": 42.18,
-  "end": 42.19
- },
- {
-  "text": "and",
-  "start": 42.42,
-  "end": 42.54
- },
- {
-  "text": "it's",
-  "start": 42.54,
-  "end": 42.73
- },
- {
-  "text": "over.",
-  "start": 42.92,
-  "end": 43.1
- },
- {
-  "text": "Those",
-  "start": 43.620000000000005,
-  "end": 43.71
- },
- {
-  "text": "aren't",
-  "start": 43.88,
-  "end": 43.93
- },
- {
-  "text": "data.",
-  "start": 44.300000000000004,
-  "end": 44.41
- },
- {
-  "text": "They",
-  "start": 44.900000000000006,
-  "end": 44.9
- },
- {
-  "text": "are",
-  "start": 44.96,
-  "end": 45.11
- },
- {
-  "text": "how",
-  "start": 45.14,
-  "end": 45.32
- },
- {
-  "text": "your",
-  "start": 45.36,
-  "end": 45.47
+  "text": "Your",
+  "start": 2.54,
+  "end": 2.62
  },
  {
   "text": "camera",
-  "start": 45.7,
-  "end": 46.02
+  "start": 2.9,
+  "end": 3.04
  },
  {
-  "text": "finds",
-  "start": 46.080000000000005,
-  "end": 46.28
+  "text": "reads",
+  "start": 3.2399999999999998,
+  "end": 3.42
  },
  {
-  "text": "the",
-  "start": 46.28,
-  "end": 46.58
+  "text": "a",
+  "start": 3.44,
+  "end": 3.52
  },
  {
-  "text": "code.",
-  "start": 46.64,
-  "end": 46.85
- },
- {
-  "text": "That's",
-  "start": 47.300000000000004,
-  "end": 47.37
- },
- {
-  "text": "the",
-  "start": 47.5,
-  "end": 47.68
- },
- {
-  "text": "mechanism.",
-  "start": 47.940000000000005,
-  "end": 48.26
- },
- {
-  "text": "A",
-  "start": 48.64,
-  "end": 48.52
- },
- {
-  "text": "QR",
-  "start": 48.88,
-  "end": 48.72
+  "text": "damaged",
+  "start": 3.8,
+  "end": 3.98
  },
  {
   "text": "code",
-  "start": 49.400000000000006,
-  "end": 49.01
+  "start": 4.24,
+  "end": 4.4
+ },
+ {
+  "text": "anyway.",
+  "start": 4.62,
+  "end": 4.81
+ },
+ {
+  "text": "When",
+  "start": 5.34,
+  "end": 5.4799999999999995
+ },
+ {
+  "text": "the",
+  "start": 5.4799999999999995,
+  "end": 5.69
+ },
+ {
+  "text": "code",
+  "start": 5.72,
+  "end": 5.8999999999999995
+ },
+ {
+  "text": "is",
+  "start": 5.8999999999999995,
+  "end": 6.11
+ },
+ {
+  "text": "generated,",
+  "start": 6.52,
+  "end": 6.73
+ },
+ {
+  "text": "your",
+  "start": 7.08,
+  "end": 7.16
+ },
+ {
+  "text": "link",
+  "start": 7.3,
+  "end": 7.38
+ },
+ {
+  "text": "is",
+  "start": 7.52,
+  "end": 7.72
+ },
+ {
+  "text": "cut",
+  "start": 7.72,
+  "end": 7.94
+ },
+ {
+  "text": "into",
+  "start": 7.94,
+  "end": 8.3
+ },
+ {
+  "text": "bytes,",
+  "start": 8.3,
+  "end": 8.76
+ },
+ {
+  "text": "and",
+  "start": 8.92,
+  "end": 9.0
+ },
+ {
+  "text": "the",
+  "start": 9.040000000000001,
+  "end": 9.120000000000001
+ },
+ {
+  "text": "encoder",
+  "start": 9.180000000000001,
+  "end": 9.260000000000002
+ },
+ {
+  "text": "adds",
+  "start": 9.82,
+  "end": 9.98
+ },
+ {
+  "text": "extra",
+  "start": 10.24,
+  "end": 10.32
+ },
+ {
+  "text": "bytes",
+  "start": 10.56,
+  "end": 10.64
+ },
+ {
+  "text": "calculated",
+  "start": 11.22,
+  "end": 11.47
+ },
+ {
+  "text": "from",
+  "start": 11.5,
+  "end": 11.64
+ },
+ {
+  "text": "the",
+  "start": 11.64,
+  "end": 11.88
+ },
+ {
+  "text": "data",
+  "start": 11.88,
+  "end": 12.25
+ },
+ {
+  "text": "itself.",
+  "start": 12.4,
+  "end": 12.48
+ },
+ {
+  "text": "That's",
+  "start": 13.260000000000002,
+  "end": 13.340000000000002
+ },
+ {
+  "text": "Reed-Solom",
+  "start": 13.72,
+  "end": 13.8
+ },
+ {
+  "text": "and",
+  "start": 14.4,
+  "end": 14.48
+ },
+ {
+  "text": "error",
+  "start": 14.66,
+  "end": 14.82
+ },
+ {
+  "text": "correction,",
+  "start": 15.16,
+  "end": 15.24
+ },
+ {
+  "text": "the",
+  "start": 15.74,
+  "end": 15.84
+ },
+ {
+  "text": "same",
+  "start": 16.04,
+  "end": 16.16
+ },
+ {
+  "text": "math",
+  "start": 16.4,
+  "end": 16.48
+ },
+ {
+  "text": "that",
+  "start": 16.66,
+  "end": 16.8
+ },
+ {
+  "text": "kept",
+  "start": 16.9,
+  "end": 17.12
+ },
+ {
+  "text": "scratched",
+  "start": 17.439999999999998,
+  "end": 17.53
+ },
+ {
+  "text": "CDs",
+  "start": 17.939999999999998,
+  "end": 18.09
+ },
+ {
+  "text": "playing.",
+  "start": 18.439999999999998,
+  "end": 18.66
+ },
+ {
+  "text": "Those",
+  "start": 19.22,
+  "end": 19.31
+ },
+ {
+  "text": "extra",
+  "start": 19.68,
+  "end": 19.759999999999998
+ },
+ {
+  "text": "bytes",
+  "start": 19.98,
+  "end": 20.06
+ },
+ {
+  "text": "are",
+  "start": 20.2,
+  "end": 20.279999999999998
+ },
+ {
+  "text": "a",
+  "start": 20.36,
+  "end": 20.439999999999998
+ },
+ {
+  "text": "recipe",
+  "start": 20.7,
+  "end": 20.779999999999998
+ },
+ {
+  "text": "for",
+  "start": 21.06,
+  "end": 21.139999999999997
+ },
+ {
+  "text": "rebuilding",
+  "start": 21.56,
+  "end": 21.639999999999997
+ },
+ {
+  "text": "whatever",
+  "start": 21.919999999999998,
+  "end": 22.3
+ },
+ {
+  "text": "goes",
+  "start": 22.3,
+  "end": 22.65
+ },
+ {
+  "text": "missing.",
+  "start": 22.74,
+  "end": 23.22
+ },
+ {
+  "text": "At",
+  "start": 23.48,
+  "end": 23.599999999999998
+ },
+ {
+  "text": "the",
+  "start": 23.599999999999998,
+  "end": 23.679999999999996
+ },
+ {
+  "text": "highest",
+  "start": 23.939999999999998,
+  "end": 24.32
+ },
+ {
+  "text": "level,",
+  "start": 24.32,
+  "end": 24.779999999999998
+ },
+ {
+  "text": "H,",
+  "start": 24.779999999999998,
+  "end": 25.08
+ },
+ {
+  "text": "a",
+  "start": 25.439999999999998,
+  "end": 25.519999999999996
+ },
+ {
+  "text": "scanner",
+  "start": 25.8,
+  "end": 25.89
+ },
+ {
+  "text": "can",
+  "start": 26.119999999999997,
+  "end": 26.199999999999996
+ },
+ {
+  "text": "restore",
+  "start": 26.619999999999997,
+  "end": 26.699999999999996
+ },
+ {
+  "text": "about",
+  "start": 27.0,
+  "end": 27.2
+ },
+ {
+  "text": "30%",
+  "start": 27.52,
+  "end": 27.88
+ },
+ {
+  "text": "of",
+  "start": 28.04,
+  "end": 28.119999999999997
+ },
+ {
+  "text": "the",
+  "start": 28.16,
+  "end": 28.24
+ },
+ {
+  "text": "code's",
+  "start": 28.4,
+  "end": 28.479999999999997
+ },
+ {
+  "text": "bytes.",
+  "start": 28.84,
+  "end": 29.44
+ },
+ {
+  "text": "So",
+  "start": 29.619999999999997,
+  "end": 29.699999999999996
+ },
+ {
+  "text": "a",
+  "start": 29.779999999999998,
+  "end": 29.859999999999996
+ },
+ {
+  "text": "logo",
+  "start": 30.06,
+  "end": 30.139999999999997
+ },
+ {
+  "text": "in",
+  "start": 30.38,
+  "end": 30.459999999999997
+ },
+ {
+  "text": "the",
+  "start": 30.48,
+  "end": 30.56
+ },
+ {
+  "text": "middle",
+  "start": 30.68,
+  "end": 30.8
+ },
+ {
+  "text": "is",
+  "start": 30.88,
+  "end": 30.959999999999997
+ },
+ {
+  "text": "just",
+  "start": 31.099999999999998,
+  "end": 31.23
+ },
+ {
+  "text": "damage",
+  "start": 31.52,
+  "end": 31.599999999999998
+ },
+ {
+  "text": "the",
+  "start": 31.8,
+  "end": 31.94
+ },
+ {
+  "text": "code",
+  "start": 32.1,
+  "end": 32.24
+ },
+ {
+  "text": "was",
+  "start": 32.34,
+  "end": 32.47
+ },
+ {
+  "text": "built",
+  "start": 32.56,
+  "end": 32.800000000000004
+ },
+ {
+  "text": "to",
+  "start": 32.800000000000004,
+  "end": 32.99
+ },
+ {
+  "text": "survive.",
+  "start": 33.220000000000006,
+  "end": 33.42
+ },
+ {
+  "text": "In",
+  "start": 33.980000000000004,
+  "end": 34.06
+ },
+ {
+  "text": "real",
+  "start": 34.260000000000005,
+  "end": 34.34
+ },
+ {
+  "text": "tests,",
+  "start": 34.78,
+  "end": 35.12
+ },
+ {
+  "text": "about",
+  "start": 35.400000000000006,
+  "end": 35.54
+ },
+ {
+  "text": "15%",
+  "start": 35.900000000000006,
+  "end": 36.04
+ },
+ {
+  "text": "of",
+  "start": 36.440000000000005,
+  "end": 36.52
+ },
+ {
+  "text": "the",
+  "start": 36.54,
+  "end": 36.62
+ },
+ {
+  "text": "area",
+  "start": 36.86,
+  "end": 36.94
+ },
+ {
+  "text": "is",
+  "start": 37.160000000000004,
+  "end": 37.24
+ },
+ {
+  "text": "safe.",
+  "start": 37.52,
+  "end": 37.6
+ },
+ {
+  "text": "Glare",
+  "start": 38.32,
+  "end": 38.4
+ },
+ {
+  "text": "and",
+  "start": 38.660000000000004,
+  "end": 38.74
+ },
+ {
+  "text": "scratches",
+  "start": 39.18,
+  "end": 39.26
+ },
+ {
+  "text": "spend",
+  "start": 39.620000000000005,
+  "end": 39.7
+ },
+ {
+  "text": "the",
+  "start": 39.800000000000004,
+  "end": 39.88
+ },
+ {
+  "text": "same",
+  "start": 40.04,
+  "end": 40.12
+ },
+ {
+  "text": "budget.",
+  "start": 40.440000000000005,
+  "end": 40.52
+ },
+ {
+  "text": "But",
+  "start": 41.080000000000005,
+  "end": 41.160000000000004
+ },
+ {
+  "text": "cover",
+  "start": 41.300000000000004,
+  "end": 41.38
+ },
+ {
+  "text": "one",
+  "start": 41.52,
+  "end": 41.6
+ },
+ {
+  "text": "of",
+  "start": 41.64,
+  "end": 41.72
+ },
+ {
+  "text": "the",
+  "start": 41.78,
+  "end": 41.86
+ },
+ {
+  "text": "three",
+  "start": 42.02,
+  "end": 42.1
+ },
+ {
+  "text": "big",
+  "start": 42.28,
+  "end": 42.36
+ },
+ {
+  "text": "corner",
+  "start": 42.580000000000005,
+  "end": 42.68
+ },
+ {
+  "text": "squares,",
+  "start": 42.96,
+  "end": 43.14
+ },
+ {
+  "text": "and",
+  "start": 43.220000000000006,
+  "end": 43.32
+ },
+ {
+  "text": "it's",
+  "start": 43.34,
+  "end": 43.47
+ },
+ {
+  "text": "over.",
+  "start": 43.720000000000006,
+  "end": 43.86
+ },
+ {
+  "text": "Those",
+  "start": 44.42,
+  "end": 44.5
+ },
+ {
+  "text": "aren't",
+  "start": 44.660000000000004,
+  "end": 44.74
+ },
+ {
+  "text": "data.",
+  "start": 45.1,
+  "end": 45.18
+ },
+ {
+  "text": "They",
+  "start": 45.68,
+  "end": 45.76
+ },
+ {
+  "text": "are",
+  "start": 45.760000000000005,
+  "end": 45.84
+ },
+ {
+  "text": "how",
+  "start": 45.940000000000005,
+  "end": 46.02
+ },
+ {
+  "text": "your",
+  "start": 46.14,
+  "end": 46.22
+ },
+ {
+  "text": "camera",
+  "start": 46.5,
+  "end": 46.58
+ },
+ {
+  "text": "finds",
+  "start": 46.88,
+  "end": 46.96
+ },
+ {
+  "text": "the",
+  "start": 47.06,
+  "end": 47.14
+ },
+ {
+  "text": "code.",
+  "start": 47.440000000000005,
+  "end": 47.62
+ },
+ {
+  "text": "That's",
+  "start": 48.080000000000005,
+  "end": 48.24
+ },
+ {
+  "text": "the",
+  "start": 48.300000000000004,
+  "end": 48.63
+ },
+ {
+  "text": "mechanism.",
+  "start": 48.74,
+  "end": 49.34
+ },
+ {
+  "text": "A",
+  "start": 49.42,
+  "end": 49.65
+ },
+ {
+  "text": "QR",
+  "start": 49.68,
+  "end": 49.81
+ },
+ {
+  "text": "code",
+  "start": 50.2,
+  "end": 50.28
  },
  {
   "text": "carries",
-  "start": 49.74,
-  "end": 49.33
+  "start": 50.54,
+  "end": 50.68
  },
  {
   "text": "its",
-  "start": 49.980000000000004,
-  "end": 49.83
+  "start": 50.78,
+  "end": 50.92
  },
  {
   "text": "own",
-  "start": 50.18,
-  "end": 50.07
+  "start": 50.980000000000004,
+  "end": 51.15
  },
  {
   "text": "spare",
-  "start": 50.52,
-  "end": 50.46
+  "start": 51.32,
+  "end": 51.55
  },
  {
   "text": "parts.",
-  "start": 50.980000000000004,
-  "end": 51.38
+  "start": 51.800000000000004,
+  "end": 52.2
  }
 ]

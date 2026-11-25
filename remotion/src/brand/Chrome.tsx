@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { createTikTokStyleCaptions, Caption } from "@remotion/captions";
 import { C, DISPLAY, LAYOUT, MONO, Pillar, SANS } from "./tokens";
 import { Gear, GearG } from "./Gear";
@@ -13,12 +13,14 @@ const usePhase = () => {
 };
 
 /** Two-layer surface (base + light + dot grid), drifting, never flat (bang-motion §7d). */
-export const Background: React.FC<{ pillar: Pillar }> = ({ pillar }) => {
+export const Background: React.FC<{ pillar: Pillar; backdrop?: string; backdropDim?: number }> = ({ pillar, backdrop, backdropDim = 0.45 }) => {
   const { ph } = usePhase();
   const drift = (ph * 3 * 60) % 60; // integer cycles over the video
   const gx = 50 + 8 * Math.sin(ph * Math.PI * 2);
   return (
     <AbsoluteFill style={{ background: C.ink }}>
+      {backdrop && <Img src={staticFile(backdrop)} style={{ position: "absolute", inset: 0, width: 1080, height: 1920, objectFit: "cover", opacity: 1 - backdropDim }} />}
+      {backdrop && <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(13,14,18,0.68) 0%, rgba(13,14,18,0.22) 26%, rgba(13,14,18,0.28) 60%, rgba(13,14,18,0.88) 76%, rgba(13,14,18,0.96) 100%)" }} />}
       <AbsoluteFill style={{ background: `radial-gradient(ellipse 85% 45% at ${gx}% 34%, ${pillar.color}26, transparent 70%)` }} />
       <AbsoluteFill style={{ background: `radial-gradient(ellipse 70% 30% at ${100 - gx}% 88%, ${C.amber}12, transparent 70%)` }} />
       <svg width={1080} height={1920} style={{ position: "absolute" }}>

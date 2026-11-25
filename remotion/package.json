@@ -3,20 +3,28 @@
   "version": "1.0.0",
   "description": "My Remotion video",
   "repository": {},
-  "license": "MIT",
+  "license": "UNLICENSED",
   "engines": {
     "node": "^20.19.0 || ^22.13.0 || >=24"
   },
   "private": true,
   "dependencies": {
+    "@react-three/fiber": "^9.8.2",
     "@remotion/captions": "^4.0.547",
     "@remotion/cli": "4.0.547",
     "@remotion/google-fonts": "^4.0.547",
+    "@remotion/lottie": "^4.0.547",
     "@remotion/media": "^4.0.547",
+    "@remotion/three": "^4.0.547",
+    "@tabler/icons-react": "^3.53.0",
+    "@types/three": "^0.187.0",
+    "lottie-web": "^5.13.0",
+    "lucide-react": "^1.80.0",
     "qrcode": "^1.5.4",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "remotion": "4.0.547"
+    "remotion": "4.0.547",
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@remotion/eslint-config-flat": "4.0.547",
