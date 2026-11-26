@@ -55,6 +55,13 @@ def num_words(n):
     if n < 1000: return [_ONES[n // 100], "hundred"] + (num_words(n % 100) if n % 100 else [])
     if n < 1_000_000: return num_words(n // 1000) + ["thousand"] + (num_words(n % 1000) if n % 1000 else [])
     return [str(n)]
+# r10: unit symbols whisper writes for words the script spells out (case matters: mW milliwatts vs MW megawatts).
+# Spelling variants (centimetres / centimeters) are left to the fuzzy aligner.
+UNITS = {"GHz": "gigahertz", "MHz": "megahertz", "kHz": "kilohertz", "Hz": "hertz", "mW": "milliwatts", "MW": "megawatts",
+         "kW": "kilowatts", "cm": "centimetres", "mm": "millimetres", "km": "kilometres", "nm": "nanometres", "kg": "kilograms",
+         "dB": "decibels", "mph": "miles per hour"}
+
+
 def spoken_form(words):
     """Expand whisper's written numbers to the spoken form the script uses ("40" -> forty, "50%" -> fifty percent,
     "1,000" -> one thousand), splitting the word's time by character length, before alignment."""
@@ -62,8 +69,12 @@ def spoken_form(words):
     for w in words:
         r = re.fullmatch(r"[^\w]*(\d+)\s*[-–]\s*(\d+)(%?)[^\w]*", w["text"])   # "40-50%" -> forty to fifty percent
         m = re.fullmatch(r"([^\w]*)(\d{1,3}(?:,\d{3})*|\d+)(%?)([^\w]*)", w["text"])
+        d = re.fullmatch(r"[^\w]*(\d+)\.(\d+)(%?)[^\w]*", w["text"])          # r10: "2.45" -> two point four five
+        u = UNITS.get(re.sub(r"[^\w]", "", w["text"]))                          # r10: "GHz." -> gigahertz
         if r: toks = num_words(int(r.group(1))) + ["to"] + num_words(int(r.group(2))) + (["percent"] if r.group(3) else [])
+        elif d: toks = num_words(int(d.group(1))) + ["point"] + [_ONES[int(c)] for c in d.group(2)] + (["percent"] if d.group(3) else [])
         elif m: toks = num_words(int(m.group(2).replace(",", ""))) + (["percent"] if m.group(3) else [])
+        elif u: toks = u.split()
         else: out.append(w); continue
         ln = [len(t) for t in toks]; tot = sum(ln); acc = 0; t0, t1 = w["start"], w["end"]
         for t, l in zip(toks, ln):

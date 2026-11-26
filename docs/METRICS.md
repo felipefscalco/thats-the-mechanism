@@ -41,9 +41,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | 05-microwave-door | qa | 4 | 457.71 | 1833.08 | 2513.36 | 4679 | – | $0 |
 | 05-microwave-door | master | 3 | 2.71 | 8.1 | 8.63 | 160 | 15.68 | $0 |
 | 05-microwave-door | critic | 1 | 277.2 | 277.2 | 0.0 | 0 | – | $0 |
-| 06-microwave-door | render | 9 | 234.53 | 3607.92 | 1198.68 | 4518 | 15.22 | $0 |
-| 06-microwave-door | master | 5 | 2.68 | 13.91 | 15.06 | 160 | 15.54 | $0 |
-| 06-microwave-door | qa | 5 | 679.9 | 2652.93 | 10423.83 | 4396 | – | $0 |
+| 06-microwave-door | render | 14 | 246.27 | 5088.68 | 1907.71 | 4518 | 15.3 | $0 |
+| 06-microwave-door | master | 10 | 2.7 | 27.15 | 29.28 | 160 | 15.3 | $0 |
+| 06-microwave-door | qa | 10 | 575.1 | 4670.36 | 20042.46 | 6370 | – | $0 |
 | ANC:ship | critic | 1 | 93.59 | 93.59 | 0.0 | 0 | 0.0076 | $0 |
 | ANC:ship_cal | critic | 1 | 178.76 | 178.76 | 0.0 | 0 | 0.0155 | $0 |
 | ANC:ship_swap | critic | 1 | 90.71 | 90.71 | 0.0 | 0 | 0.0085 | $0 |
@@ -115,7 +115,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | 04-ice-demo | 2 | 2 |
 | 05-anc-headphones | 3 | 3 |
 | 05-microwave-door | 4 | 4 |
-| 06-microwave-door | 91 | 8 |
+| 06-microwave-door | 91 | 13 |
 | ANC:ship | 0 | 0 |
 | ANC:ship_cal | 0 | 0 |
 | ANC:ship_swap | 0 | 0 |
@@ -181,7 +181,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | 04-ice-demo | 99.9 | 221.6 | 3332 | $0 |
 | 05-anc-headphones | 1579.5 | 1613.2 | 4305 | $0 |
 | 05-microwave-door | 3142.4 | 3018.0 | 4679 | $0 |
-| 06-microwave-door | 6274.8 | 11637.6 | 4518 | $0 |
+| 06-microwave-door | 9786.2 | 21979.5 | 6370 | $0 |
 | ANC:ship | 93.6 | 0.0 | 0 | $0 |
 | ANC:ship_cal | 178.8 | 0.0 | 0 | $0 |
 | ANC:ship_swap | 90.7 | 0.0 | 0 | $0 |

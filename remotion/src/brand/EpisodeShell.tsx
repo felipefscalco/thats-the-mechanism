@@ -40,6 +40,7 @@ export const EpisodeShell: React.FC<{
   const loopFrom = D - LOOP_FRAMES;
   const lastWordEnd = words.length ? Math.ceil(words[words.length - 1].end * fps) + 3 : 0;
   const holdFrom = Math.max(lastWordEnd, loopFrom - T_FRAMES - Math.round(PAYOFF_HOLD_S * fps));
+  const loopArrived = (loopFrom - T_FRAMES) + Math.ceil((D - 1 - (loopFrom - T_FRAMES)) / 1.6);   // LoopBack q reaches 0 here
   const manual = [cue(2, "click", 0.7), ...outroCues(cardAt, cardUntil), cue(loopFrom - T_FRAMES / 2, "whoosh", 0.7), ...cues];
   // micro-ticks: a very quiet click on every caption page that has no other cue within 9 frames (texture, not clutter)
   const pages = createTikTokStyleCaptions({ captions: words.map((w, i) => ({ text: (i === 0 ? "" : " ") + w.text, startMs: w.start * 1000, endMs: w.end * 1000, timestampMs: null, confidence: null })), combineTokensWithinMilliseconds: 850 }).pages;
@@ -49,7 +50,10 @@ export const EpisodeShell: React.FC<{
     <PillarCtx.Provider value={pillar}><AbsoluteFill>
       <Background pillar={pillar} backdrop={backdrop} backdropDim={backdropDim} />
       {PROBE_TEXT && <style>{PROBE_RAW_TEXT_CSS}</style>}
-      {f >= holdFrom
+      {/* r10 exact loop: once LoopBack has fully arrived (q = 0 at 1/1.6 of its run) the frozen stage is no longer drawn under
+          it, so the last frame is background + frame-0 hook whatever the hook covers (Microwave it10: payoff pills showed
+          through a smaller hook, seam PSNR 22.8 dB). */}
+      {f >= loopArrived ? null : f >= holdFrom
         ? <Freeze frame={holdFrom}><AtFrame f={holdFrom}><AbsoluteFill className="ttm-stage">{children}</AbsoluteFill></AtFrame></Freeze>
         : <AtFrame f={f}><AbsoluteFill className="ttm-stage">{children}</AbsoluteFill></AtFrame>}
       {f >= loopFrom - T_FRAMES && <AbsoluteFill className="ttm-stage"><LoopBack from={loopFrom} hook={hook} /></AbsoluteFill>}

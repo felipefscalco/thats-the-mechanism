@@ -22,7 +22,7 @@ def ocr_frames(mp4, d):
     subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(mp4), "-vf", f"fps={FPS},crop={w}:{h}:{x}:{y},format=gray",
                     str(d / "f_%05d.png")], check=True)
     def one(f):
-        txt = " ".join(subprocess.run(["tesseract", str(f), "-", "--psm", m], capture_output=True, text=True, env=_OCR_ENV).stdout for m in ("11", "3"))  # sparse + auto: each misses some labels
+        txt = " ".join(subprocess.run(["tesseract", str(f), "-", "--psm", m], capture_output=True, text=True, env=_OCR_ENV).stdout for m in ("11", "3", "6"))  # sparse + auto: each misses some labels
         return set(toks(txt)), re.sub(r"[^A-Z0-9%]", "", txt.upper())
     from concurrent.futures import ThreadPoolExecutor
     with ThreadPoolExecutor(os.cpu_count() or 4) as ex: return list(ex.map(one, sorted(d.glob("f_*.png"))))

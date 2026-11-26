@@ -1,0 +1,18 @@
+{
+ "engine": "whisper.cpp+DTW",
+ "initial_prompt": "Glossary: microwave, microwaves, gigahertz, centimetres, different, US, milliwatts, centimetre, mechanism",
+ "script_words": 121,
+ "whisper_words": 121,
+ "match_rate": 1.0,
+ "max_unmatched_run": 0,
+ "unmatched": [],
+ "pause_segments": 8,
+ "window_violations": [],
+ "thresholds": {
+  "min_match": 0.9,
+  "min_word_sim": 0.7,
+  "max_run": 3,
+  "window_slack_s": 0.35
+ },
+ "ok": true
+}

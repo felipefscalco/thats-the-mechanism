@@ -1,0 +1,78 @@
+{
+ "sr": 24000,
+ "total_samples": 1077408,
+ "segments": [
+  {
+   "text": "You can see straight through this microwave door, so why do the microwaves stay in?",
+   "start_sample": 3600,
+   "end_sample": 122384,
+   "silence_after_samples": 8400,
+   "sr": 24000,
+   "start_s": 0.15,
+   "end_s": 5.0993
+  },
+  {
+   "text": "Look closer. Behind the glass is a metal screen, full of tiny holes.",
+   "start_sample": 130784,
+   "end_sample": 236768,
+   "silence_after_samples": 8400,
+   "sr": 24000,
+   "start_s": 5.4493,
+   "end_s": 9.8653
+  },
+  {
+   "text": "The oven runs at two point four five gigahertz. Each wave is about twelve centimetres long.",
+   "start_sample": 245168,
+   "end_sample": 385456,
+   "silence_after_samples": 8400,
+   "sr": 24000,
+   "start_s": 10.2153,
+   "end_s": 16.0607
+  },
+  {
+   "text": "To a wave that long, those tiny holes might as well be solid metal. It bounces off, back into your food.",
+   "start_sample": 393856,
+   "end_sample": 557696,
+   "silence_after_samples": 8400,
+   "sr": 24000,
+   "start_s": 16.4107,
+   "end_s": 23.2373
+  },
+  {
+   "text": "Light is different. Its waves are far smaller than the holes, so they slip right through.",
+   "start_sample": 566096,
+   "end_sample": 688976,
+   "silence_after_samples": 8400,
+   "sr": 24000,
+   "start_s": 23.5873,
+   "end_s": 28.7073
+  },
+  {
+   "text": "What little escapes is capped by US law: five milliwatts per square centimetre, two inches from the oven.",
+   "start_sample": 697376,
+   "end_sample": 861728,
+   "silence_after_samples": 8400,
+   "sr": 24000,
+   "start_s": 29.0573,
+   "end_s": 35.9053
+  },
+  {
+   "text": "Same door. The microwave sees a wall. Light sees a window.",
+   "start_sample": 870128,
+   "end_sample": 963312,
+   "silence_after_samples": 8400,
+   "sr": 24000,
+   "start_s": 36.2553,
+   "end_s": 40.138
+  },
+  {
+   "text": "That's the mechanism. A wall for microwaves, a window for you.",
+   "start_sample": 971712,
+   "end_sample": 1065408,
+   "silence_after_samples": 12000,
+   "sr": 24000,
+   "start_s": 40.488,
+   "end_s": 44.392
+  }
+ ]
+}

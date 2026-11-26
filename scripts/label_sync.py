@@ -44,7 +44,7 @@ def ocr_at(mp4, times):
         with tempfile.TemporaryDirectory() as td:
             f = Path(td) / "f.png"
             subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-ss", f"{t:.3f}", "-i", str(mp4), "-frames:v", "1", "-vf", f"crop={w}:{h}:{x}:{y},format=gray", str(f)], check=True)
-            txt = " ".join(subprocess.run(["tesseract", str(f), "-", "--psm", m], capture_output=True, text=True, env=_OCR_ENV).stdout for m in ("11", "3"))
+            txt = " ".join(subprocess.run(["tesseract", str(f), "-", "--psm", m], capture_output=True, text=True, env=_OCR_ENV).stdout for m in ("11", "3", "6"))
         return set(LP.toks(txt)), re.sub(r"[^A-Z0-9%]", "", txt.upper())
     with ThreadPoolExecutor(8) as ex: return list(ex.map(one, times))
 

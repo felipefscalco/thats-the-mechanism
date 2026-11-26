@@ -40,6 +40,7 @@ need Node.js node "install Node 20.19+ / 22.13+ (https://nodejs.org or nvm)" || 
 need npm npm "comes with Node.js" || missing=1
 need Python3 python3 "install Python 3.10+ (Linux: python3, macOS: brew install python)" || missing=1
 need FFmpeg ffmpeg "Linux: sudo apt install ffmpeg   macOS: brew install ffmpeg" || missing=1
+need Tesseract tesseract "r8 OCR gates (labels_persist.py, label_sync.py). Linux: sudo apt install tesseract-ocr   macOS: brew install tesseract" || missing=1
 need ffprobe ffprobe "same package as FFmpeg" || missing=1
 need git git "Linux: sudo apt install git   macOS: xcode-select --install / brew install git" || missing=1
 if [[ $FAST -eq 0 ]]; then

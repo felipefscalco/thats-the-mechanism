@@ -69,7 +69,9 @@ export type Chapter = { at: number; label: string };
 export const Deck: React.FC<{ chapters: Chapter[]; pillar: Pillar; rewindFrom: number }> = ({ chapters, pillar, rewindFrom }) => {
   const { f, D } = usePhase();
   const prog = f < rewindFrom ? f / rewindFrom : interpolate(f, [rewindFrom, D - 1], [1, 0], { extrapolateRight: "clamp" });
-  const ci = Math.max(0, chapters.filter((c) => c.at <= f).length - 1);
+  // r10: while the rail rewinds for the loop, the chapter number rewinds with it (last frame = "01/NN", as on frame 0)
+  const fc = f < rewindFrom ? f : Math.round(prog * rewindFrom);
+  const ci = Math.max(0, chapters.filter((c) => c.at <= fc).length - 1);
   const cur = chapters[ci];
   const W = LAYOUT.safeRight - LAYOUT.safeLeft;
   const x0 = LAYOUT.safeLeft;

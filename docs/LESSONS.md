@@ -276,3 +276,23 @@ One entry per finding. Newest at the bottom. Format:
 - Prevention (tests): tests/test_r10_learning.py, 6 cases, incl. an end-to-end build_loop simulation (renders, QA, critic and LLM faked) for a losing polish (reverted) and a winning one (kept, one round max).
 - Open: gatesmith role (backlog -> gate + test, promoted only if it fails the evidence render and passes an approved one).
 - Status: fixed (polish, gate_miss, interim rules, backlog); gatesmith open
+
+### L-40 · 2026-11-26 · captions + anchors · major (spoken numbers broke caption alignment and scene anchors)
+- Problem: regenerating the Microwave voice under the r8 caption aligner failed ("2.45 GHz" from whisper vs "two point four five gigahertz" in the script: a 6-word unmatched run, captions.json not written). Once fixed, the captions show spoken numbers as digits ("5 milliwatts", "12 cm"), so the episode's anchors at("five milliwatts"), at("two inches"), at("twelve") no longer existed: makeAt throws at bundle time, i.e. the render would fail. lint_shots caught the shots.md beats only by luck of running it first.
+- Root cause: captions.spoken_form expanded integers and percents but not decimals or unit symbols; nothing checked TSX anchors against the captions before rendering.
+- Fix (code): captions.spoken_form expands decimals ("2.45" -> two point four five) and unit symbols (GHz, mW/MW, cm, mm, km, kg, dB, mph...); the written form still shows on screen. New static gate in scripts/static_gates.py `anchors_resolve`: every at("phrase") in the episode must be spoken in captions.json (runs in static_check.py before any render; PASS on all 5 episodes, FAIL on a planted at("twelve")). Microwave anchors moved to the written forms (at("12"), at("5 milliwatts"), at("2 inches")).
+- Prevention: tests/test_r10_captions.py (decimals, units, case, written-form merge, anchor gate). Rule of thumb: anchor on words, or on the digits the captions will show.
+- Status: fixed
+
+### L-41 · 2026-11-26 · Microwave · minor (r9 static gates)
+- Problem: the r6-approved Microwave failed the 4 r9 source gates: no curiosity signal in the first sentence; two causal sentences without an on-screen keyword; 0.93 s payoff hold (< 1.5 s); no hero@ beat.
+- Fix: first two sentences joined into one question (punctuation only; script gate re-approved by Felipe, voice regenerated); MICROWAVE OVEN FREQUENCY listed for shot 3 and a BOUNCES BACK TagLabel on the bounce; tail 2.0 s (hold room 2.6 s); hero@bounces off. static_check: PASS.
+- Status: fixed (static); measured r9 gates on the render: see it9
+
+### L-42 · 2026-11-27 · kit + gates · major (one episode's re-layout exposed two kit defects and a gate measurement bug)
+- Problem: bringing Microwave up to the r9 gates (24/37 -> 35/37 over it9-it13) broke the loop seam (PSNR 48.5 -> 22.8 dB) once the oven was drawn at 0.8x, and the OCR gate failed a label that is plainly legible.
+- Root causes: (1) EpisodeShell kept drawing the frozen payoff stage under a TRANSPARENT LoopBack, so the seam was exact only while the hook happened to cover the payoff (the old 1.5x hook zoom did); (2) the Deck chapter number never rewound with the rail (last frame "07/07" vs frame 0 "01/07"; the r6 ANC critic saw the same); (3) labels_persist / label_sync ran tesseract only with --psm 11 and 3, which return nothing for light text in a dark pill over a patterned background; --psm 6 reads it (checked on the original and on a frosted version).
+- Fix (code): EpisodeShell stops drawing the stage once LoopBack has fully arrived (`loopArrived`), so the last frame is background + frame-0 hook for any hook size (Microwave seam 51.5 dB); Deck derives the chapter from the rewinding rail; OCR runs psm 11, 3 and 6.
+- Also: gates can pull against each other. Payoff settled >= 1.5 s vs no stage hold > 2.0 s leaves a [1.5, 2.0] s window: keep the stage moving (a slow push on the last line) until the payoff freeze. A14 badge pop (overshoot) vs entrances (no snap): large pills read as a snap when they appear at 0.62x; slide them in with the kit `Enter` (Microwave it12 passed both; it13 flagged one pill again, see BACKLOG).
+- Microwave design changes: oven at 0.8x (no whole-stage card), hook zoom 1.25x, camera beats on the four >1.75 s gaps, static timer, 14-16 f overshoot ramps, BOUNCES BACK / ONE HOLE / 12 cm as popping tags, GLASS held 1.6 s, explicit `LABEL @phrase` anchors, final-line push.
+- Status: fixed except two (BACKLOG)

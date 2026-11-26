@@ -27,8 +27,25 @@ def checks(comp_id: str, slug: str = None):
     # share one transform with their backing. Raw SVG <text>/<tspan> or a CSS text div in an episode bypasses that.
     raw = [f"{ln}: {line.strip()[:80]}" for ln, line in enumerate(src.splitlines(), 1) if re.search(r"<(text|tspan)\b", line)]
     out.append(("text: atomic labels only (no raw <text>/<tspan> in the episode; use Label/TagLabel/Badge/Pill)", not raw, dict(raw=raw[:10])))
-    if slug: out += hook_and_clarity(comp_id, slug) + payoff_hold(slug) + hero_marked(slug)
+    if slug: out += hook_and_clarity(comp_id, slug) + payoff_hold(slug) + hero_marked(slug) + anchors_resolve(src, slug)
     return out
+
+
+def anchors_resolve(src, slug):
+    """r10 (L-40): every at("phrase") / makeAt(...)("phrase") in the episode resolves against the captions. makeAt throws at
+    bundle time otherwise, so a missing phrase only surfaced as a failed render (captions.py shows numbers as digits:
+    "five milliwatts" -> "5 milliwatts", "two point four five gigahertz" -> "2.45 GHz.")."""
+    import json
+    try:
+        ws = [re.sub(r"[^a-z0-9]", "", w["text"].lower()) for w in json.loads((ROOT / "episodes" / slug / "captions.json").read_text())]
+    except Exception as e:
+        return [("anchors: every at(\"phrase\") in the episode is spoken in the captions", False, dict(error=str(e)[:200]))]
+    missing = []
+    for ph in sorted(set(re.findall(r"\bat\(\s*\"([^\"]+)\"", src))):
+        p = [re.sub(r"[^a-z0-9]", "", t.lower()) for t in ph.split()]
+        if not any(ws[i:i + len(p)] == p for i in range(len(ws) - len(p) + 1)):
+            missing.append(ph)
+    return [("anchors: every at(\"phrase\") in the episode is spoken in the captions", not missing, dict(missing=missing))]
 
 
 def payoff_hold(slug):

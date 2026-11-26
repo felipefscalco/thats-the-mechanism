@@ -38,6 +38,33 @@ I = float(re.findall(r"I:\s+(-?[\d.]+) LUFS", e)[-1]); TP = float(re.findall(r"P
 res["loudness"] = dict(I=I, TP=TP, LRA=LRA)
 check("loudness -15.5..-13 LUFS, true peak <= -1 dBTP", -15.5 <= I <= -13 and TP <= -1.0, res["loudness"])
 
+# r10: contrast (probe + occupancy renders, ~210 s) and the SFX stem render (~170 s) were the two serial halves of QA.
+# Start contrast and the MP4 analyzers FIRST so they run while the SFX stem renders below. (A node renderer process plus
+# one CLI render is fine; two CLI `remotion render`s at once collided in r10.) Card times only need the captions + duration.
+ws_all = words(SLUG)
+card_at = phrase_time(ws_all, "That's the mechanism")
+k_mech = next(i for i, w in enumerate(ws_all) if w["start"] >= card_at and "mechanism" in w["text"].lower())
+card_until = ws_all[k_mech + 1]["start"] if k_mech + 1 < len(ws_all) else dur
+try:
+    _cuts = ",".join(f"{phrase_time(ws_all, r['at']):.2f}" for r in shots(SLUG) if r["at"])
+except Exception:
+    _cuts = ""
+_card = f"{card_at:.2f},{card_until:.2f}"
+_bg = {}
+_SERIAL = os.environ.get("QA_SERIAL") == "1"   # pre-r10 behaviour (one analyzer at a time): debugging / benchmarks
+def _spawn(key, flag, argv):
+    if flag not in sys.argv:
+        _bg[key] = argv if _SERIAL else subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+def _collect(key):
+    if _SERIAL: return subprocess.run(_bg[key], capture_output=True, text=True)
+    p_ = _bg[key]; out_, err_ = p_.communicate()
+    return subprocess.CompletedProcess(p_.args, p_.returncode, out_, err_)
+_S = ROOT / "scripts"
+_spawn("contrast", "--no-contrast", [sys.executable, str(_S / "contrast.py"), ID, str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
+_spawn("framing", "--no-framing", [sys.executable, str(_S / "framing.py"), str(MP4), str(OUT), "--card", _card])
+_spawn("entrances", "--no-entrances", [sys.executable, str(_S / "entrances.py"), str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
+_spawn("artedge", "--no-artedge", [sys.executable, str(_S / "artedge.py"), str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
+
 # 3. SFX vs voice from stems (rendered with --props stem)
 if STEMS:
     st = {}
@@ -133,27 +160,6 @@ ws_all = words(SLUG)
 card_at = phrase_time(ws_all, "That's the mechanism")
 k_mech = next(i for i, w in enumerate(ws_all) if w["start"] >= card_at and "mechanism" in w["text"].lower())
 card_until = ws_all[k_mech + 1]["start"] if k_mech + 1 < len(ws_all) else dur
-# r10 (C): contrast / framing / entrances / artedge only read the MP4 (+ source probes): start all four now, in parallel.
-# Their sections below just collect the result, so the report and the check order are unchanged.
-try:
-    _cuts = ",".join(f"{phrase_time(ws_all, r['at']):.2f}" for r in shots(SLUG) if r["at"])
-except Exception:
-    _cuts = ""
-_card = f"{card_at:.2f},{card_until:.2f}"
-_bg = {}
-_SERIAL = os.environ.get("QA_SERIAL") == "1"   # pre-r10 behaviour (one analyzer at a time): debugging / benchmarks
-def _spawn(key, flag, argv):
-    if flag not in sys.argv:
-        _bg[key] = argv if _SERIAL else subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-def _collect(key):
-    if _SERIAL: return subprocess.run(_bg[key], capture_output=True, text=True)
-    p_ = _bg[key]; out_, err_ = p_.communicate()
-    return subprocess.CompletedProcess(p_.args, p_.returncode, out_, err_)
-_S = ROOT / "scripts"
-_spawn("contrast", "--no-contrast", [sys.executable, str(_S / "contrast.py"), ID, str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
-_spawn("framing", "--no-framing", [sys.executable, str(_S / "framing.py"), str(MP4), str(OUT), "--card", _card])
-_spawn("entrances", "--no-entrances", [sys.executable, str(_S / "entrances.py"), str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
-_spawn("artedge", "--no-artedge", [sys.executable, str(_S / "artedge.py"), str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
 whip = len(fr) - LOOP_FRAMES - T_FRAMES  # first frame of the loop whip (LoopBack starts at loopFrom - T_FRAMES)
 ref = fr[whip - 1]; k = whip - 1
 while k > 0 and np.abs(fr[k] - ref).mean() < 6.0: k -= 1

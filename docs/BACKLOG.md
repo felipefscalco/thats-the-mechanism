@@ -30,6 +30,15 @@ Ideas and suggestions from reviews that are not bugs. Reviewers append; whoever 
 
 - [ ] (r6, tool) lessons.py: merge incrementally into the committed docs/style_rules.json instead of rebuilding from local qa/** (the drop guard is done, L-36).
 
+- [ ] (r10) Microwave 35/37: (a) A14 badge-pop flagged one sliding pill in it13 but not in it12 with the same pill code: the 2-frame occupancy sampling makes first_w_ratio depend on phase; sample every frame around a detected entrance or score the max over two phases; (b) the 12 cm bracket bar still reads as a snap to entrances.py: draw it from the centre out or with a mask reveal.
+- [ ] (r10) Gate-tension check: a static/preview test that flags known opposing gate pairs (payoff >= 1.5 s vs stage hold <= 2.0 s; A14 pop vs entrances snap) before render (L-42).
+- [ ] (r9 debt) Elevator, Sky and ANC fail the r9 static gates (no hero@ beat; Elevator clarity 7/8). With r10 fail-fast, iterate.sh refuses to render them until fixed (FORCE_RENDER=1 overrides).
+- [ ] (e07 Cursor test) Node: Rspack needs Node >= 22.12; a .tool-versions pin at 22.11 failed 4 preview runs. Add a Node-version check to check_portability.py (gate before render) and pin a valid version.
+- [ ] (e07 Cursor test) gates.py has no `angle` gate although AGENTS.md hard rule 2 requires the angle approval: add `angle` (human) to pipeline.config.json gates.
+- [ ] (e07 Cursor test) lint_shots.py / static_gates.py crash with FileNotFoundError when captions.json does not exist yet (script stage): report a readable FAIL/SKIP instead.
+- [ ] (e07 Cursor test) whisper-cli failed once (exit 2) and passed on retry: retry once inside captions.py and log stderr.
+- [ ] (e07 Cursor test) Two agents rendering at once on one host slowed both (Microwave render 242 s -> 425 s): one render at a time per host (lock in render.sh / probe_frames / stem render).
+
 ## Done
 - [x] (r6) Portability gate scripts/check_portability.py (shebangs, /workspace/ paths, -vsync, GNU sed -i) run before every render; setup.sh Python 3.12/3.13 pick; lessons.py drop guard (L-31, L-34, L-36).
 - [x] (r6) Label overlap gate A13 (contrast.py occupancy) and agy critic backend (`critic.py --backend agy`, `ship_check.sh`); the pilot's `scripts/critic_agy.py` was dropped for them. (round 6, merged into the Microwave pilot)

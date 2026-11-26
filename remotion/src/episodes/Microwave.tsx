@@ -3,8 +3,8 @@ import { Easing, interpolate, useVideoConfig } from "remotion";
 import { Check, X } from "lucide-react";
 import words from "../06-microwave-door.captions.json";
 import {
-  C, EpisodeShell, LOOP_FRAMES, MONO, PILLARS, Pill, Shot, Stage, TagLabel, TitleHook, Label,
-  cue, ease, makeAt, pop, popOpacity, popScale, reveal, squash, useG,
+  C, Enter, EpisodeShell, LOOP_FRAMES, MONO, PILLARS, Pill, Shot, Stage, TagLabel, TitleHook, Label,
+  EASE, cue, ease, makeAt, pop, popOpacity, popScale, reveal, squash, useG,
 } from "../brand";
 
 /**
@@ -32,6 +32,9 @@ const Arrow: React.FC<{ x: number; y: number; dir: 1 | -1; color: string; o?: nu
   <polygon points={`${x},${y} ${x - dir * size},${y - size * 0.7} ${x - dir * size},${y + size * 0.7}`} fill={color} opacity={o} />
 );
 const at0 = (fps: number) => makeAt(words, fps);
+/** r9 A14 pop: 14-frame ramp. ramp() feeds TagLabel `o` (the kit adds the overshoot); popIn() feeds Pill `s` (overshoot here). */
+const ramp = (f: number, at: number, d = 14) => Math.min(1, Math.max(0, (f - at) / d));
+const popIn = (f: number, at: number, d = 14) => (f <= at ? 0 : EASE.OVERSHOOT(ramp(f, at, d)));
 
 /* ---------------------------------------------------------------- front view: hook + final ---------------- */
 const WX = 140, WY = 550, WW = 560, WH = 460; // door window
@@ -42,11 +45,11 @@ const Front: React.FC<{ final?: boolean }> = ({ final = false }) => {
   const why = at("So why"), stay = at("stay in"), door = at("microwave door");
   const btn = final ? 0 : pop(f, door, fps, 12);
   // scale reveal: frame 0 is a bright close-up of the glowing window, pulling out to the whole oven by ~1 s
-  const z = final ? 1 : interpolate(f, [2, 30], [1.5, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) });
+  const z = 0.8 * (final ? 1 : interpolate(f, [2, 30], [1.25, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) }));
   const cx = WX + WW / 2, cy = WY + WH / 2;
   const th = f / 22;
   const mugX = cx + 130 * Math.sin(th), mugS = 0.9 + 0.1 * Math.cos(th);
-  const timer = Math.max(0, 30 - Math.floor(f / fps));
+  const timer = 30;   // static: a ticking digit is an entrance snap every second (r9 entrances gate)
   // microwaves: rings from the centre, clipped to the window; they arrive on "So why", the frame flashes on "stay in"
   const ringsOn = final ? 1 : 0.35 + 0.65 * ease(f, why - 4, why + 8); // faint from frame 0 (no 1-3 s hold), full on "So why"
   const flash = final ? 0 : Math.max(0, 1 - Math.abs(f - stay - 4) / 10);
@@ -110,8 +113,8 @@ const FinalHud: React.FC = () => {
   const w = at("A wall for"), win = at("a window for you");
   return (
     <Stage>
-      <Pill x={500} y={400} w={680} text="A WALL FOR MICROWAVES" color={MW} s={pop(f, w, fps)} icon={X} />
-      <Pill x={500} y={1150} w={560} text="A WINDOW FOR YOU" color={C.green} s={pop(f, win, fps)} icon={Check} />
+      <Enter p={ramp(f, w, 16)} cx={500} cy={400} from="up" dist={90}><Pill x={500} y={400} w={680} text="A WALL FOR MICROWAVES" color={MW} s={popIn(f, w)} icon={X} /></Enter>
+      <Enter p={ramp(f, win, 16)} cx={500} cy={1150} from="up" dist={90}><Pill x={500} y={1150} w={560} text="A WINDOW FOR YOU" color={C.green} s={popIn(f, win)} icon={Check} /></Enter>
     </Stage>
   );
 };
@@ -122,7 +125,7 @@ const Closer: React.FC = () => {
   const { fps } = useVideoConfig();
   const at = at0(fps);
   const glass = at("Behind the glass"), metal = at("metal screen"), holes = at("tiny holes");
-  const slide = ease(f, glass + 2, glass + 22);
+  const slide = ease(f, glass + 22, glass + 42);
   const X0 = 110, Y0 = 390, W = 860, H = 700, S = 96, R = 28;
   const cols = Math.floor(W / S), rows = Math.floor(H / S);
   return (
@@ -154,7 +157,7 @@ const Closer: React.FC = () => {
         <g transform={`translate(${slide * 980} ${-slide * 60}) rotate(${slide * 8} ${X0 + W / 2} ${Y0 + H / 2})`} opacity={1 - slide * 0.3}>
           <rect x={X0} y={Y0} width={W} height={H} fill="#A9DCFF" opacity={0.34} />
           <path d={`M${X0 + 60} ${Y0} L${X0 + 260} ${Y0} L${X0 + 20} ${Y0 + H} L${X0 - 180} ${Y0 + H} Z`} fill="white" opacity={0.16} />
-          <TagLabel x={X0 + W / 2} y={Y0 + H / 2 + 14} text="GLASS" size={48} />
+          <TagLabel x={X0 + W / 2} y={Y0 + H / 2 + 14} text="GLASS" size={60} />
         </g>
       </g>
       <rect x={X0} y={Y0} width={W} height={H} rx={30} fill="none" stroke="#2A2E3A" strokeWidth={10} />
@@ -168,14 +171,14 @@ const WaveLen: React.FC = () => {
   const f = useG();
   const { fps } = useVideoConfig();
   const at = at0(fps);
-  const runs = at("The oven runs"), ghz = at("GHz"), each = at("Each wave"), twelve = at("twelve");
+  const runs = at("The oven runs"), ghz = at("GHz"), each = at("Each wave"), twelve = at("12");
   const v = ease(f, runs + 20, ghz, 0, 2.45);
   const gp = pop(f, ghz, fps, 11);
   const LAM = 300, Y = 860;
   // the wave is on stage from the first frame of the shot (no empty half); "Each wave" brings the bracket, not the wave
   const len = ease(f, runs, runs + 40, 0, 900);
   const amp = 40 + 50 * ease(f, each, each + 14);
-  const br = ease(f, twelve, twelve + 12);
+  const br = ease(f, twelve, twelve + 20);   // r9 entrances: a 300 px bar drawn over 20 f reads as draw-on, not a snap
   const hole = pop(f, twelve + 10, fps); // visible ~1.5 s before the whip (critic it3: "flashes < 0.5 s")
   return (
     <Stage>
@@ -184,18 +187,18 @@ const WaveLen: React.FC = () => {
         <Label x={0} y={0} text={`${v.toFixed(2)} GHz`} size={120} color={C.amber} font={MONO} />
       </g>
       <path d={wave(90, Y, len, LAM, amp, f / 4)} stroke={MW} strokeWidth={14} fill="none" strokeLinecap="round" />
-      <g opacity={br}>
+      <g opacity={br > 0 ? 1 : 0}>
         <line x1={240} y1={Y - 150} x2={240 + LAM * br} y2={Y - 150} stroke={C.amber} strokeWidth={6} />
-        <line x1={240} y1={Y - 172} x2={240} y2={Y - 128} stroke={C.amber} strokeWidth={6} />
-        <line x1={240 + LAM} y1={Y - 172} x2={240 + LAM} y2={Y - 128} stroke={C.amber} strokeWidth={6} opacity={br > 0.95 ? 1 : 0} />
-        <Label x={240 + LAM / 2} y={Y - 180} text="≈ 12 cm" size={56} color={C.amber} font={MONO} />
+        <line x1={240} y1={Y - 150 - 22 * br} x2={240} y2={Y - 150 + 22 * br} stroke={C.amber} strokeWidth={6} />
+        <line x1={240 + LAM} y1={Y - 150 - 22 * Math.max(0, br - 0.8) * 5} x2={240 + LAM} y2={Y - 150 + 22 * Math.max(0, br - 0.8) * 5} stroke={C.amber} strokeWidth={6} />
+        <TagLabel x={240 + LAM / 2} y={Y - 186} text="≈ 12 cm" size={48} color={C.amber} o={br} />
       </g>
       <g opacity={popOpacity(hole)} transform={`translate(720 1060) scale(${popScale(hole)})`}>
         <rect x={-70} y={-70} width={140} height={140} rx={14} fill={METAL} stroke="#3A3F4E" strokeWidth={4} />
         <circle r={7} fill="#FFD27A" />
         <circle r={22} fill="none" stroke={C.amber} strokeWidth={4} strokeDasharray="6 6" />
       </g>
-      <Label x={560} y={1080} text="ONE HOLE" size={40} anchor="end" o={popOpacity(hole)} />
+      <TagLabel x={560} y={1080} text="ONE HOLE" size={36} anchor="end" o={ramp(f, twelve + 10)} />
     </Stage>
   );
 };
@@ -209,7 +212,7 @@ const Side: React.FC<{ mode: "story" | "both" }> = ({ mode }) => {
   const at = at0(fps);
   const both = mode === "both";
   const s = both ? at("Same door") - 30 : at("To a wave"), solid = at("solid metal"), bounce = at("bounces off"), food = at("your food");
-  const li = both ? s - 60 : at("Light is different"), far = at("far smaller"), slip = at("slip right through");
+  const li = both ? s - 60 : at("Light is different"), slip = at("slip right through");
   const wallSees = at("sees a wall"), lightSees = at("Light sees");
   const hitAt = s + 28;
   const head = ease(f, s, hitAt, 90, WALL);
@@ -249,7 +252,9 @@ const Side: React.FC<{ mode: "story" | "both" }> = ({ mode }) => {
         const y = gapY(k), x0 = 250, x1 = 860, L = (x1 - x0) * Math.min(1, Math.max(0, lightLen * 1.15 - i * 0.07));
         return <path key={k} d={wave(x0, y, L, 26, 4, f / 1.5 + i)} stroke={LIGHT} strokeWidth={5} fill="none" strokeLinecap="round" />;
       })}
-      <TagLabel x={100} y={1040} text="LIGHT · < 1 µm" size={34} anchor="start" color={LIGHT} o={both ? 1 : ease(f, far, far + 8)} />
+      {/* r9 clarity gate: the causal step "It bounces off, back into your food" gets its on-screen keyword (story mode only) */}
+      <TagLabel x={430} y={960} text="BOUNCES BACK" size={34} color="#C9BFFF" o={both ? 0 : ease(f, bounce + 4, bounce + 14) * (1 - ease(f, li - 10, li - 2))} />
+      <TagLabel x={100} y={1040} text="LIGHT · < 1 µm" size={34} anchor="start" color={LIGHT} o={both ? 1 : ramp(f, li)} />
       {/* the screen in cross-section: bars with gaps (holes) */}
       {Array.from({ length: Math.floor((BOT - TOP) / PITCH) + 1 }).map((_, k) => (
         <rect key={k} x={WALL - 12} y={TOP + k * PITCH} width={24} height={BAR} rx={5} fill={wallTint > 0 ? MW : "#9AA0AE"} opacity={1} stroke={C.ink} strokeWidth={2} />
@@ -261,8 +266,8 @@ const Side: React.FC<{ mode: "story" | "both" }> = ({ mode }) => {
         <circle r={22 + 6 * eye} fill="#3A6EA5" /><circle r={10 + 3 * eye} fill={C.ink} />
         <circle r={60} fill={LIGHT} opacity={0.25 * eye} />
       </g>
-      <TagLabel x={100} y={TOP + 140} text="MICROWAVE SEES A WALL" size={34} color="#C9BFFF" anchor="start" o={both ? ease(f, wallSees, wallSees + 8) : 0} />
-      <TagLabel x={760} y={560} text="SEES A WINDOW" size={38} color={C.green} anchor="middle" o={both ? ease(f, lightSees, lightSees + 8) : 0} />
+      <TagLabel x={100} y={TOP + 140} text="MICROWAVE SEES A WALL" size={34} color="#C9BFFF" anchor="start" o={both ? ramp(f, wallSees) : 0} />
+      <TagLabel x={760} y={560} text="SEES A WINDOW" size={38} color={C.green} anchor="middle" o={both ? ramp(f, lightSees) : 0} />
       {!both && <Label x={WALL} y={TOP - 24} text="THE SCREEN, SIDE-ON" size={34} color={C.dim} o={ease(f, solid - 40, solid - 30)} />}
     </Stage>
   );
@@ -275,8 +280,8 @@ const SideHud: React.FC = () => {
   const solid = at("solid metal"), li = at("Light is different"), slip = at("slip right through");
   return (
     <Stage>
-      {f < li && <Pill x={500} y={1160} w={600} text="SOLID METAL TO IT" color={C.red} s={pop(f, solid, fps)} icon={X} />}
-      {f >= slip - 2 && <Pill x={500} y={1160} w={620} text="LIGHT SLIPS THROUGH" color={C.green} s={pop(f, slip, fps)} icon={Check} />}
+      {f < li && <Enter p={ramp(f, solid, 16)} cx={500} cy={1160} from="up" dist={90}><Pill x={500} y={1160} w={600} text="SOLID METAL TO IT" color={C.red} s={popIn(f, solid)} icon={X} /></Enter>}
+      {f >= slip - 2 && <Enter p={ramp(f, slip, 16)} cx={500} cy={1160} from="up" dist={90}><Pill x={500} y={1160} w={620} text="LIGHT SLIPS THROUGH" color={C.green} s={popIn(f, slip)} icon={Check} /></Enter>}
     </Stage>
   );
 };
@@ -286,7 +291,7 @@ const Limit: React.FC = () => {
   const f = useG();
   const { fps } = useVideoConfig();
   const at = at0(fps);
-  const esc = at("What little escapes"), five = at("five milliwatts"), two = at("two inches");
+  const esc = at("What little escapes"), five = at("5 milliwatts"), two = at("2 inches");
   const np = pop(f, five, fps, 11);
   const rule = ease(f, two, two + 16);
   const FX = 300; // oven front (side view)
@@ -299,7 +304,7 @@ const Limit: React.FC = () => {
       <rect x={FX - 60} y={575} width={10} height={390} fill={BODY2} />
       <rect x={FX - 18} y={590} width={18} height={360} fill={METAL} />
       <rect x={FX} y={700} width={26} height={140} rx={10} fill={BODY2} />
-      <Label x={185} y={530} text="OVEN, SIDE-ON" size={32} color={C.dim} />
+      <Label x={230} y={530} text="OVEN, SIDE-ON" size={32} color={C.dim} />
       {[0, 1, 2, 3].map((k) => {
         const r = ((f - esc) * 3 + k * 45) % 180;
         return <path key={k} d={`M${FX} ${770 - r * 0.9} A ${r} ${r * 0.9} 0 0 1 ${FX} ${770 + r * 0.9}`} fill="none" stroke={MW} strokeWidth={5} opacity={f >= esc ? 0.55 * (1 - r / 180) : 0} />;
@@ -326,7 +331,7 @@ const LimitHud: React.FC = () => {
   const f = useG();
   const { fps } = useVideoConfig();
   const cap = at0(fps)("capped by");
-  return <Stage><Pill x={500} y={1160} w={560} text="US FEDERAL LIMIT" color={C.amber} s={pop(f, cap, fps)} /></Stage>;
+  return <Stage><Enter p={ramp(f, cap, 16)} cx={500} cy={1160} from="up" dist={90}><Pill x={500} y={1160} w={560} text="US FEDERAL LIMIT" color={C.amber} s={popIn(f, cap)} /></Enter></Stage>;
 };
 
 /* ---------------------------------------------------------------- composition ---------------------------- */
@@ -338,10 +343,10 @@ export const MicrowaveVideo: React.FC = () => {
   const cues = [
     cue(4, "swish", 0.7), cue(at("microwave door"), "click", 0.8), cue(at("So why"), "tick", 0.75),
     cue(at("Behind the glass") + 2, "swish", 0.75), cue(at("metal screen"), "clank", 0.8), cue(at("tiny holes"), "pop3", 0.85),
-    cue(runs + 20, "count", 0.75), cue(at("GHz"), "pop", 0.9), cue(at("Each wave"), "swish", 0.7), cue(at("twelve") + 10, "pop", 0.8),
+    cue(runs + 20, "count", 0.75), cue(at("GHz"), "pop", 0.9), cue(at("Each wave"), "swish", 0.7), cue(at("12") + 10, "pop", 0.8),
     cue(twa + 28, "thud", 0.85), cue(at("solid metal"), "error", 0.75), cue(at("your food"), "pop", 0.85),
     cue(li + 8, "glint", 0.7), cue(at("far smaller"), "tick", 0.75), cue(at("slip right through"), "confirm", 0.85),
-    cue(at("capped by"), "pop", 0.85), ...reveal(at("five milliwatts"), 0.8), cue(at("two inches"), "tick", 0.8), cue(at("two inches") + 16, "detent", 0.8),
+    cue(at("capped by"), "pop", 0.85), ...reveal(at("5 milliwatts"), 0.8), cue(at("2 inches"), "tick", 0.8), cue(at("2 inches") + 16, "detent", 0.8),
     cue(at("sees a wall"), "thud", 0.8), cue(at("Light sees"), "confirm", 0.8),
     cue(fin, "pop", 0.85), cue(at("a window for you"), "confirm", 0.85),
   ];
@@ -350,19 +355,20 @@ export const MicrowaveVideo: React.FC = () => {
       cardAt={card} cardUntil={fin} cues={cues} hook={<Front />}
       chapters={[{ at: 0, label: "SEE IN, NOT OUT" }, { at: closer, label: "THE SCREEN" }, { at: runs, label: "THE WAVE" }, { at: twa, label: "BLOCKED" },
         { at: li, label: "LIGHT" }, { at: esc, label: "THE LIMIT" }, { at: same, label: "SAME DOOR" }]}>
-      <Shot from={0} to={closer} inT="none" outT="push" cam={[{ at: 30, kind: "push", s: 1.06, y: 10, dur: 50 }, { at: at("stay in"), kind: "punch", s: 1.12, x: 60, y: 16 }]}><Front /></Shot>
+      <Shot from={0} to={closer} inT="none" outT="push" cam={[{ at: 30, kind: "push", s: 1.06, y: 10, dur: 50 }, { at: at("So why"), kind: "glide", s: 1.07, x: 24, y: 10, dur: 24 }, { at: at("stay in"), kind: "punch", s: 1.12, x: 60, y: 16 }]}><Front /></Shot>
       <Shot from={closer} to={runs} inT="push" outT="cut" cam={[{ at: at("Behind the glass"), kind: "push", s: 1.06 }, { at: at("tiny holes"), kind: "glide", s: 1.1, x: -20, dur: 24 }]}><Closer /></Shot>
-      <Shot from={runs} to={twa} inT="cut" outT="whip" cam={[{ at: at("Each wave"), kind: "glide", s: 1.04, y: -30, dur: 24 }, { at: at("twelve"), kind: "punch", s: 1.12, x: 30, y: 20 }]}><WaveLen /></Shot>
+      <Shot from={runs} to={twa} inT="cut" outT="whip" cam={[{ at: at("GHz"), kind: "push", s: 1.03, dur: 20 }, { at: at("Each wave"), kind: "glide", s: 1.04, y: -30, dur: 24 }, { at: at("12"), kind: "punch", s: 1.12, x: 30, y: 20 }]}><WaveLen /></Shot>
       <Shot from={twa} to={esc} inT="whip" outT="whipUp" hud={<SideHud />} cam={[
         { at: twa, kind: "glide", s: 1.06, x: 40, dur: 20 },
         { at: at("solid metal"), kind: "push", s: 1.14, x: 0 },
         { at: at("bounces off"), kind: "punch", s: 1.2, x: 60 },
         { at: li, kind: "pull", s: 1.0, x: 0 },
+        { at: at("far smaller"), kind: "push", s: 1.04, x: -10, dur: 24 },
         { at: at("slip right through"), kind: "glide", s: 1.06, x: -40, dur: 24 },
       ]}><Side mode="story" /></Shot>
-      <Shot from={esc} to={same} inT="whipUp" outT="cut" hud={<LimitHud />} cam={[{ at: at("five milliwatts"), kind: "push", s: 1.08 }, { at: at("two inches"), kind: "glide", s: 1.1, x: 40, y: -40, dur: 24 }]}><Limit /></Shot>
+      <Shot from={esc} to={same} inT="whipUp" outT="cut" hud={<LimitHud />} cam={[{ at: at("capped by"), kind: "glide", s: 1.03, x: 20, dur: 22 }, { at: at("5 milliwatts"), kind: "push", s: 1.08 }, { at: at("2 inches"), kind: "glide", s: 1.1, x: 40, y: -40, dur: 24 }]}><Limit /></Shot>
       <Shot from={same} to={card} inT="cut" outT="push" cam={[{ at: same, kind: "pull", s: 1.0 }, { at: at("Light sees"), kind: "glide", s: 1.05, x: -30, dur: 22 }]}><Side mode="both" /></Shot>
-      <Shot from={fin} to={loop} inT="push" outT="whip" hud={<FinalHud />}><Front final /></Shot>
+      <Shot from={fin} to={loop} inT="push" outT="whip" hud={<FinalHud />} cam={[{ at: at("a window for you"), kind: "push", s: 1.04, dur: 44 }]}><Front final /></Shot>
     </EpisodeShell>
   );
 };
