@@ -1,0 +1,198 @@
+{
+  "episode": "Sky",
+  "label": "ship_cal",
+  "backend": "agy",
+  "mode": "calibrated",
+  "mp4": "renders/Sky_v8.mp4",
+  "model": "gemini-4-neon-high",
+  "wall_s": 256.98,
+  "cost_usd": 0.0,
+  "usage": {
+    "prompt_tokens": 24323,
+    "output_tokens": 20922,
+    "total_tokens": 45245
+  },
+  "timestamp": "2026-11-26T09:05:49-03:00",
+  "caps_triggered": [
+    "static_stage_gt_2s (motion_craft <= 6): opening horizon title hold (00:00-00:03) and final orbital payoff (00:37-00:40) remain compositionally static for >2 s with only minor ambient drift",
+    "no_easing_anticipation_overshoot (motion_craft <= 6): multiple labels fade in linearly without backing pills or overshoot (00:04, 00:18, 00:32, 00:35, 00:42) and hero icons enter rigidly without squash/stretch or follow-through",
+    "generic_template_look (style_fidelity <= 6, concept_wow <= 6): plain triangle prism, stock magnifying glass, stick-figure observer, soft radial-blur glows, and unshaded clipart Earth produce a template/slide-deck look below the 7.6 Flat Vector anchor",
+    "squint_or_low_contrast_text (design_typography <= 6): ghosted text fades without dark pill backing (QA contrast min_ratio=1.04 at 00:18, 00:32, 00:35, 00:42), tiny horizon credit at 00:32, caption crowding at 00:33, and washed-out top metadata over bright blue skies (00:04-00:06, 00:42-00:46)",
+    "sound_off_clarity_gaps (clarity <= 6): Earth lacks a day/night terminator shadow (00:27-00:40), the blue beam exits undepleted at full thickness despite 4x scattering (00:18-00:21), and the caliper bracket underlines a text pill instead of the molecule (00:12)",
+    "bleepy_repetitive_sfx (sound_sync <= 6): high-pitched synthetic UI chimes/pings on prism and scatter beats (00:08, 00:15, 00:19-00:21), repetitive cut whooshes, and QA-confirmed consecutive VO-beat sync misses"
+  ],
+  "general_rules": [
+    {
+      "category": "design_typography",
+      "enforcement": "component",
+      "evidence": "00:18, 00:32, 00:35, 00:42 (label text fades in ahead of its pill backing; QA contrast min_ratio=1.04, labels_persist=False)",
+      "measurable": true,
+      "proposed_gate": "Sample every label bounding box across its first and last 6 visible frames and fail the render if text-to-background WCAG contrast drops below 4.5:1 or text opacity leads container opacity.",
+      "rule": "Always animate label text and its high-contrast container pill as a single atomic unit so text never appears partially faded without full backing contrast.",
+      "severity": "blocker"
+    },
+    {
+      "category": "voice_captions",
+      "enforcement": "gate",
+      "evidence": "00:40 - 00:42 (end-card phrase splits across the cut and leaks onto the following callback shot; QA vo_sync_advisory=False)",
+      "measurable": true,
+      "proposed_gate": "Cross-check word-level caption timestamps against the end-card frame range and block the render if any word from the end-card phrase appears in the caption track before or after the card.",
+      "rule": "Always suppress burned-in captions across the entire spoken window of the end-card phrase and align the end-card cut within two frames of the phrase start.",
+      "severity": "blocker"
+    },
+    {
+      "category": "design_typography",
+      "enforcement": "gate",
+      "evidence": "00:04 - 00:06, 00:42 - 00:46 (top metadata header washes out against bright backgrounds and light sweeps)",
+      "measurable": true,
+      "proposed_gate": "Measure WCAG contrast of top header metadata pixels at 1 fps across the full timeline and fail the render if any frame falls below 4.5:1.",
+      "rule": "Always protect top metadata headers with an adaptive dark top-edge scrim so header text maintains at least 4.5:1 contrast over bright backgrounds.",
+      "severity": "major"
+    },
+    {
+      "category": "concept_wow",
+      "enforcement": "gate",
+      "evidence": "00:32 - 00:33 (real-photo proof card flashes for ~1.5 s with four competing pills crowding the captions)",
+      "measurable": true,
+      "proposed_gate": "Inspect shot duration and label layout for every proof-card segment and block the render if hold duration is under 3.0 s, visible badges exceed 2, or any badge sits within 60 px of the caption band.",
+      "rule": "Keep every real-photo proof card on screen for at least 3.0 seconds with at most two concise on-screen labels positioned well clear of the caption zone.",
+      "severity": "blocker"
+    },
+    {
+      "category": "motion_craft",
+      "enforcement": "gate",
+      "evidence": "00:00 - 00:03, 00:37 - 00:40 (opening and climax stages remain compositionally static for ~3 s with only minor ambient drift)",
+      "measurable": true,
+      "proposed_gate": "Measure structural foreground pixel change inside the main stage region across every 2.0 s sliding window (excluding captions and progress bar) and fail if change stays below 3%.",
+      "rule": "Never allow a stage visual to remain effectively static for more than 2.0 seconds, including during the opening hook and final payoff beats.",
+      "severity": "major"
+    },
+    {
+      "category": "sound_sync",
+      "enforcement": "gate",
+      "evidence": "00:08, 00:15, 00:19 - 00:21 (repetitive synthetic pings and cut whooshes; QA vo_sync_advisory=False with consecutive misses >0.4 s)",
+      "measurable": true,
+      "proposed_gate": "Block the render if consecutive visual beat onsets drift more than 150 ms from aligned narration keywords or if identical SFX cue assets repeat more than twice without pitch or timbre variation.",
+      "rule": "Avoid repetitive synthetic UI pings and identical cut whooshes; use pitch-varied, physically motivated foley and lock every primary visual beat within 150 ms of its spoken keyword.",
+      "severity": "major"
+    },
+    {
+      "category": "clarity",
+      "enforcement": "prose",
+      "evidence": "00:12 (caliper underlines text pill instead of object), 00:18 - 00:21 (scattered beam exits undepleted), 00:27 - 00:40 (no light/shadow terminator on sphere)",
+      "measurable": false,
+      "proposed_gate": "",
+      "rule": "Never let a visual mechanism contradict physical depletion, lighting geometry, or measurement anchors when viewed with sound off; anchor every caliper, shadow, and intensity change directly to the physical geometry.",
+      "severity": "major"
+    },
+    {
+      "category": "style_fidelity",
+      "enforcement": "prose",
+      "evidence": "00:00 - 00:03 (static title card over horizon), 00:07 - 00:13 (stock-like triangle and magnifying glass), 00:22 - 00:27 (hard cut from ground diagram to cropped sphere)",
+      "measurable": false,
+      "proposed_gate": "",
+      "rule": "Replace static title-card openings and stock icon slides with an immediate visual transformation inside the first 1.0 second and element-driven spatial transitions between scales.",
+      "severity": "major"
+    }
+  ],
+  "reference_gaps": [
+    "Jared Owen: Unlike Jared Owen's continuous physical mechanics and spatial camera moves linking macro and micro views, this film hard-cuts between flat slide-like diagrams with multi-second static holds (00:00-00:03, 00:37-00:40) and omits core physical geometry like prism refraction and Earth's day/night terminator.",
+    "Animagraffs: Unlike Animagraffs' dense, precise visual craftsmanship and cleanly anchored callouts, this film relies on generic stock-like shapes (magnifying glass, stick figure, blobby cropped Earth) with a misanchored caliper bracket (00:12) and low-contrast fading text labels (00:18, 00:32, 00:35, 00:42).",
+    "The Why Side: Unlike The Why Side's bold visual state changes every 2-4 s and razor-tight VO-to-picture sync, this film stalls on a 3-second opening title hold, desyncs captions across the end card (00:40-00:42), and holds the final orbital diagram nearly motionless for 3 seconds.",
+    "mg-styles-15 Flat Vector (7.6 anchor): Unlike the benchmark's anticipation, squash-and-stretch, 2-4 frame staggers, crisp flat shapes, and element-driven shape-wipe transitions, this film uses soft radial-blur glows, raw linear opacity label fades, repetitive diagonal sheen wipes, and rigid un-eased icon entrances."
+  ],
+  "scores": {
+    "clarity": 6,
+    "concept_wow": 5,
+    "design_typography": 5,
+    "finish_texture": 6,
+    "hook": 6,
+    "loop": 7,
+    "motion_craft": 5,
+    "sound_sync": 5,
+    "style_fidelity": 5,
+    "voice_captions": 6
+  },
+  "strengths": [
+    "Clear, intuitive 5-chapter conceptual arc (\"your sunset is the leftovers of someone else's blue sky\") with a well-structured wave-scatter comparison at 00:14-00:17.",
+    "Clean loop return at 00:42-00:46 that settles back onto the opening sunset horizon and whips horizontally into frame 0 with matching audio whoosh.",
+    "Strong editorial instinct to include genuine NASA ISS documentary proof (00:32-00:33), clean VO loudness/clarity, and an effective signature musical sting on \"That's the mechanism.\"",
+    "Clean stage framing (zero boxed-frame failures) and a consistent blue/navy/amber brand palette across most body segments."
+  ],
+  "summary": "Sky_v8 has a clear conceptual arc, clean VO loudness, and a solid loop whip into frame 0, but it lands firmly in template/slide-deck territory (5-6 across craft dimensions) and requires ONE MORE PASS. Three blockers prevent shipping: (1) label text repeatedly fades in separately from its dark backing pill, causing unreadable ~1.04 contrast ghosts (00:18, 00:32, 00:35, 00:42); (2) captions desync across the end card so \"the mechanism.\" pops up over the returning sunset at 00:42 after the card is gone; and (3) the climactic orbital sunset sequence feels like clipart (left-cropped Earth with no day/night terminator, 3 s near-static hold) while burying the awe-inspiring real NASA ISS sunset photo in a cluttered 1.5 s flash. Tightening hook pacing, adding physical depletion/terminator accuracy, unifying atomic label entrances, replacing synthetic UI pings with organic foley, and building a true match-cut hero moment into the ISS photo will elevate this above the 7+ professional bar.",
+  "verdict": "ONE MORE PASS",
+  "weaknesses": [
+    {
+      "category": "design_typography",
+      "fix": "Bind label text and its dark backing pill inside one atomic <Label> component so backdrop opacity hits 1.0 on frame 1 of visibility; animate the unified pill in over 6 frames using scale(0.88 -> 1.04 -> 1.0) with cubic-bezier(0.22, 1.25, 0.36, 1) and >=32 px type at >=7:1 contrast.",
+      "issue": "Multiple labels fade their text in independently of their dark pill containers, producing unreadable low-contrast ghost text (\"BLUE 0\u00d7\" at 00:18, \"NASA ISS028-E-007274\" at 00:32, \"SOMEONE ELSE'S AFTERNOON\" at 00:35, \"SAME LIGHT, LATER\" at 00:42) \u2014 confirmed by measured QA contrast min_ratio=1.04 and labels_persist=False.",
+      "severity": "blocker",
+      "timestamp": "00:18 / 00:32 / 00:35 / 00:42"
+    },
+    {
+      "category": "concept_wow",
+      "fix": "WOW-FACTOR FIX: Center Earth cleanly inside x: 90-990 px with a crisp flat-vector day/night terminator shadow (#0A1328 at 55% opacity) and layered atmospheric limb; animate a continuous camera glide along the grazing beam from noon across the terminator into sunset as blue photons peel off and the surviving beam thins and shifts #FFFFFF -> #FFB020 -> #FF5A36, then match-cut on the curved glowing horizon directly into a 3.5 s hold on the NASA ISS photo (4% slow scale drift) with at most two clean badges (\"SEEN FROM THE ISS\" top-left, credit pill at y <= 1140 px).",
+      "issue": "The orbital sunset climax looks like a generic clipart slide \u2014 Earth is awkwardly cropped off the left frame edge, lacks a day/night terminator shadow (breaking sound-off comprehension of noon vs. sunset), and holds nearly static for 3 s (00:37-00:40), while the genuine NASA ISS sunset photo (00:32-00:33) flashes by in ~1.5 s under four competing pills.",
+      "severity": "blocker",
+      "timestamp": "00:27 - 00:40"
+    },
+    {
+      "category": "voice_captions",
+      "fix": "Suppress the word-caption track across the entire spoken window of \"That's the mechanism.\" (00:40.2 to 00:41.8), lock the end-card cut within +/-2 frames (67 ms) of the \"That's\" onset, and start a fresh caption line \"Your sunset is...\" on frame 1 of the callback shot at 00:42.",
+      "issue": "Severe caption-to-cut desync across the end card: \"That's\" appears over the orbital Earth shot at 00:40, the \"THAT'S THE MECHANISM.\" card plays captionless at 00:41, and \"the mechanism. Your\" spills onto the returning sunset horizon at 00:42 after the phrase is over (corroborated by QA vo_sync_advisory=False, consecutive_miss=True).",
+      "severity": "blocker",
+      "timestamp": "00:40 - 00:42"
+    },
+    {
+      "category": "clarity",
+      "fix": "Visibly deplete the straight horizontal blue ray on each of the four scatter impacts (stepping stroke width 10 px -> 8 -> 6 -> 4 -> 2 px and opacity 1.0 -> 0.25) while launching bold #4CC9F0 deflected rays with 4-frame recoil on each hit dot, keeping the red ray (#FF5A36, 10 px, 90% opacity) visibly dominant at the right exit.",
+      "issue": "In the Blue vs. Red bounce comparison, the horizontal blue beam exits the right edge at the exact same width and brightness as the red beam despite scattering 4x more, visually contradicting the core physical takeaway that blue is stripped out of the direct beam.",
+      "severity": "major",
+      "timestamp": "00:18 - 00:21"
+    },
+    {
+      "category": "hook",
+      "fix": "Cut the 3 s title-card hold; start a bold diagonal horizon split-wipe at frame 12 (0.4 s) that visibly transforms one beam into blue midday sky (left) and orange sunset (right) before 1.2 s, replacing soft radial-blur orbs with crisp flat-vector photon discs animated on 3-frame staggered arcs (cubic-bezier 0.34, 1.56, 0.64, 1).",
+      "issue": "The first 3 seconds behave like a lightly animated title card (\"SOMEONE ELSE'S BLUE SKY\" parked over a mostly static sunset with soft radial-blur dot drift), delaying the sky-flip visual hook until 00:04, followed by another ~2 s static hold on \"SAME TRICK\" (00:05-00:06).",
+      "severity": "major",
+      "timestamp": "00:00 - 00:06"
+    },
+    {
+      "category": "style_fidelity",
+      "fix": "Upgrade the prism to crisp two-tone flat facets (#FFFFFF at 12%/22%) with true double-boundary refraction bends and 2-frame staggered spectral ribbon extrusion; replace the stock magnifying glass with a 240 px circular callout loupe (4 px crisp stroke) revealing bold 48 px diatomic spheres and anchor the orange dimension caliper directly between one wavelength crest-to-crest and the molecule diameter.",
+      "issue": "The prism (00:07-00:09) and scale-comparison (00:10-00:13) beats read as stock slide-deck templates: the prism is a 2 px outline where a blunt beam stops mid-triangle with no refraction and holds static ~1.5 s; the scale beat uses a generic magnifying glass around two squint-sized specks and misanchors its orange caliper under the \"N\u2082 / O\u2082 MOLECULE\" text pill rather than the molecule.",
+      "severity": "major",
+      "timestamp": "00:07 - 00:13"
+    },
+    {
+      "category": "sound_sync",
+      "fix": "Replace synthetic UI pings with layered organic/tactile foley (soft crystal refraction shimmer at -14 dB under VO for the prism, pitch-varied +/-3 semitone micro-pops per scatter collision, warm low-pass whoosh for the red wave) and lock every primary visual beat onset within +/-100 ms (3 frames) of its aligned VO keyword.",
+      "issue": "Mechanism hits use repetitive, synthetic UI-like chimes and bleeps (00:08 prism ping, 00:15 scatter chirp, 00:19-00:21 digital bounce ticks) paired with near-identical transition whooshes, while visual beat hits lag VO emphasis (QA vo_sync_advisory=False, consecutive_miss=True).",
+      "severity": "major",
+      "timestamp": "00:08 / 00:15 / 00:19 - 00:21"
+    },
+    {
+      "category": "design_typography",
+      "fix": "Add a subtle dark top-edge gradient scrim (#0D0E12 at 65% -> 0% opacity across y: 0-220 px) behind the brand/meta header to lock >=7:1 contrast across bright skies, and clamp all stage/credit badges at y <= 1160 px to maintain >=60 px clearance above the y: 1222 px caption track.",
+      "issue": "The top metadata line (\"#003 \u00b7 PHYSICS \u00b7 SRC: MET OFFICE \u00b7 NOAA\") washes out against bright sky-blue backgrounds and diagonal light sweeps (00:04-00:06, 00:42-00:46), and at 00:33 the \"PUBLIC DOMAIN\" badge sits tightly crowded directly above the \"scattered\" caption.",
+      "severity": "major",
+      "timestamp": "00:04 - 00:06 / 00:33 / 00:42 - 00:46"
+    },
+    {
+      "category": "motion_craft",
+      "fix": "Color the converging dome arrows crisp sky blue (#4CC9F0 -> #8CE0FF) radiating from scatter nodes along a tapered animated sunbeam, add a 4-degree head-tilt reaction on a cleaner flat-vector silhouette observer, and transition into the orbital Earth shot via a 12-frame continuous zoom-out scale wipe (1.0x -> 0.15x, cubic-bezier 0.65, 0, 0.35, 1).",
+      "issue": "The noon sky-dome diagram features a rigid i-shaped stick figure, a sun with a blunt white \"lollipop stick\" ray, and white (rather than blue) arrows that abruptly reset at 00:26 before hard-cutting to space, breaking visual continuity with the scattered blue light.",
+      "severity": "minor",
+      "timestamp": "00:22 - 00:26"
+    },
+    {
+      "category": "clarity",
+      "fix": "Swap the top pill to \"LONG WAVES PASS THROUGH\" via a 6-frame slide/overshoot as the red wave enters at 00:16, and give the diatomic molecule a 5-frame damped squash-and-ring vibration (scaleX 1.18 / scaleY 0.85 -> 1.0) on blue-wave impact at 00:15.",
+      "issue": "At 00:16-00:17 the red long wave passes cleanly past the molecule while the label stays stuck on \"SHORT WAVES SCATTER\", and the molecule stays completely rigid on blue-wave impact at 00:15.",
+      "severity": "minor",
+      "timestamp": "00:14 - 00:17"
+    }
+  ],
+  "overall_score": 5.51,
+  "samples": 1
+}

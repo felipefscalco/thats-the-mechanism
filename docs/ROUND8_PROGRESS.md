@@ -14,3 +14,18 @@ Branch r8 from main b55657c, work dir /workspace/ttm-r7. Brief: hooks role+gates
 - 06:35 judge: pairwise split (order1 prev -0.74, swap new +0.96) -> agy tie-break running.
 - 06:40 interrupted again; plan: Elevator verdict -> commit + push (merge r8->main), then Sky v8.
 - 07:05 Elevator v7 verdict: NO SHIP. Pairwise split (order1 prev −0.74 / swap new +0.96), tie-break gemini-4-neon prefers v6b (−0.37: v7 fixes the floor-marker collisions, hook-title overlap and LOAD pill edge, but loses CAR/CW bar labels, lags VO at 0:19–0:26, clips the car's left edge 0:11–0:13). Calibrated 5.64 (v6b 5.60), ONE MORE PASS. Gates 28/29 (v6b failed 8). v7 source kept on branch r8-elevator-v7-candidate; main keeps v6b source.
+- 07:12 committed 1fb6c95 (ROUND8.md, lessons, metrics, Sky v7 pack); secret scan clean (all patterns 0, literal env/token-file 0, no mp4/wav/env/APPROVED); tests pass; main fast-forwarded b55657c..1fb6c95 and pushed, plus branches r8 and r8-elevator-v7-candidate.
+- 07:13 Sky v8 loop started (task qa/tasks/r8_sky_v8.md, --prev renders/Sky_v7.mp4, log _scratch/r8/logs/loop_sky_v8.log). VIDEO.md exists (frozen), so no planner call.
+- 07:31 resumed after interruption; Sky v8 loop pid 1103513 alive. Next: let it finish and judge it, then labels-persist and VO-sync gates if quick, then commit/branch, ROUND8.md, scan, push.
+- 07:35 Sky v8 builder it0 done (claude sonnet, 1698 s, $0.64). Preview it1 failed 3 gates: frame-1 hook, badge pop, approximate motion hold. Routed to the builder.
+- 07:37 new gates (validated on the Elevator v6b vs v7 tie-break):
+  - scripts/labels_persist.py (OCR, tesseract psm 11 + psm 3, 2 fps on the stage band). Every shots.md label must be read in its shot and stay readable for ≥60% of the rest of the shot, or until a later label of the same shot takes over. v6b PASS 15/15; v7 FAIL (MOTOR HELPS/HOLDS 0.38). Wired into qa.py as a hard check.
+  - scripts/vo_sync.py (pixel-motion event within ±0.4 s of each beat word). It does NOT discriminate: v6b 22/25, v7 23/25, because the v7 lag is semantic (wrong state shown), not missing motion. Wired as an advisory only (res.vo_sync_advisory). Next step: a label-timing sync that ties each OCR label to its spoken phrase.
+- 08:15 Sky v8 ship #1: 27/30 gates. Fails: SFX density 1.56/s (>1.5), entrance snaps (a translucent beam wedge snapping in at the left at 10.4/11.7/20.2 s; real, checked on frames), labels_persist (EVERY COLOR 0.43, SAME LIGHT, LATER 0.38). Routed to the builder. Preview it2 had passed every still gate (the frame-1 hook is fixed).
+- 08:21 resumed; Sky loop alive (after ship #1, builder fix + re-render). Committing the new gates now.
+- 08:22 gates committed 011b410 and pushed to origin/r8 (main is still 1fb6c95). Sky preview it3 PASS; ship #2 render/QA running.
+- 08:35 Sky v8 ship #2: 28/30 gates (v7 scored 22/27 on the same gates). Still failing: end-card payoff settled only 0.4 s (needs 1.5; card is 1.42 s) and labels_persist EVERY COLOR (0.43). MAXS reached, so the loop moved to the judge (pairwise vs v7 + calibrated).
+- 08:48 Sky v8 pairwise vs v7: SHIP. Both orders prefer v8 (+1.43 / +1.04). Calibrated critic_deep running.
+- 09:02 Sky v8 judge done: SHIP (pairwise). The calibrated critic_deep produced no output (agy, ~27 min, likely a timeout), so it is being rerun standalone.
+- 09:05 Sky v8 committed on r8, publish pack regenerated (sha de86007461aeb2f8, 0 violations, review only).
+- 09:12 the calibrated critic finished (5.51, ONE MORE PASS); standalone rerun killed. Finishing: ROUND8.md, commit, scan, ff main, push.

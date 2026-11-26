@@ -1,0 +1,25 @@
+{
+  "order1": {
+    "preferred": "prev",
+    "margin_new_minus_prev": -0.74,
+    "strength": 2
+  },
+  "swap": {
+    "preferred": "new",
+    "margin_new_minus_prev": 0.96,
+    "strength": 2
+  },
+  "calibrated": {
+    "overall": 5.64,
+    "verdict": "ONE MORE PASS",
+    "model": "gemini-4-neon-high"
+  },
+  "undecided": "split",
+  "tiebreak_critic": {
+    "preferred": "prev",
+    "model": "gemini-4-neon-high",
+    "margin_new_minus_prev": -0.37
+  },
+  "ship": false,
+  "decided_by": "tiebreak_critic"
+}

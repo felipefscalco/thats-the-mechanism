@@ -89,25 +89,35 @@ Old renders still show the ghosts. A re-render with the fixed `Chrome.tsx` remov
 - **Calibrated:** 5.64 (v6b 5.60), ONE MORE PASS.
 - **Source:** v7 is kept on branch `r8-elevator-v7-candidate`. `main` keeps the v6b source.
 
-### Sky
+### Sky v8: SHIP
 
-- **Hook proposal:** "Where does a sunset's missing blue end up?" (judge 4.25/5).
-- **Elevator hook proposal:** "Half the weight in an elevator shaft is hanging there for no one."
-- **Not applied.** Both scripts are approved (script gate), so changing the narration needs Felipe's approval.
-- **The v8 pass is the next step.** Its task is in `qa/tasks/r8_sky_v8.md`:
-  - a moving frame-1 hero;
-  - a first line of ≤ 7 words;
-  - a "BLUE SCATTERED OUT" keyword;
-  - motion beats;
-  - `<Enter>` entrances;
-  - the critic's geometry and scale-truth fixes.
+- **Render:** `renders/Sky_v8.mp4` (47.3 s). Source commit a324a07.
+- **Pairwise vs v7:** both orders prefer v8, by +1.43 and +1.04, so it ships.
+  - Blue light now visibly zig-zags and deflects in the scattering scene (0:16–0:20), where v7 drew a static straight line.
+  - The ISS proof card has a callout on the scattered blue layer.
+  - Crepuscular rays were added to the hook and to the callback.
+  - The clipped container at the loop seam is fixed.
+- **Calibrated:** 5.51 (v7 5.29), ONE MORE PASS. Scores: clarity 6, hook 6, loop 7, voice_captions 6, finish 6, concept_wow 5, design 5, motion 5, sound 5, style 5.
+- **Gates:** 28/30 (v7 22/27 on the same r8 gates).
+  - Now passing:
+    - 0 caption ghost frames;
+    - longest meaningful hold 1.27 s;
+    - frame-1 hero 0.198, moved 0.182;
+    - first line "SOMEONE ELSE'S BLUE SKY" (4 words);
+    - clarity 7/7;
+    - entrances: 0 snaps.
+  - Still failing:
+    - the end-card payoff settles for only 0.4 s before the loop (needs 1.5 s; the card itself runs 1.42 s);
+    - labels_persist: "EVERY COLOR" stays readable in only 43 % of its shot.
+- **Loop cost:** builder 3 runs, $1.31, about 51 min. Judge about 31 min on agy (free).
+- **Calibrated rerun:** the first critic_deep produced no output (likely an agy timeout), so it was rerun once standalone.
+- **Publish pack:** regenerated for v8 (`publish/03-sky/`, sha de86007461aeb2f8, 0 violations). Not uploaded. Felipe must review it and create `APPROVED`.
+- **Hook proposal, not applied:** "Where does a sunset's missing blue end up?" (judge 4.25/5) needs Felipe's script approval. The Elevator proposal "Half the weight in an elevator shaft is hanging there for no one." is in the same state.
 
-  Command:
+### New gates after the Elevator tie-break (commit 011b410)
 
-  ```bash
-  .venv-tts/bin/python scripts/build_loop.py Sky 03-sky v8 --prev renders/Sky_v7.mp4 \
-    --prev-qa qa/Sky/r8gates_v7/report_it1.json --task-file qa/tasks/r8_sky_v8.md
-  ```
+- **`scripts/labels_persist.py` (hard gate in `qa.py`).** It OCRs the stage band at 2 fps (tesseract psm 11 + psm 3). Every label planned in `shots.md` must be read during its shot and stay readable for ≥ 60 % of the rest of the shot. The exception is a hand-over to a later label of the same shot. Validated on the tie-break: v6b PASS 15/15, v7 FAIL (MOTOR HELPS/HOLDS 0.38).
+- **`scripts/vo_sync.py` (advisory only, `res.vo_sync_advisory`).** It checks for a pixel-motion event within ±0.4 s of each beat word. **It does not discriminate** (v6b 22/25, v7 23/25), because v7's lag is semantic (the wrong state is shown), not missing motion. It is kept as data, not as a gate.
 
 ### Queue demo
 
@@ -139,4 +149,16 @@ The total Claude spend is about **$1.93**.
 - **Clutter mode** (floating vs all) is waiting for Felipe's decision.
 - **ANC** has 5 floating callouts at 30.8–31.7 s.
 - **QR** fails clarity (38.3 s and 41.1 s) and has holds.
-- **The Sky publish pack** in `publish/03-sky/` is for v7. Regenerate it after a shipped v8.
+
+## Round 9 candidates (generic, code-first)
+
+1. **Atomic `<Label>`.** Text and its backing pill should be one component that animates as a unit: one transform, one opacity, never text without its backing. This prevents ghost text. The Sky v8 critic called it a **blocker** at 0:18, 0:32, 0:35 and 0:42, and the contrast min was 1.04. Add a lint that rejects raw text over a separately animated pill, plus a contrast gate on every frame of an entrance.
+2. **End-card payoff length.** Payoff settled ≥ 1.5 s is already a gate, but builders keep adding motion that ends late (Sky v8 settled at 0.4 s). Fix it in structure: `EpisodeShell` freezes the payoff layout at `cardAt − 1.5 s`, or the tail gets a `[pause: …]`, which needs script approval.
+3. **Semantic label-timing sync.** This replaces the pixel `vo_sync`. Each OCR label is tied to the spoken phrase it echoes (shared tokens, or an explicit `label@phrase` beat in `shots.md`). The label must appear within ±0.4 s of the aligned word, and the previous state's label must be gone. That needs OCR at 5 fps around beat windows only.
+4. **Wow-moment hero framing.** Every episode's VIDEO.md has one "special moment". It should get a measured hero shot: subject ≥ 35 % of the stage, a camera push or scale change, ≤ 2 callouts, and a dedicated SFX hit. This addresses the critics' recurring "concept_wow 5" and "clipart in empty voids".
+5. Smaller items:
+   - an art-bbox edge gate (Elevator shaft art at x < 0);
+   - a single automatic retry for ship-render infrastructure failures;
+   - a longer `critic_deep` timeout;
+   - ANC's 5 floating callouts;
+   - QR clarity and holds.
