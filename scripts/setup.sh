@@ -126,6 +126,13 @@ if [[ ! -s tools/whisper.cpp/models/ggml-small.en.bin ]]; then
 fi
 
 echo
+echo "== ffmpeg-normalize (mastering, scripts/master.sh) =="
+if [[ ! -x tools/fn-venv/bin/ffmpeg-normalize ]]; then
+  "$(command -v python3.12 || command -v python3)" -m venv tools/fn-venv
+  tools/fn-venv/bin/pip install -q ffmpeg-normalize
+fi
+
+echo
 echo "Full setup done."
 echo "  Typecheck:  (cd remotion && npx tsc --noEmit -p .)"
 echo "  New episode: see AGENTS.md  (scripts/new-episode.sh … && scripts/build-episode.sh …)"

@@ -8,3 +8,5 @@
 {"ts": "2026-11-25T19:26:33-03:00", "kind": "override", "episode": "Sky", "gate": "storyboard", "from_mode": "human", "to_mode": "auto", "note": "r5 autonomous run: owner reviews storyboard together with v5"}
 {"ts": "2026-11-25T20:15:22-03:00", "kind": "override", "episode": "QR", "gate": "storyboard", "from_mode": "human", "to_mode": "auto", "note": ""}
 {"ts": "2026-11-25T20:15:25-03:00", "kind": "override", "episode": "Elevator", "gate": "storyboard", "from_mode": "human", "to_mode": "auto", "note": ""}
+{"ts": "2026-11-25T22:38:15-03:00", "kind": "human", "episode": "05-microwave-door", "gate": "script", "by": "Felipe", "changes": null, "artifact": "episodes/05-microwave-door/script.txt", "sha": "8b66226f0051722b", "note": "pilot; angle (microwave door mesh) approved in same session"}
+{"ts": "2026-11-26T00:14:39-03:00", "kind": "human", "episode": "Microwave", "gate": "storyboard", "by": "Felipe", "changes": "agent fix: wave on stage from shot start (empty half at 10-13 s)", "artifact": null, "sha": null, "note": "pilot v1"}

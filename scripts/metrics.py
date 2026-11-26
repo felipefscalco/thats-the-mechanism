@@ -15,7 +15,24 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "metrics" / "runs.jsonl"
 PAGE = os.sysconf("SC_PAGE_SIZE")
 
+def tree_rss_ps(pid):
+    """macOS/BSD fallback (no /proc): one `ps` snapshot of pid, ppid, rss (KiB)."""
+    try:
+        rows = [l.split() for l in subprocess.check_output(["ps", "-A", "-o", "pid=,ppid=,rss="], text=True).splitlines()]
+    except (OSError, subprocess.CalledProcessError):
+        return 0
+    kids, rss = {}, {}
+    for r in rows:
+        if len(r) == 3 and all(x.isdigit() for x in r):
+            kids.setdefault(int(r[1]), []).append(int(r[0])); rss[int(r[0])] = int(r[2]) * 1024
+    tot, stack = 0, [pid]
+    while stack:
+        q = stack.pop(); tot += rss.get(q, 0); stack += kids.get(q, [])
+    return tot
+
 def tree_rss(pid):
+    if not os.path.isdir("/proc"):
+        return tree_rss_ps(pid)
     kids = {}
     for p in os.listdir("/proc"):
         if p.isdigit():

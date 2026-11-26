@@ -189,3 +189,25 @@ One entry per finding. Newest at the bottom. Format:
 - Root cause: the number/quantity scan counts any number word, including rhetorical ones.
 - Fix: mapped to f-0004 (noon vs sunset observers) instead of loosening the scan.
 - Status: fixed. Keep the scan strict; map rhetorical numbers to the fact they describe.
+
+### L-28 · 2026-11-26 · setup (macOS) · major (pipeline did not run on a fresh Mac)
+- Problem: on a fresh macOS box, `scripts/setup.sh` failed (`onnxruntime` has no wheel for Homebrew's default Python 3.15). `new-episode.sh` used GNU `sed -i` with a `\n` replacement, which fails on BSD sed. `metrics.py` read `/proc`, which crashed every timed stage, and `build-episode.sh` (`set -e`) aborted after TTS. `contrast.py` used `-vsync 0`, which FFmpeg 9 removed, so the WCAG/safe-zone gate errored without measuring anything. `master.sh` needed `tools/fn-venv`, which setup never created.
+- Root cause: the scripts had only been run on Linux with older FFmpeg/Python.
+- Fix: venv built with python3.12. new-episode.sh edits Root.tsx with Python (portable). metrics.py has a `ps` fallback when there is no /proc. contrast.py uses `-fps_mode passthrough`. setup.sh installs ffmpeg-normalize into tools/fn-venv.
+- Prevention: setup.sh should pick a Python <= 3.13 for .venv-tts (BACKLOG). Treat a gate that *errors* as a tooling bug, not a design FAIL; check the error text before touching the episode.
+- Status: fixed (Python pin open in BACKLOG)
+
+### L-29 · 2026-11-26 · Microwave · minor (hold after the hook zoom)
+- Problem: Microwave it1 had a 2.4 s stage hold at 0.97–3.4 s: the scale reveal ends at 1.0 s and the next visual event came at "So why" (3.2 s). Mug rotation and steam were too small to count as motion.
+- Root cause: the hook had a single reveal and no secondary motion that the motion metric can see.
+- Fix: a slow camera push from 1.0 to 2.7 s, and the microwave rings faintly visible from frame 0 (full strength on "So why").
+- Prevention: qa.py motion gate (already present). In the storyboard, check the gap between the end of the hook reveal and the first spoken beat.
+- Status: fixed in it2 (pending QA)
+
+### L-30 · 2026-11-26 · Microwave · major (critic round 1, Antigravity gemini-4-neon-high, it3 = 5.06)
+- Problem: (a) "SEES A WALL" was drawn over "MICROWAVE · ≈ 12 cm" at 0:38; (b) "ONE HOLE" was on screen for < 0.5 s before the whip; (c) light rays (±9 px) crossed the screen bars instead of passing through the 14 px gaps, which contradicts the narration; (d) "METAL SCREEN" sat on top of the holes; (e) the leakage-limit oven was a featureless slab.
+- Root cause: two TagLabels shared one anchor; the hole pop was timed to the last word of its shot; wave amplitude was not checked against the gap size; the side-view oven had no identifying details.
+- Fix (it4): the label slot is handed over (MICROWAVE fades as MICROWAVE SEES A WALL arrives); the hole appears at "twelve" (+1.5 s on screen); bars 34 px, gaps 20 px, light amplitude 4 px; METAL SCREEN moved above the plate; the oven gets a body shadow, vents, feet, door seam and handle.
+- Rejected critic claims (contradicted by measurements): broken loop seam (PSNR 48.5 dB), holds > 2 s (longest 1.27 s), labels < 30 px (both font gates pass).
+- Prevention: label collisions are not gated yet. The probe render already knows every Label/TagLabel box, so contrast.py could flag overlapping boxes held >= 0.6 s (BACKLOG, gate). Rule (prose until gated): a wave drawn "through a hole" has amplitude + stroke/2 < gap/2.
+- Status: fixed in it4 (pending QA + verify)

@@ -25,7 +25,7 @@ for d in (PD, ND):
     d.mkdir(exist_ok=True); [p.unlink() for p in d.glob("*.png")]
 r = subprocess.run(["node", "probe_frames.mjs", ID, str(PD), str(NTH), "0.5"], cwd=ROOT / "remotion", capture_output=True, text=True)
 if r.returncode: sys.exit(r.stderr[-2000:])
-subprocess.run(f"ffmpeg -v error -y -i {MP4} -vf \"select=not(mod(n\\,{NTH})),scale=540:960:flags=area\" -vsync 0 {ND}/n_%04d.png", shell=True, check=True)
+subprocess.run(f"ffmpeg -v error -y -i {MP4} -vf \"select=not(mod(n\\,{NTH})),scale=540:960:flags=area\" -fps_mode passthrough {ND}/n_%04d.png", shell=True, check=True)
 probes, norms = sorted(PD.glob("*.png")), sorted(ND.glob("*.png"))
 n = min(len(probes), len(norms))
 

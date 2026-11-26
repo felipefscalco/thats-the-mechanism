@@ -40,6 +40,13 @@ TXT
 echo '{"topic": "", "claims": []}' > "$E/sources.json"; echo '[]' > "$E/display.json"
 sed -e "s/__SLUG__/$S/g; s/__NAME__/$ID/g; s/__COMP__/$ID/g; s/__PILLAR__/$PIL/g; s/__EP__/$N/g; s/__SOURCE__/$SRC/g; s/__HOOK__/$HOOK/g" "$P/templates/Episode.tsx.tmpl" > "$TSX"
 R="$P/remotion/src/Root.tsx"
-sed -i "s#// @new-episode-imports#import { ${ID}Video } from \"./episodes/$ID\";\n// @new-episode-imports#" "$R"
-sed -i "s#{/\* @new-episode-compositions \*/}#<Composition id=\"$ID\" component={${ID}Video} durationInFrames={frames((durations as Record<string, number>)[\"$S\"] ?? 10)} {...portrait} />\n    {/* @new-episode-compositions */}#" "$R"
+# portable (GNU and BSD/macOS sed differ on -i and \n): edit Root.tsx with Python
+python3 - "$R" "$ID" "$S" <<'EOPY'
+import sys
+r, cid, slug = sys.argv[1:]
+t = open(r).read()
+t = t.replace("// @new-episode-imports", f'import {{ {cid}Video }} from "./episodes/{cid}";\n// @new-episode-imports', 1)
+t = t.replace("{/* @new-episode-compositions */}", f'<Composition id="{cid}" component={{{cid}Video}} durationInFrames={{frames((durations as Record<string, number>)["{slug}"] ?? 10)}} {{...portrait}} />\n    {{/* @new-episode-compositions */}}', 1)
+open(r, "w").write(t)
+EOPY
 echo "created $E and $TSX (#$N). Next: edit script.txt, then scripts/build-episode.sh $S $ID"

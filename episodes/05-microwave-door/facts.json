@@ -1,0 +1,29 @@
+{
+ "facts": [
+  {"id": "f-0001", "claim": "Most household microwave ovens operate at 2.45 GHz (2,450 MHz).", "value": "2.45 GHz", "status": "verified",
+   "sources": ["s-0001", "s-0002", "s-0003"], "caveat": "", "checkedAt": "2026-11-25",
+   "spoken": ["The oven runs at two point four five gigahertz"]},
+  {"id": "f-0002", "claim": "At 2.45 GHz the wavelength is about 12.2 cm.", "value": "12.2 cm", "status": "verified",
+   "sources": ["s-0001", "s-0003"], "caveat": "12.24 cm (Illinois) / 12.2 cm (Swinburne); spoken as 'about twelve'", "checkedAt": "2026-11-25",
+   "spoken": ["Each wave is about twelve centimetres long"]},
+  {"id": "f-0003", "claim": "The door window is a thin metal screen with small (millimetre-scale) holes; the glass itself adds little shielding.", "value": "", "status": "verified",
+   "sources": ["s-0001", "s-0002"], "caveat": "No primary source for an exact hole diameter, so the script says 'tiny' and gives no number", "checkedAt": "2026-11-25",
+   "spoken": ["Behind the glass is a metal screen, full of tiny holes"]},
+  {"id": "f-0004", "claim": "A metal mesh with holes much smaller than the wavelength blocks (reflects) microwaves like solid metal.", "value": "", "status": "verified",
+   "sources": ["s-0001", "s-0003", "s-0004"], "caveat": "physics: waveguide below cutoff; FDA: microwaves are reflected by metal", "checkedAt": "2026-11-25",
+   "spoken": ["those tiny holes might as well be solid metal", "It bounces off, back into your food"]},
+  {"id": "f-0005", "claim": "Visible light (0.4-0.7 micrometre wavelength) is far smaller than the holes and passes through.", "value": "0.4-0.7 um", "status": "verified",
+   "sources": ["s-0003", "s-0002"], "caveat": "", "checkedAt": "2026-11-25",
+   "spoken": ["Its waves are far smaller than the holes, so they slip right through"]},
+  {"id": "f-0006", "claim": "US federal standard 21 CFR 1030.10 limits leakage to 5 mW/cm2 at about 2 inches (5 cm) from the oven surface over its lifetime.", "value": "5 mW/cm2 at 5 cm", "status": "verified",
+   "sources": ["s-0004", "s-0005", "s-0002"], "caveat": "5 mW/cm2 is the in-service limit; new ovens must be under 1 mW/cm2 before sale. FDA says ~2 in, CFR says 5 cm.", "checkedAt": "2026-11-25",
+   "spoken": ["What little escapes is capped by US law: five milliwatts per square centimetre, two inches from the oven"]}
+ ],
+ "sources": [
+  {"id": "s-0001", "title": "Grandma's Microwave Oven (UIUC Physics Van Q&A)", "url": "https://van.physics.illinois.edu/ask/listing/12217", "publisher": "University of Illinois Physics", "accessed": "2026-11-25", "http": 200},
+  {"id": "s-0002", "title": "Microwave Oven (Dewey D. Sprague, UC Berkeley Office of Radiation Safety)", "url": "https://hps.org/hpspublications/articles/microwaveoven/", "publisher": "Health Physics Society", "accessed": "2026-11-25", "http": 200},
+  {"id": "s-0003", "title": "Why can we see through a microwave door? (Dr Manas Kumar Haldar)", "url": "https://swinburne.edu.my/?p=4929", "publisher": "Swinburne University of Technology Sarawak", "accessed": "2026-11-25", "http": 200},
+  {"id": "s-0004", "title": "Microwave Ovens", "url": "https://www.fda.gov/radiation-emitting-products/resources-you-radiation-emitting-products/microwave-ovens", "publisher": "US FDA", "accessed": "2026-11-25", "http": 200},
+  {"id": "s-0005", "title": "21 CFR 1030.10 Microwave ovens", "url": "https://www.law.cornell.edu/cfr/text/21/1030.10", "publisher": "Cornell LII (US Code of Federal Regulations)", "accessed": "2026-11-25", "http": 200}
+ ]
+}
