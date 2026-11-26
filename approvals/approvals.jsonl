@@ -13,3 +13,4 @@
 {"ts": "2026-11-25T21:00:11-03:00", "kind": "override", "episode": "05-anc-headphones", "gate": "script", "from_mode": "human", "to_mode": "auto", "note": "t50u CLI test"}
 {"ts": "2026-11-25T21:03:45-03:00", "kind": "override", "episode": "ANC", "gate": "storyboard", "from_mode": "human", "to_mode": "auto", "note": "t50u CLI test"}
 {"ts": "2026-11-25T21:12:54-03:00", "kind": "override", "episode": "ANC", "gate": "storyboard", "from_mode": "human", "to_mode": "auto", "note": "t50u CLI test"}
+{"ts": "2026-11-26T13:13:06-03:00", "kind": "human", "episode": "Microwave", "gate": "final", "by": "Felipe", "changes": null, "artifact": "renders/Microwave_v1_it8.mp4", "sha": "be385c04f48a5afc", "note": "pilot 06 Microwave it8 (17/17 gates, agy SHIP vs it3, calibrated 5.53); owner: 'Gostei da qualidade do video'. Not published."}
