@@ -27,6 +27,17 @@ OUT_MD = ROOT / "docs" / "STYLE_RULES.md"
 OUT_PROMPT = ROOT / "docs" / "active_rules_prompt.txt"
 
 KNOWN_GATES = [
+    # r7: rules now implemented by gates (lessons.py marks their clusters `gate`, not `candidate_gate`)
+    (r"overshoot|anticipation|snap(?:s|ped)? in|pop(?:s|ping)? in|appear(?:s)? (?:out of nowhere|from nothing)|nothing appears",
+     "scripts/qa.py + scripts/contrast.py: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges, A14)"),
+    (r"\bboxed\b|box(?:ed)? fram|card frame|slide[- ]?(?:deck|show)|white card|enclosing (?:the )?(?:whole|entire) stage|container card|rounded box|floating cards?|isolated (?:floating )?cards?|nested card",
+     "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)"),
+    (r"clutter|too many (?:pills|badges|callouts|labels)|(?:pills|badges|callouts) at once|simultaneous (?:pills|badges|callouts)",
+     "scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17)"),
+    (r"\bhud\b|timecode|fake (?:ui|data|readout)|decorative (?:readout|telemetry)",
+     "scripts/static_gates.py: no decorative HUD / fake timecode strings (A18)"),
+    (r"edge of the frame|frame edge|off[- ]screen|pushed off|clipped at the (?:left|right)|side edge",
+     "scripts/qa.py + scripts/contrast.py: >= 24 px from side edges; intro (first 2 s) judged frame by frame (A15)"),
     (r"icon.{0,30}(label|pill)|label.{0,30}(icon|pill|overlap)|labels?.{0,20}clearance|clearance.{0,30}(label|icon|pill)|occupancy|LANE_GAP",
      "scripts/qa.py + scripts/contrast.py: labels: icon/label clearance >= 36 px (held >= 0.6 s)"),
     (r"font size|30 ?px|thirty pixels|squint",
@@ -166,7 +177,7 @@ def cluster_local(rows, thresh=0.25):
 
 
 def cluster_agy(rows):
-    """Ask agy to merge near-duplicates; fall back to Jaccard on any failure."""
+    """Ask the clusterer role (any provider) to merge near-duplicates; fall back to Jaccard on any failure."""
     if len(rows) < 2 or "--local" in sys.argv:
         return cluster_local(rows)
     schema = {
@@ -194,20 +205,12 @@ def cluster_agy(rows):
         "canonical_rule must stay imperative and must not name a specific episode or subject.\n\n"
         + listing
     )
-    schema_path = ROOT / "_scratch" / "_lessons_schema.json"
-    schema_path.parent.mkdir(exist_ok=True)
-    schema_path.write_text(json.dumps(schema, indent=2))
     try:
-        cp = subprocess.run(
-            ["agy", "--model", "gemini-3.8-flash-high", "--output-format", "json",
-             "--json-schema", str(schema_path), "--dangerously-skip-permissions",
-             "--print-timeout", "150s", "-p", prompt],
-            cwd=ROOT, capture_output=True, text=True, timeout=180,
-        )
-        if cp.returncode != 0:
-            raise RuntimeError(cp.stderr[-200:])
-        data = json.loads(cp.stdout)
-        parsed = data.get("structured_output") or json.loads(data["response"])
+        import llm  # r7: vendor-neutral clusterer role (pipeline.config.json llm.roles.clusterer)
+        r = llm.run("clusterer", prompt, ROOT, schema=schema, read_only=True, timeout_s=150)
+        if not r["ok"]:
+            raise RuntimeError(r["meta"].get("error"))
+        parsed = r["json"]
         out = []
         used = set()
         for c in parsed["clusters"]:
@@ -224,13 +227,8 @@ def cluster_agy(rows):
             out.extend(cluster_local(leftover))
         return out or cluster_local(rows)
     except Exception as exc:
-        print(f"[lessons] agy cluster failed ({exc}); using local Jaccard", file=sys.stderr)
+        print(f"[lessons] clusterer role failed ({exc}); using local Jaccard", file=sys.stderr)
         return cluster_local(rows)
-    finally:
-        try:
-            schema_path.unlink()
-        except OSError:
-            pass
 
 
 def classify(canonical: str, members: list[dict]) -> dict:

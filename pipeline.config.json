@@ -1,15 +1,154 @@
 {
-  "_doc": "Pipeline gates (r5). mode: human = blocks until an approval is logged with scripts/gates.py approve; auto = automated checks decide and the pass is logged as an auto-approval; off = skipped. Flip a gate to auto once gates.py stats shows a streak of approvals without changes (Felipe wants full autonomy later).",
-  "voice": {"engine": "kokoro", "voice": "am_michael", "speed": 1.0},
-  "critic": {"models": ["gemini-3.1-pro-preview", "gemini-3.8-flash", "gemini-3-flash-preview"], "samples": 1, "ship_min_overall": 7.0, "ship_min_dim": 6},
-  "autonomy": {"suggest_auto_after_streak": 5},
-  "gates": {
-    "facts":        {"mode": "auto",  "check": "scripts/facts.py check {slug}", "blocks": "tts"},
-    "script":       {"mode": "human", "artifact": "episodes/{slug}/script.txt", "blocks": "tts"},
-    "style_frames": {"mode": "human", "artifact": "style_frames/contact_sheet_style_frames.jpg", "blocks": "animate"},
-    "storyboard":   {"mode": "human", "artifact": "qa/{id}/{suf}/storyboard.jpg", "check": "scripts/storyboard.py {id}", "blocks": "render"},
-    "qa":           {"mode": "auto",  "check": "scripts/qa.py {id} {slug} {iter}", "blocks": "critic"},
-    "critic":       {"mode": "auto",  "check": "scripts/critic.py {id}", "blocks": "final"},
-    "final":        {"mode": "human", "artifact": "renders/{id}_{suf}.mp4", "blocks": "publish"}
+ "_doc": "Pipeline gates (r5). mode: human = blocks until an approval is logged with scripts/gates.py approve; auto = automated checks decide and the pass is logged as an auto-approval; off = skipped. Flip a gate to auto once gates.py stats shows a streak of approvals without changes (Felipe wants full autonomy later). r7: llm.roles maps every LLM role to a provider + model (scripts/llm.py); override one run with LLM_<ROLE>=provider:model.",
+ "voice": {
+  "engine": "kokoro",
+  "voice": "am_michael",
+  "speed": 1.0
+ },
+ "critic": {
+  "models": [
+   "gemini-3.1-pro-preview",
+   "gemini-3.8-flash",
+   "gemini-3-flash-preview"
+  ],
+  "samples": 1,
+  "ship_min_overall": 7.0,
+  "ship_min_dim": 6
+ },
+ "autonomy": {
+  "suggest_auto_after_streak": 5
+ },
+ "gates": {
+  "facts": {
+   "mode": "auto",
+   "check": "scripts/facts.py check {slug}",
+   "blocks": "tts"
+  },
+  "script": {
+   "mode": "human",
+   "artifact": "episodes/{slug}/script.txt",
+   "blocks": "tts"
+  },
+  "style_frames": {
+   "mode": "human",
+   "artifact": "style_frames/contact_sheet_style_frames.jpg",
+   "blocks": "animate"
+  },
+  "storyboard": {
+   "mode": "human",
+   "artifact": "qa/{id}/{suf}/storyboard.jpg",
+   "check": "scripts/storyboard.py {id}",
+   "blocks": "render"
+  },
+  "qa": {
+   "mode": "auto",
+   "check": "scripts/qa.py {id} {slug} {iter}",
+   "blocks": "critic"
+  },
+  "critic": {
+   "mode": "auto",
+   "check": "scripts/critic.py {id}",
+   "blocks": "final"
+  },
+  "final": {
+   "mode": "human",
+   "artifact": "renders/{id}_{suf}.mp4",
+   "blocks": "publish"
   }
+ },
+ "llm": {
+  "_doc": "Vendor-neutral roles (scripts/llm.py). provider: claude | agy | codex | cursor-agent | gemini-api (critic roles only). model: provider's model id (null = CLI default). fallback: tried in order when the provider CLI is missing or fails. Claude token: existing login, CLAUDE_CODE_OAUTH_TOKEN, or the file in $TTM_CLAUDE_TOKEN_FILE (default ~/.secrets/claude_oauth_token).",
+  "roles": {
+   "planner": {
+    "provider": "claude",
+    "model": "sonnet",
+    "timeout_s": 900,
+    "fallback": [
+     {
+      "provider": "agy",
+      "model": "claude-sonnet-5-5"
+     },
+     {
+      "provider": "codex",
+      "model": null
+     }
+    ]
+   },
+   "builder": {
+    "provider": "claude",
+    "model": "sonnet",
+    "timeout_s": 2400,
+    "fallback": [
+     {
+      "provider": "agy",
+      "model": "claude-sonnet-5-5"
+     },
+     {
+      "provider": "cursor-agent",
+      "model": null
+     }
+    ]
+   },
+   "fixer": {
+    "provider": "claude",
+    "model": "sonnet",
+    "timeout_s": 900,
+    "fallback": [
+     {
+      "provider": "agy",
+      "model": "gemini-3.8-flash-high"
+     }
+    ]
+   },
+   "critic": {
+    "provider": "agy",
+    "model": "gemini-3.8-flash-high",
+    "timeout_s": 300,
+    "fallback": [
+     {
+      "provider": "gemini-api",
+      "model": "gemini-3.8-flash"
+     }
+    ]
+   },
+   "critic_deep": {
+    "provider": "agy",
+    "model": "gemini-4-neon-high",
+    "timeout_s": 300
+   },
+   "critic_tiebreak": {
+    "provider": "agy",
+    "model": "gemini-4-neon-high",
+    "timeout_s": 300,
+    "fallback": [
+     {
+      "provider": "claude",
+      "model": "opus"
+     }
+    ]
+   },
+   "clusterer": {
+    "provider": "agy",
+    "model": "gemini-3.8-flash-high",
+    "timeout_s": 150,
+    "fallback": [
+     {
+      "provider": "claude",
+      "model": "haiku"
+     }
+    ]
+   }
+  },
+  "loop": {
+   "max_preview_iters": 4,
+   "max_ship_iters": 2,
+   "fixer_checks": [
+    "labels: WCAG",
+    "labels: inside Shorts UI safe zones",
+    "labels: icon/label clearance",
+    "labels: minimum font size",
+    "text: no raw SVG/CSS fontSize"
+   ]
+  }
+ }
 }

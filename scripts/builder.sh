@@ -1,38 +1,20 @@
 #!/usr/bin/env bash
-# r6 builder role: Claude Code (claude -p) owns script/facts/scene-building and fix iterations.
-# Usage: scripts/builder.sh <CompId> <slug> <task-file> [log-dir]
-#   The prompt = fixed project preamble + docs/active_rules_prompt.txt (from scripts/lessons.py) + the task file.
-# Token: read from ~/.secrets/claude_oauth_token into the child env only. Never echoed, logged, or written.
+# Builder role (r7, vendor-neutral): one fresh builder session through scripts/llm.py. The provider/model come from
+# pipeline.config.json llm.roles.builder (override: LLM_BUILDER=provider:model, e.g. agy:claude-sonnet-5-5 or codex:gpt-5.6).
+# The full preview-first loop (plan -> build -> preview -> fixer/builder -> self-critique -> ship -> judge) is scripts/build_loop.py.
+# Usage: scripts/builder.sh <CompId> <slug> <task-file> [log-dir] [SUF]
 set -uo pipefail
-P="$(cd "$(dirname "$0")/.." && pwd)"
-ID="$1"; SLUG="$2"; TASK="$3"; LOG="${4:-$P/qa/$ID/builder}"
+P="$(cd "$(dirname "$0")/.." && pwd)"; PY="$P/.venv-tts/bin/python"; [[ -x "$PY" ]] || PY=python3
+ID="$1"; SLUG="$2"; TASK="$3"; LOG="${4:-$P/qa/$ID/builder}"; SUF="${5:-${SUF:-v2}}"
 mkdir -p "$LOG"
-[[ -f "$P/docs/active_rules_prompt.txt" ]] || "$P/.venv-tts/bin/python" "$P/scripts/lessons.py" --local >/dev/null
-TS=$(date +%Y%m%d-%H%M%S)
-PROMPT="$LOG/prompt_$TS.txt"
-{
-  cat <<PRE
-You are the BUILDER for the "That's the Mechanism" Shorts pipeline in $P (episode $SLUG, composition $ID).
-You own the script, facts, Remotion scenes and fix iterations. You are NOT the judge: an independent critic (agy) decides shipping.
-Read first: AGENTS.md (especially "Enforcement hierarchy: code over prose"), docs/STYLE_BRIEF.md, docs/ACCEPTANCE.md, docs/STYLE_RULES.md, docs/LESSONS.md.
-Use brand primitives instead of hand placement: Lane / LabeledBox (36 px icon/label clearance), TagLabel / Pill (built-in overshoot pop),
-LoopEnd (last frame locked to the frame-0 hook). Never print, cat, or log anything under ~/.secrets or any token.
-Do not publish, commit, or push. Do not edit scripts/qa.py, scripts/contrast.py or other gates to make a check pass.
-Run (cd remotion && npx tsc --noEmit -p .) after edits. Render + QA with:
-  SUF=<suffix> MASTER=1 scripts/iterate.sh <N> $ID      (QA report: qa/$ID/<suffix>/report_it<N>.json)
-An iteration passes only when EVERY check prints PASS.
-
-PRE
-  echo "=== Active style rules (docs/active_rules_prompt.txt) ==="
-  cat "$P/docs/active_rules_prompt.txt"
-  echo
-  echo "=== Task ==="
-  cat "$TASK"
-} > "$PROMPT"
-T0=$(date +%s)
-cd "$P"
-CLAUDE_CODE_OAUTH_TOKEN="$(cat "$HOME/.secrets/claude_oauth_token")" claude -p \
-  --dangerously-skip-permissions --output-format json "$(cat "$PROMPT")" > "$LOG/result_$TS.json" 2> "$LOG/stderr_$TS.log"
-RC=$?
-echo "builder $ID rc=$RC wall_s=$(( $(date +%s) - T0 )) result=$LOG/result_$TS.json"
-exit $RC
+[[ -f "$P/docs/active_rules_prompt.txt" ]] || "$PY" "$P/scripts/lessons.py" --local >/dev/null
+PROMPT="$LOG/prompt_$(date +%Y%m%d-%H%M%S).txt"
+"$PY" - "$P" "$ID" "$SLUG" "$SUF" "$TASK" > "$PROMPT" <<'PYEOF'
+import sys; from pathlib import Path
+root, i, slug, suf, task = sys.argv[1:]
+t = (Path(root) / "prompts/builder.md").read_text()
+for k, v in dict(ROOT=root, ID=i, SLUG=slug, SUF=suf, MAX_TRIES=4, TASK=Path(task).read_text()).items(): t = t.replace("{" + k + "}", v)
+print(t)
+PYEOF
+"$PY" "$P/scripts/llm.py" run --role builder --prompt-file "$PROMPT" --workdir "$P" --log-dir "$LOG" \
+  --scope "remotion/src/episodes/$ID.tsx,episodes/$SLUG/*.json,episodes/$SLUG/notes*.md"
