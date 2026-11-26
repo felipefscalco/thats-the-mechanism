@@ -171,6 +171,8 @@ if "--no-contrast" not in sys.argv:
     try:
         c = json.loads((OUT / "contrast.json").read_text()); res["contrast"] = c
         check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", c["ok"], dict(min=c["min_ratio"], p10=c["p10_ratio"], failures=[(f["t_start_s"], f["worst_ratio"]) for f in c["held_failures"]]))
+        check("labels: no ghost text (no label see-through < 3:1 for >= 0.4 s around its readable state)", c.get("ghost_ok", True),
+              dict(ghost_failures=c.get("ghost_failures", [])[:6], short_ghosts=len(c.get("ghosts", []))))
         # r5: Shorts UI safe zones on the same probe masks (top 220, bottom >1560, right column x>900 below y 900)
         check("labels: inside Shorts UI safe zones + >= 24 px from side edges", c.get("safe_zone_ok", True), dict(violations=c.get("safe_zone_violations", [])[:6]))
         check("labels: icon/label clearance >= 36 px (held >= 0.6 s)", c.get("overlap_ok", True),
@@ -238,7 +240,7 @@ from static_gates import checks as _static_checks
 for _name, _ok, _detail in _static_checks(ID, SLUG):
     if _name.startswith("text: no decorative HUD"):
         res["hud"] = _detail; check(_name, _ok, _detail)
-    elif _name.startswith(("hook:", "clarity:")):  # r8
+    elif _name.startswith(("hook:", "clarity:", "text: atomic", "payoff:", "hero:")):  # r8 + r9
         res.setdefault("hook_static", {})[_name] = _detail; check(_name, _ok, _detail)
 
 # 6d. visual-state change cadence (r5, Gemini/The Why Side: a new visual state every 3-4 s, not just motion):

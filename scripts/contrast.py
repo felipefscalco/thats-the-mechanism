@@ -79,6 +79,16 @@ for i, found in enumerate(samples):
 runs += open_
 fails = [dict(t_start_s=round(r_["first"] * NTH / 30, 2), t_end_s=round(r_["last"] * NTH / 30, 2), worst_ratio=r_["worst"], bbox=r_["bbox"], text_rgb=r_["text"], bg_rgb=r_["bg"])
          for r_ in runs if r_["n"] >= PERSIST]
+# r9 ghost text (Sky v8 critic blocker, min ratio 1.04): a label that is briefly see-through (fading, or text without its
+# backing yet) before/after it reaches full contrast. Short runs (< PERSIST) under GHOST whose same label is >= MIN within
+# +-GHOST_WIN samples. Atomic kit components can't do this; a run of >= 2 samples (>= 0.4 s) fails the gate.
+GHOST, GHOST_WIN = arg("--ghost", 3.0), 5
+def _good_near(r_):
+    lo, hi = max(0, r_["first"] - GHOST_WIN), min(len(samples), r_["last"] + GHOST_WIN + 1)
+    return any(x["ratio"] >= MIN and iou(x["bbox"], r_["bbox"]) > 0.3 for k in range(lo, hi) for x in samples[k])
+ghosts = [dict(t_start_s=round(r_["first"] * NTH / 30, 2), t_end_s=round(r_["last"] * NTH / 30, 2), samples=r_["n"], worst_ratio=r_["worst"], bbox=r_["bbox"])
+          for r_ in runs if r_["n"] < PERSIST and r_["worst"] < GHOST and _good_near(r_)]
+ghost_fail = [g for g in ghosts if g["samples"] >= 2]
 # r5 Shorts UI safe zones (YT Shorts/Reels/TikTok overlays): top 220 px, bottom 360 px (y > 1560), right button column x > 900 from y 900
 # r6 (critic blocker, Elevator v6 00:17-00:26 'CAR vs CW' -> 'AR vs CW'): a label pushed past the left/right frame edge
 # by a camera move is clipped. Text must keep >= 24 px from both side edges (EDGE), held >= 0.6 s like the rest.
@@ -439,7 +449,7 @@ for i, c in enumerate(clutter_series + [0]):
 clutter_ok = not clutter_runs
 res = dict(min_required=MIN, samples=n, nth=NTH, label_instances=len(allr), min_ratio=round(min(allr), 2) if allr else None,
            p10_ratio=round(float(np.percentile(allr, 10)), 2) if allr else None, median_ratio=round(float(np.median(allr)), 2) if allr else None,
-           held_failures=fails, ok=not fails, safe_zone_violations=sz[:20], safe_zone_ok=not sz, safe_zone_transient=len(sz_all) - len(sz),
+           held_failures=fails, ok=not fails, ghosts=ghosts[:20], ghost_ok=not ghost_fail, ghost_failures=ghost_fail[:10], safe_zone_violations=sz[:20], safe_zone_ok=not sz, safe_zone_transient=len(sz_all) - len(sz),
            overlap_clearance_px=CLEARANCE, overlap_ok=not ov_fails, overlap_min_clearance=overlap_min_clearance, overlap_violations=ov_fails,
            pop_ok=pop_ok, pop_entrances=len(pops), pop_snaps=snaps[:20], pop_handrolled_tracks=len(btracks),
            clutter_ok=clutter_ok, clutter_max_allowed=CLUTTER_MAX, clutter_peak=max(clutter_series, default=0), clutter_count=CLUTTER_COUNT, clutter_peak_all=max(clutter_all, default=0), clutter_violations=clutter_runs[:10],

@@ -119,8 +119,7 @@ const Bytes: React.FC = () => {
   const typed = Math.min(url.length, Math.floor(ease(f, s2 + 2, cut, 0, url.length)));
   return (
     <Stage>
-      <text x={W / 2} y={370} fill={C.paper} fontFamily={MONO} fontSize={36} fontWeight={700} textAnchor="middle" opacity={k}
-        style={{ paintOrder: "stroke", stroke: C.ink, strokeWidth: 6 }}>{url.slice(0, typed)}</text>
+      <Label x={W / 2} y={370} color={C.paper} font={MONO} size={36} weight={700} anchor="middle" o={k} text={String(url.slice(0, typed))} outline={true} />
       <Label x={115} y={445} text="DATA" anchor="start" size={30} color={P.color} o={split} />
       {bytesOf.map((b, i) => {
         const s = pop(f, cut + i * 1.4, fps), x = 115 + (i % 6) * 145, y = 470 + Math.floor(i / 6) * 116;
@@ -128,7 +127,7 @@ const Bytes: React.FC = () => {
         return (
           <g key={i} transform={`translate(${x + 60} ${y + 44}) scale(${popScale(s) * (1 + 0.06 * pulse)})`} opacity={popOpacity(s)}>
             <rect x={-60} y={-44} width={120} height={88} rx={14} fill={pulse > 0.6 ? "#233648" : C.ink2} stroke={pulse > 0.6 ? C.amber : P.color} strokeWidth={4} />
-            <text y={12} fill={C.paper} fontFamily={MONO} fontSize={34} fontWeight={700} textAnchor="middle">{b}</text>
+            <Label x={0} y={12} color={C.paper} font={MONO} size={34} weight={700} anchor="middle" text={String(b)} outline={false} />
           </g>
         );
       })}
@@ -139,7 +138,7 @@ const Bytes: React.FC = () => {
         return (
           <g key={i} transform={`translate(${x + 60} ${y + 44}) scale(${popScale(s)})`} opacity={popOpacity(s)}>
             <rect x={-60} y={-44} width={120} height={88} rx={14} fill={C.amber} opacity={0.82 + 0.18 * Math.sin(f * 0.2 - i * 0.5)} />
-            <text y={13} fill={C.ink} fontFamily={MONO} fontSize={40} fontWeight={700} textAnchor="middle">+</text>
+            <Label x={0} y={13} color={C.ink} font={MONO} size={40} weight={700} anchor="middle" text="+" outline={false} />
           </g>
         );
       })}

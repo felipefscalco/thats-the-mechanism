@@ -228,11 +228,16 @@
   "clutter": {
    "max": 3,
    "count": "floating",
-   "attach_px": 25
+   "attach_px": 25,
+   "decided": "floating callouts only (Felipe, r9)"
   },
   "entrances": {
    "max_fade_only": 2,
    "_doc": "scripts/entrances.py: no snap entrances; at most N opacity-only fades (cross-fades)"
+  },
+  "payoff": {
+   "hold_s": 1.5,
+   "margin_s": 0.3
   }
  },
  "hooks": {

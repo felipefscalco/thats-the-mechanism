@@ -22,8 +22,27 @@ def checks(comp_id: str, slug: str = None):
     out.append(("text: no raw SVG/CSS fontSize < 30 px (episode + brand kit)", not raw_small, dict(min_allowed=30, small=raw_small)))
     hud = sorted(set(HUD_RE.findall(src)))
     out.append(("text: no decorative HUD / fake timecode strings in the episode", not hud, dict(matches=hud)))
-    if slug: out += hook_and_clarity(comp_id, slug)
+    # r9 atomic text (Sky v8 critic blocker: ghost text faded in apart from its pill). Every episode string is drawn by a kit
+    # component (Label / TagLabel / Badge / Pill / TitleHook), which are fully opaque from their first visible frame and
+    # share one transform with their backing. Raw SVG <text>/<tspan> or a CSS text div in an episode bypasses that.
+    raw = [f"{ln}: {line.strip()[:80]}" for ln, line in enumerate(src.splitlines(), 1) if re.search(r"<(text|tspan)\b", line)]
+    out.append(("text: atomic labels only (no raw <text>/<tspan> in the episode; use Label/TagLabel/Badge/Pill)", not raw, dict(raw=raw[:10])))
+    if slug: out += hook_and_clarity(comp_id, slug) + payoff_hold(slug)
     return out
+
+
+def payoff_hold(slug):
+    """r9: the mix leaves >= hold_s of settled payoff after the last word, before the loop whip (0.8 s). The stage is frozen
+    for that hold by EpisodeShell (PAYOFF_HOLD_S); the measured twin is qa.py 'end card ... payoff settled'."""
+    import json
+    hold = json.loads((ROOT / "pipeline.config.json").read_text()).get("qa_gates", {}).get("payoff", {}).get("hold_s", 1.5)
+    try:
+        d = json.loads((ROOT / "remotion/src/durations.json").read_text())[slug]
+        w = json.loads((ROOT / "episodes" / slug / "captions.json").read_text())
+    except Exception as e:
+        return [("payoff: >= 1.5 s settled hold after the last word (mix tail)", False, dict(error=str(e)[:200]))]
+    room = round(d - 0.8 - w[-1]["end"], 2)
+    return [(f"payoff: >= {hold} s settled hold after the last word (mix tail)", room >= hold, dict(duration_s=d, last_word_end_s=w[-1]["end"], hold_room_s=room))]
 
 
 def hook_and_clarity(comp_id, slug):

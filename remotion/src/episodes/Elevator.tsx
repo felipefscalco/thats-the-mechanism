@@ -122,7 +122,7 @@ const Rig: React.FC = () => {
         {Array.from({ length: 8 }).map((_, i) => (
           <g key={i} opacity={0.8}>
             <line x1={105} x2={shaftLeft - 14} y1={420 + i * 95} y2={420 + i * 95} stroke="#3A4256" strokeWidth={2} />
-            <text x={118} y={412 + i * 95} fill="#9BA3B0" fontFamily={MONO} fontSize={30} fontWeight={700}>L{String(8 - i).padStart(2, "0")}</text>
+            <Label x={118} y={412 + i * 95} color="#9BA3B0" font={MONO} size={30} weight={700} anchor="start" text={`L${String(8 - i).padStart(2, "0")}`} outline={false} />
           </g>
         ))}
 
@@ -148,7 +148,7 @@ const Rig: React.FC = () => {
           <g transform={`translate(${SX + 150} ${SY - 96})`}>
             <rect x={0} y={0} width={172} height={92} rx={16} fill={motorOn ? C.amber : "#3B4354"} stroke={C.ink} strokeWidth={4} />
             {[16, 34, 52, 70].map((y) => <line key={y} x1={14} x2={158} y1={y} y2={y} stroke={C.ink} strokeWidth={4} opacity={0.22} />)}
-            <text x={86} y={56} fill={motorOn ? C.ink : C.paper} fontFamily={DISPLAY} fontWeight={700} fontSize={32} textAnchor="middle">MOTOR</text>
+            <Label x={86} y={56} color={motorOn ? C.ink : C.paper} font={DISPLAY} weight={700} size={32} anchor="middle" text="MOTOR" outline={false} />
             <circle cx={146} cy={22} r={8} fill={motorOn ? C.ink : C.amber} />
             {/* Spinning end flywheel */}
             <g transform={`translate(178 46) rotate(${motorDeg})`}>
@@ -209,7 +209,7 @@ const Rig: React.FC = () => {
           {showBrake && (
             <g transform={`translate(${SX - SR - 28} ${SY - 54})`}>
               <rect x={-210} y={-26} width={210} height={50} rx={25} fill={C.ink} />
-              <text x={-105} y={10} fill={brakeOpen > 0.5 ? C.amber : C.red} fontFamily={DISPLAY} fontWeight={700} fontSize={32} textAnchor="middle">{brakeOpen > 0.5 ? "BRAKE OFF" : "BRAKE ON"}</text>
+              <Label x={-105} y={10} color={brakeOpen > 0.5 ? C.amber : C.red} font={DISPLAY} weight={700} size={32} anchor="middle" text={brakeOpen > 0.5 ? "BRAKE OFF" : "BRAKE ON"} outline={false} />
             </g>
           )}
 
@@ -229,7 +229,7 @@ const Rig: React.FC = () => {
             <GuideShoe x={-8} y={20} /><GuideShoe x={CAR_W + 8} y={20} />
             <GuideShoe x={-8} y={CAR_H - 20} /><GuideShoe x={CAR_W + 8} y={CAR_H - 20} />
             <rect x={CAR_W / 2 - 44} y={-38} width={88} height={32} rx={8} fill={C.ink} />
-            <text x={CAR_W / 2} y={-13} fill={C.paper} fontFamily={DISPLAY} fontWeight={700} fontSize={30} textAnchor="middle">CAR</text>
+            <Label x={CAR_W / 2} y={-13} color={C.paper} font={DISPLAY} weight={700} size={30} anchor="middle" text="CAR" outline={false} />
           </g>
 
           {/* Counterweight frame with stacked cast-iron plates + guide shoes */}
@@ -244,11 +244,11 @@ const Rig: React.FC = () => {
                 <rect y={CW_H * 0.62} width={CW_W} height={CW_H * 0.38} rx={10} fill={C.amber} />
                 <g transform={`translate(${CW_W + 18} ${CW_H * 0.28})`}>
                   <rect x={0} y={-28} width={225} height={44} rx={22} fill={C.ink} />
-                  <text x={112} y={4} fill={P.color} fontFamily={DISPLAY} fontWeight={700} fontSize={30} textAnchor="middle">= EMPTY CAR</text>
+                  <Label x={112} y={4} color={P.color} font={DISPLAY} weight={700} size={30} anchor="middle" text="= EMPTY CAR" outline={false} />
                 </g>
                 <g transform={`translate(${CW_W + 18} ${CW_H * 0.80})`} opacity={ease(f, at("plus about"), at("plus about") + 8)}>
                   <rect x={0} y={-28} width={250} height={44} rx={22} fill={C.ink} />
-                  <text x={125} y={4} fill={C.amber} fontFamily={DISPLAY} fontWeight={700} fontSize={30} textAnchor="middle">+ 40–50% LOAD</text>
+                  <Label x={125} y={4} color={C.amber} font={DISPLAY} weight={700} size={30} anchor="middle" text="+ 40–50% LOAD" outline={false} />
                 </g>
               </g>
             )}
@@ -298,13 +298,13 @@ const Rig: React.FC = () => {
           {f < s2 && (
             <g transform="translate(540 1100)" opacity={ease(f, at("almost balances"), at("almost balances") + 8)}>
               <rect x={-190} y={-32} width={380} height={60} rx={30} fill={C.ink} stroke={P.color} strokeWidth={4} />
-              <text y={10} fill={P.color} fontFamily={DISPLAY} fontWeight={700} fontSize={40} textAnchor="middle">≈ BALANCED</text>
+              <Label x={0} y={10} color={P.color} font={DISPLAY} weight={700} size={40} anchor="middle" text="≈ BALANCED" outline={false} />
             </g>
           )}
           {f >= s2 - 6 && f < s3 && (
             <g transform={`translate(${CW_X} ${cwTop - 26})`} opacity={ease(f, s2, s2 + 8)}>
               <rect x={-140} y={-32} width={280} height={42} rx={21} fill={C.ink} />
-              <text y={-2} fill={P.color} fontFamily={DISPLAY} fontWeight={700} fontSize={30} textAnchor="middle">COUNTERWEIGHT</text>
+              <Label x={0} y={-2} color={P.color} font={DISPLAY} weight={700} size={30} anchor="middle" text="COUNTERWEIGHT" outline={false} />
             </g>
           )}
 
@@ -395,12 +395,12 @@ const ScaleNotCrane: React.FC = () => {
           <g transform={`translate(-172 ${-192 - (1 - dropCar) * 40})`} opacity={Math.min(1, dropCar)}>
             <Extrude w={112} h={140} top="#4B5569" side="#1F2430" />
             <rect width={112} height={140} rx={14} fill="#2B3140" stroke={C.paper} strokeWidth={5} />
-            <text x={56} y={84} fill={C.paper} fontFamily={DISPLAY} fontWeight={700} fontSize={32} textAnchor="middle">CAR</text>
+            <Label x={56} y={84} color={C.paper} font={DISPLAY} weight={700} size={32} anchor="middle" text="CAR" outline={false} />
           </g>
           <g transform={`translate(66 ${-172 - (1 - dropCw) * 40})`} opacity={Math.min(1, dropCw)}>
             <Extrude w={94} h={120} d={16} top="#A8E6B0" side="#4F9A5A" />
             <rect width={94} height={120} rx={12} fill={P.color} />
-            <text x={47} y={74} fill={C.ink} fontFamily={DISPLAY} fontWeight={700} fontSize={32} textAnchor="middle">CW</text>
+            <Label x={47} y={74} color={C.ink} font={DISPLAY} weight={700} size={32} anchor="middle" text="CW" outline={false} />
           </g>
         </g>
         <Scale x={-34} y={200} width={68} height={68} color={C.green} strokeWidth={2.5} />

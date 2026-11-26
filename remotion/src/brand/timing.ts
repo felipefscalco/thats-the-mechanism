@@ -32,7 +32,9 @@ export const EASE = {
 };
 /** Entry that never starts at scale(0): opacity carries the first frames, scale goes 0.62 -> overshoot -> 1. */
 export const popScale = (p: number) => (p <= 0 ? 0 : 0.62 + 0.38 * p);
-export const popOpacity = (p: number) => Math.min(1, Math.max(0, p * 2.5));
+// r9 atomic: a popped element is fully opaque from its first visible frame (the scale carries the entrance), so text in
+// a hand-rolled popping group can never be a ghost. Was min(1, p * 2.5).
+export const popOpacity = (p: number) => (p > 0.01 ? 1 : 0);
 /** Emil stagger: shrinking delays read organic (first gaps longest). i-th delay in frames. */
 export const stagger = (i: number, first = 4, decay = 0.82, min = 2) => {
   let t = 0, d = first;
