@@ -220,6 +220,15 @@ if "--no-entrances" not in sys.argv:
               dict(entrances=ej["entrances"], snaps=ej["snaps"][:5], fades=ej["fades"][:5]))
     except Exception as e:
         check("motion: every element entrance scales/slides/draws on (no snaps, <= 2 opacity-only fades)", False, dict(error=str(e)))
+# 6c-r9. artwork is not cut by a side edge (scripts/artedge.py; Elevator v7 critic: shaft wall + car off-screen x < 0 for 5+ s)
+if "--no-artedge" not in sys.argv:
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "artedge.py"), str(MP4), str(OUT), "--cuts", _cuts if "_cuts" in dir() else "",
+                    "--card", f"{card_at:.2f},{card_until:.2f}"], capture_output=True, text=True)
+    try:
+        aj = json.loads((OUT / "artedge.json").read_text()); res["artedge"] = aj
+        check("framing: no artwork cut by a side edge for >= 0.6 s outside transitions", aj["ok"], dict(fails=aj["fails"][:5]))
+    except Exception as e:
+        check("framing: no artwork cut by a side edge for >= 0.6 s outside transitions", False, dict(error=str(e)))
 # 6c-r8b. planned key labels stay readable during their beat (OCR on the render; Elevator v7 tie-break lost CAR/CW + MOTOR labels)
 if "--no-labels" not in sys.argv:
     try:
