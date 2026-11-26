@@ -1,4 +1,4 @@
-#!/workspace/ttm-r6/.venv-tts/bin/python
+#!/usr/bin/env python3
 """Automated acceptance QA for one rendered episode (see docs/ACCEPTANCE.md).
 Usage: scripts/qa.py <CompositionId> <slug> <iteration> [--no-stems]
 Writes qa/<Id>/report_it<N>.json, transitions_it<N>.png (dense frames around every shot boundary + the loop seam),
@@ -110,7 +110,8 @@ if "--no-contrast" not in sys.argv:
         _cuts = ",".join(f"{phrase_time(ws_all, r['at']):.2f}" for r in shots(SLUG) if r["at"])
     except Exception:
         _cuts = ""
-    cr = subprocess.run([sys.executable, str(ROOT / "scripts" / "contrast.py"), ID, str(MP4), str(OUT), "--cuts", _cuts], capture_output=True, text=True)
+    cr = subprocess.run([sys.executable, str(ROOT / "scripts" / "contrast.py"), ID, str(MP4), str(OUT), "--cuts", _cuts,
+                         "--card", f"{card_at:.2f},{card_until:.2f}"], capture_output=True, text=True)
     try:
         c = json.loads((OUT / "contrast.json").read_text()); res["contrast"] = c
         check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", c["ok"], dict(min=c["min_ratio"], p10=c["p10_ratio"], failures=[(f["t_start_s"], f["worst_ratio"]) for f in c["held_failures"]]))
@@ -119,8 +120,11 @@ if "--no-contrast" not in sys.argv:
         check("labels: icon/label clearance >= 36 px (held >= 0.6 s)", c.get("overlap_ok", True),
               dict(min_clearance=c.get("overlap_min_clearance"), violations=c.get("overlap_violations", [])[:6]))
         # r6 (critic R-002, 3 episodes): badges never snap in at full size; component = TagLabel/Pill pop
-        check("motion: badge entrances pop with anticipation/overshoot", c.get("pop_ok", True),
-              dict(entrances=c.get("pop_entrances"), snaps=c.get("pop_snaps", [])[:6]))
+        check("motion: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges)", c.get("pop_ok", True),
+              dict(entrances=c.get("pop_entrances"), handrolled_tracks=c.get("pop_handrolled_tracks"), snaps=c.get("pop_snaps", [])[:6]))
+        # r7 (critic, Sky_v6 0:35): no more than 3 pills/badges on the stage at once (held >= 0.6 s)
+        check("layout: callout clutter <= 3 pills/badges at once (held >= 0.6 s)", c.get("clutter_ok", True),
+              dict(peak=c.get("clutter_peak"), violations=c.get("clutter_violations", [])[:6]))
     except Exception as e:
         check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", False, dict(error=str(e), stderr=cr.stderr[-400:]))
 
@@ -138,6 +142,21 @@ if ep_tsx.exists():
                 if int(m.group(1)) < 30: raw_small.append(f"{src.name}:{ln}:{m.group(1)}px")
     res["raw_text_sizes"] = dict(min_allowed=30, small=raw_small)
     check("text: no raw SVG/CSS fontSize < 30 px (episode + brand kit)", not raw_small, res["raw_text_sizes"])
+
+# 6c-r7. slide-deck boxing (scripts/framing.py): no whole-stage card held >= 1 s, boxed framing <= 50 % of runtime
+if "--no-framing" not in sys.argv:
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "framing.py"), str(MP4), str(OUT), "--card", f"{card_at:.2f},{card_until:.2f}"], capture_output=True, text=True)
+    try:
+        fj = json.loads((OUT / "framing.json").read_text()); res["framing"] = {k: v for k, v in fj.items() if k != "series"}
+        check("framing: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime", fj["ok"],
+              dict(boxed_frac=fj["boxed_frac"], whole_stage_card=fj["whole_stage_card_runs"][:6]))
+    except Exception as e:
+        check("framing: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime", False, dict(error=str(e)))
+# 6c-r7b. no decorative HUD / fake timecodes (AI LABS 'AI tells'); the real chapter deck lives in brand/Chrome.tsx, not here
+from static_gates import checks as _static_checks
+for _name, _ok, _detail in _static_checks(ID):
+    if _name.startswith("text: no decorative HUD"):
+        res["hud"] = _detail; check(_name, _ok, _detail)
 
 # 6d. visual-state change cadence (r5, Gemini/The Why Side: a new visual state every 3-4 s, not just motion):
 #     a "state change" = stage ROI differs from 0.5 s earlier by >= STATE_DIFF mean grey levels; max gap between changes <= 4.0 s

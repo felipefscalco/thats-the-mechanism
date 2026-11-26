@@ -1,7 +1,7 @@
 import { getInputProps } from "remotion";
 import React from "react";
 import { AbsoluteFill, Img, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { PROBE } from "./Kit";
+import { PROBE, PROBE_KEY, PROBE_TEXT } from "./Kit";
 import { Audio } from "@remotion/media";
 import { Pillar } from "./tokens";
 import { Background, BrandChip, Captions, Chapter, Deck } from "./Chrome";
@@ -16,6 +16,9 @@ import { createTikTokStyleCaptions } from "@remotion/captions";
 export const STEM = (getInputProps() as { stem?: string }).stem;
 
 export const LOOP_FRAMES = 14; // final 0.47 s: whip back into the hook frozen at frame 0
+/** r7 gate (contrast.py): on the probe passes, raw SVG <text> drawn by an episode (not via <Label>) is also painted in the
+ *  key magenta, so WCAG contrast, safe-zone/edge, overlap and clutter gates see it. Scoped to the stage (chrome excluded). */
+const PROBE_RAW_TEXT_CSS = `.ttm-stage svg text, .ttm-stage svg tspan { fill: ${PROBE_KEY} !important; stroke: none !important; }`;
 
 /**
  * Standard wrapper for every episode. Provides: background, brand chip + intro sting, captions,
@@ -39,10 +42,11 @@ export const EpisodeShell: React.FC<{
   return (
     <PillarCtx.Provider value={pillar}><AbsoluteFill>
       <Background pillar={pillar} backdrop={backdrop} backdropDim={backdropDim} />
+      {PROBE_TEXT && <style>{PROBE_RAW_TEXT_CSS}</style>}
       <AtFrame f={f}>
-        <AbsoluteFill>{children}</AbsoluteFill>
+        <AbsoluteFill className="ttm-stage">{children}</AbsoluteFill>
       </AtFrame>
-      {f >= loopFrom - T_FRAMES && <LoopBack from={loopFrom} hook={hook} />}
+      {f >= loopFrom - T_FRAMES && <AbsoluteFill className="ttm-stage"><LoopBack from={loopFrom} hook={hook} /></AbsoluteFill>}
       <MechanismCard at={cardAt} until={cardUntil} pillar={pillar} />
       <Grain f={f} D={D} />
       <BrandChip pillar={pillar} ep={ep} source={source} />

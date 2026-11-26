@@ -9,7 +9,7 @@ Pass 2 uses {"probeOccupancy":true}: same magenta text, but TagLabel/Pill/TitleH
 A label fails if it stays under the threshold for >= PERSIST consecutive samples (0.6 s at every 6th frame), so
 fade-ins/outs don't fail but a held low-contrast label does.
 Caveat: the probe pass renders the CURRENT code, so only compare against an MP4 rendered from that same code (baselines of old renders must run before code changes).
-Usage: contrast.py <CompositionId> <mp4> <outDir> [--min 4.5] [--nth 6]  -> outDir/contrast.json (+ contrast_fail.png)
+Usage: contrast.py <CompositionId> <mp4 or - (preview stills)> <outDir> [--min 4.5] [--nth 6]  -> outDir/contrast.json (+ contrast_fail.png)
 """
 import json, subprocess, sys
 from pathlib import Path
@@ -25,9 +25,15 @@ PD = OUT / "_probe"; OCC = OUT / "_probe_occ"; ND = OUT / "_norm"
 for d in (PD, OCC, ND):
     d.mkdir(exist_ok=True); [p.unlink() for p in d.glob("*.png")]
 OCC_NTH = 2  # occupancy pass is denser: overlap uses every (NTH // OCC_NTH)-th frame, the badge-pop gate uses all of them
-r = subprocess.run(["node", "probe_frames.mjs", ID, str(PD), str(NTH), "0.5", '{"probe":true}', str(OCC), '{"probeOccupancy":true}', str(OCC_NTH)], cwd=ROOT / "remotion", capture_output=True, text=True)
+# r7 preview-first: MP4 "-" (or --preview) = no render needed. A third pass renders the normal look as stills from the
+# same bundle, so contrast/edge/overlap/pop/clutter gates run before any full render (scripts/preview.py).
+PREVIEW = MP4.endswith("/-") or MP4 == "-" or "--preview" in sys.argv
+_passes = [str(PD), str(NTH), "0.5", '{"probe":true}', str(OCC), '{"probeOccupancy":true}', str(OCC_NTH)]
+if PREVIEW: _passes += [str(ND), "{}", str(NTH)]
+r = subprocess.run(["node", "probe_frames.mjs", ID, *_passes], cwd=ROOT / "remotion", capture_output=True, text=True)
 if r.returncode: sys.exit(r.stderr[-2000:] or r.stdout[-2000:])
-subprocess.run(f"ffmpeg -v error -y -i {MP4} -vf \"select=not(mod(n\\,{NTH})),scale=540:960:flags=area\" -vsync 0 {ND}/n_%04d.png", shell=True, check=True)
+if not PREVIEW:
+    subprocess.run(f"ffmpeg -v error -y -i {MP4} -vf \"select=not(mod(n\\,{NTH})),scale=540:960:flags=area\" -vsync 0 {ND}/n_%04d.png", shell=True, check=True)
 probes, norms = sorted(PD.glob("*.png")), sorted(ND.glob("*.png"))
 n = min(len(probes), len(norms))
 
@@ -88,7 +94,11 @@ for i in idx[1:] + [None]:
     if i is not None and i == run[-1] + 1: run.append(i); continue
     if len(run) >= PERSIST: held.update(run)
     run = [i] if i is not None else []
-sz = [dict(t_s=round(i * NTH / 30, 2), bbox=b) for i, b in sz_all if i in held]
+# r7 (r6 gap 3, Sky SUNSET clipped at 0.3 s): the hook/intro is judged frame by frame. Any side-edge/safe-zone clip in
+# the first INTRO_S seconds fails even if shorter than 0.6 s (that is the thumbnail and the first impression).
+INTRO_S = 2.0
+held |= {i for i in idx if i * NTH / 30 < INTRO_S}
+sz = [dict(t_s=round(i * NTH / 30, 2), bbox=b, intro=i * NTH / 30 < INTRO_S) for i, b in sz_all if i in held]
 allr = [x["ratio"] for s in samples for x in s]
 
 # r6: label/icon overlap + clearance (ANC 00:16 SPEAKER clipped CHIP). Occupancy = magenta text
@@ -323,11 +333,90 @@ for tr in tracks:
     if grow or over: pops.append(rec)
     elif not moving: snaps.append(rec)
 pop_ok = not snaps
+
+# r7 gates on the same dense occupancy pass:
+#  (e) hand-rolled badges: magenta text sitting on a compact, uniform, NON-cyan backing (an episode-drawn rect/pill)
+#      is tracked like a TagLabel/Pill and must pop too (r6 gap 2: the pop gate only saw cyan backings).
+#  (b) callout clutter: more than CLUTTER_MAX pills/badges (cyan backings + hand-rolled badges) on the stage at once,
+#      held >= 0.6 s, fails (Sky_v6 0:35 had four callout pills; critic: 'clutter of callouts').
+CLUTTER_MAX = arg("--clutter-max", 3)
+CARD = [float(x) for x in arg("--card", "").split(",") if x.strip()]
+in_card = lambda t: len(CARD) == 2 and CARD[0] - 0.2 <= t <= CARD[1] + 0.2
+def backed_badges(P):
+    R, G, B = P[..., 0], P[..., 1], P[..., 2]
+    mag = (R - G > 90) & (B - G > 90) & (np.abs(R - B) < 60)
+    cyn = (R < 50) & (G > 220) & (B > 220) & (np.abs(G - B) < 30)
+    keyish = ndi.binary_dilation(mag, iterations=2)
+    H_, W_ = mag.shape; out = []
+    comps = labelled_boxes(ndi.binary_dilation(mag, iterations=2), 15)
+    for cl in cluster_baseline(comps, max_gap=40):
+        x0, y0, x1, y1 = [v // 2 for v in union_box([comps[i]["bbox"] for i in cl])]
+        if y1 * 2 > 1222 or y0 * 2 < 200: continue
+        def ring(a, b):
+            m = np.zeros_like(mag); m[max(0, y0 - b):y1 + b, max(0, x0 - b):x1 + b] = True
+            m[max(0, y0 - a):y1 + a, max(0, x0 - a):x1 + a] = False
+            return m & ~keyish
+        inner, outer = ring(3, 8), ring(16, 22)
+        if inner.sum() < 30 or outer.sum() < 30: continue
+        if (cyn & ring(0, 10)).sum() > 10: continue          # cyan-backed: already tracked by the pop gate above
+        med = np.median(P[inner], axis=0)
+        near = lambda m: float((np.abs(P[m] - med).max(axis=1) < 26).mean())
+        if near(inner) >= 0.85 and near(outer) <= 0.45 and np.abs(med - np.median(P[outer], axis=0)).max() > 30:
+            out.append([x0, y0, x1, y1])
+    # Grid / table cells (>= 3 same-size backed boxes on one row, e.g. a byte grid) are diagram content, not callouts.
+    def in_grid(b, allb):
+        h = b[3] - b[1]; w = b[2] - b[0]
+        row = [c for c in allb if y_iou(c, b) >= 0.6 and abs((c[3] - c[1]) - h) <= 0.25 * h + 2]
+        return len(row) >= 3
+    out = [b for b in out if not in_grid(b, out)]
+    # Callouts are pill-shaped: short and wide (h <= 120 px at full res, w/h >= 1.6). Title blocks and icon tiles are not.
+    pill = lambda b: (b[3] - b[1]) * 2 <= 120 and (b[2] - b[0]) >= 1.6 * (b[3] - b[1])
+    cnt = 0
+    labc, _ = ndi.label(ndi.binary_closing(cyn, iterations=2))
+    for j, sl in enumerate(ndi.find_objects(labc), 1):
+        if sl is None or (labc[sl] == j).sum() < 60: continue
+        if sl[0].start * 2 >= 1222 or sl[0].stop * 2 < 220: continue
+        if pill([sl[1].start, sl[0].start, sl[1].stop, sl[0].stop]): cnt += 1
+    # backed text bbox is the glyph box; the badge around it adds ~20 px padding per side at half scale
+    return out, cnt + sum(1 for b in out if pill([b[0] - 10, b[1] - 6, b[2] + 10, b[3] + 6]))
+btracks, blive, clutter_series = [], [], []
+for i, path in enumerate(occs_all):
+    P = np.asarray(Image.open(path).convert("RGB")).astype(int)
+    boxes, cnt = backed_badges(P)
+    t = i * STEP_S
+    clutter_series.append(0 if in_card(t) else cnt)
+    nxt = []
+    for b in boxes:
+        m = next((tr for tr in blive if box_iou(tr["b"][-1], b) > 0.3), None)
+        if m: m["b"].append(b); m["last"] = i; nxt.append(m); blive.remove(m)
+        else:
+            tr = dict(birth=i, last=i, b=[b], edge=b[0] <= 2 or b[2] >= P.shape[1] - 2); btracks.append(tr); nxt.append(tr)
+    blive = [tr for tr in blive if i - tr["last"] <= 1] + nxt
+bsnaps = []
+for tr in btracks:
+    if len(tr["b"]) < 10 or tr["edge"]: continue
+    t0 = tr["birth"] * STEP_S
+    if excluded(t0) or in_card(t0): continue
+    w = np.array([b[2] - b[0] for b in tr["b"]], float); cx = np.array([(b[0] + b[2]) / 2 for b in tr["b"]])
+    W = float(np.median(w[8:14])) if len(w) >= 12 else float(w[-1]); head = w[:8]
+    grow = head[0] <= 0.92 * W; over = head.max() >= 1.015 * W; moving = abs(cx[min(7, len(cx) - 1)] - cx[0]) > 0.1 * W
+    if not (grow or over or moving):
+        bsnaps.append(dict(t_s=round(t0, 2), bbox=[v * 2 for v in tr["b"][0]], kind="hand-rolled badge"))
+pop_ok = pop_ok and not bsnaps
+snaps += bsnaps
+need = int(round(0.6 / STEP_S)); clutter_runs, run_ = [], []
+for i, c in enumerate(clutter_series + [0]):
+    if c > CLUTTER_MAX: run_.append(i); continue
+    if len(run_) >= need: clutter_runs.append(dict(t_start_s=round(run_[0] * STEP_S, 2), t_end_s=round(run_[-1] * STEP_S, 2), max_badges=max(clutter_series[k] for k in run_)))
+    run_ = []
+clutter_ok = not clutter_runs
 res = dict(min_required=MIN, samples=n, nth=NTH, label_instances=len(allr), min_ratio=round(min(allr), 2) if allr else None,
            p10_ratio=round(float(np.percentile(allr, 10)), 2) if allr else None, median_ratio=round(float(np.median(allr)), 2) if allr else None,
            held_failures=fails, ok=not fails, safe_zone_violations=sz[:20], safe_zone_ok=not sz, safe_zone_transient=len(sz_all) - len(sz),
            overlap_clearance_px=CLEARANCE, overlap_ok=not ov_fails, overlap_min_clearance=overlap_min_clearance, overlap_violations=ov_fails,
-           pop_ok=pop_ok, pop_entrances=len(pops), pop_snaps=snaps[:20])
+           pop_ok=pop_ok, pop_entrances=len(pops), pop_snaps=snaps[:20], pop_handrolled_tracks=len(btracks),
+           clutter_ok=clutter_ok, clutter_max_allowed=CLUTTER_MAX, clutter_peak=max(clutter_series, default=0), clutter_violations=clutter_runs[:10],
+           intro_edge_s=INTRO_S, preview=PREVIEW, raw_svg_text_probed=True)
 if not fails:
     (OUT / "contrast_fail.png").unlink(missing_ok=True)
 if fails:  # annotated evidence: one tile per failure (frame of its worst moment)
@@ -339,5 +428,6 @@ if fails:  # annotated evidence: one tile per failure (frame of its worst moment
     sheet = Image.new("RGB", (540 * len(tiles), 960)); [sheet.paste(t, (540 * k, 0)) for k, t in enumerate(tiles)]; sheet.save(OUT / "contrast_fail.png")
 (OUT / "contrast.json").write_text(json.dumps(res, indent=1))
 for d in (PD, OCC, ND):
+    if d == ND and "--keep-norm" in sys.argv: continue   # preview.py reuses the normal stills for framing/hold/contact sheet
     [p.unlink() for p in d.glob("*.png")]; d.rmdir()
 print(json.dumps({k: v for k, v in res.items() if k != "held_failures"}), "held_failures:", json.dumps(fails))
