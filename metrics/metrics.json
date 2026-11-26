@@ -1,25 +1,25 @@
 {
-  "generated": "2026-11-26T09:05:49-03:00",
+  "generated": "2026-11-26T17:53:38+02:00",
   "cost_usd_total": 0.0,
   "llm_tokens": "not available to the pipeline (authoring bot's token usage is not exposed)",
   "episodes": {
     "01-qr-code": {
       "stages": {
         "qa": {
-          "runs": 19,
-          "wall_s_total": 2139.38,
-          "wall_s_last": 259.29,
-          "cpu_s_total": 2757.15,
-          "peak_rss_mb": 4460,
+          "runs": 21,
+          "wall_s_total": 2862.88,
+          "wall_s_last": 368.6,
+          "cpu_s_total": 4528.53,
+          "peak_rss_mb": 5207,
           "out_mb_last": null
         },
         "render": {
-          "runs": 18,
-          "wall_s_total": 1005.23,
-          "wall_s_last": 96.4,
-          "cpu_s_total": 1698.71,
+          "runs": 20,
+          "wall_s_total": 1147.64,
+          "wall_s_last": 76.27,
+          "cpu_s_total": 1928.57,
           "peak_rss_mb": 4597,
-          "out_mb_last": 19.21
+          "out_mb_last": 23.01
         },
         "captions": {
           "runs": 4,
@@ -46,12 +46,12 @@
           "out_mb_last": 2.41
         },
         "master": {
-          "runs": 11,
-          "wall_s_total": 43.49,
-          "wall_s_last": 4.35,
-          "cpu_s_total": 52.2,
-          "peak_rss_mb": 201,
-          "out_mb_last": 19.21
+          "runs": 13,
+          "wall_s_total": 52.35,
+          "wall_s_last": 4.56,
+          "cpu_s_total": 62.78,
+          "peak_rss_mb": 202,
+          "out_mb_last": 23.01
         },
         "loudnorm": {
           "runs": 2,
@@ -62,8 +62,8 @@
           "out_mb_last": 4.81
         }
       },
-      "qa_iterations": 7,
-      "render_iterations": 7,
+      "qa_iterations": 102,
+      "render_iterations": 102,
       "cost_usd": 0.0,
       "notes": {
         "script": "authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available",
@@ -995,12 +995,12 @@
     "QR:ship_swap": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 126.58,
-          "wall_s_last": 126.58,
+          "runs": 2,
+          "wall_s_total": 264.55,
+          "wall_s_last": 137.97,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0072
+          "out_mb_last": 0.0083
         }
       },
       "qa_iterations": 0,
@@ -1010,12 +1010,12 @@
     "QR:ship": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 147.46,
-          "wall_s_last": 147.46,
+          "runs": 2,
+          "wall_s_total": 272.76,
+          "wall_s_last": 125.3,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0082
+          "out_mb_last": 0.0084
         }
       },
       "qa_iterations": 0,
@@ -1025,12 +1025,12 @@
     "QR:ship_cal": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 214.06,
-          "wall_s_last": 214.06,
+          "runs": 2,
+          "wall_s_total": 460.05,
+          "wall_s_last": 245.99,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0173
+          "out_mb_last": 0.0182
         }
       },
       "qa_iterations": 0,

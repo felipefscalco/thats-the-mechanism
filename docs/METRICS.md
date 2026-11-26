@@ -4,12 +4,12 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 
 | episode | stage | runs | last wall (s) | total wall (s) | CPU (s) | peak RAM (MB) | output (MB) | cost |
 |---|---|---|---|---|---|---|---|---|
-| 01-qr-code | qa | 19 | 259.29 | 2139.38 | 2757.15 | 4460 | – | $0 |
-| 01-qr-code | render | 18 | 96.4 | 1005.23 | 1698.71 | 4597 | 19.21 | $0 |
+| 01-qr-code | qa | 21 | 368.6 | 2862.88 | 4528.53 | 5207 | – | $0 |
+| 01-qr-code | render | 20 | 76.27 | 1147.64 | 1928.57 | 4597 | 23.01 | $0 |
 | 01-qr-code | captions | 4 | 10.59 | 35.2 | 175.57 | 972 | 0.01 | $0 |
 | 01-qr-code | mix | 3 | 1.78 | 4.83 | 5.26 | 57 | 9.85 | $0 |
 | 01-qr-code | tts | 3 | 10.7 | 29.96 | 186.32 | 787 | 2.41 | $0 |
-| 01-qr-code | master | 11 | 4.35 | 43.49 | 52.2 | 201 | 19.21 | $0 |
+| 01-qr-code | master | 13 | 4.56 | 52.35 | 62.78 | 202 | 23.01 | $0 |
 | 01-qr-code | loudnorm | 2 | 1.29 | 2.31 | 1.93 | 79 | 4.81 | $0 |
 | 02-elevator | qa | 22 | 226.7 | 3051.88 | 3780.68 | 4731 | – | $0 |
 | 02-elevator | render | 22 | 70.62 | 1284.66 | 1749.5 | 4576 | 16.21 | $0 |
@@ -70,9 +70,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | QR:A=v4 B=v5 | critic | 1 | 19.74 | 19.74 | 0.0 | 0 | 0.0023 | $0 |
 | QR:A=v4 B=v5 5fps | critic | 1 | 28.69 | 28.69 | 0.0 | 0 | 0.0026 | $0 |
 | QR:agy_v4_vs_v5 | critic | 1 | 117.03 | 117.03 | 0.0 | 0 | 0.0043 | $0 |
-| QR:ship | critic | 1 | 147.46 | 147.46 | 0.0 | 0 | 0.0082 | $0 |
-| QR:ship_cal | critic | 1 | 214.06 | 214.06 | 0.0 | 0 | 0.0173 | $0 |
-| QR:ship_swap | critic | 1 | 126.58 | 126.58 | 0.0 | 0 | 0.0072 | $0 |
+| QR:ship | critic | 2 | 125.3 | 272.76 | 0.0 | 0 | 0.0084 | $0 |
+| QR:ship_cal | critic | 2 | 245.99 | 460.05 | 0.0 | 0 | 0.0182 | $0 |
+| QR:ship_swap | critic | 2 | 137.97 | 264.55 | 0.0 | 0 | 0.0083 | $0 |
 | QR:v4 | critic | 1 | 14.85 | 14.85 | 0.0 | 0 | 0.0043 | $0 |
 | QR:v4_cal | critic | 1 | 88.02 | 88.02 | 0.0 | 0 | 0.0038 | $0 |
 | QR:v5 | critic | 1 | 13.68 | 13.68 | 0.0 | 0 | 0.0035 | $0 |
@@ -97,7 +97,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 
 | episode | render iterations | QA iterations |
 |---|---|---|
-| 01-qr-code | 7 | 7 |
+| 01-qr-code | 102 | 102 |
 | 02-elevator | 102 | 102 |
 | 03-sky | 102 | 102 |
 | 04-ice-demo | 2 | 2 |
@@ -158,7 +158,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 
 | episode | total machine wall time (s) | total CPU (s) | peak RAM (MB) | cost |
 |---|---|---|---|---|
-| 01-qr-code | 3260.4 | 4877.1 | 4597 | $0 |
+| 01-qr-code | 4135.2 | 6889.0 | 5207 | $0 |
 | 02-elevator | 4459.9 | 5875.1 | 4731 | $0 |
 | 03-sky | 6273.3 | 7728.0 | 4893 | $0 |
 | 04-ice-demo | 99.9 | 221.6 | 3332 | $0 |
@@ -196,9 +196,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | QR:A=v4 B=v5 | 19.7 | 0.0 | 0 | $0 |
 | QR:A=v4 B=v5 5fps | 28.7 | 0.0 | 0 | $0 |
 | QR:agy_v4_vs_v5 | 117.0 | 0.0 | 0 | $0 |
-| QR:ship | 147.5 | 0.0 | 0 | $0 |
-| QR:ship_cal | 214.1 | 0.0 | 0 | $0 |
-| QR:ship_swap | 126.6 | 0.0 | 0 | $0 |
+| QR:ship | 272.8 | 0.0 | 0 | $0 |
+| QR:ship_cal | 460.1 | 0.0 | 0 | $0 |
+| QR:ship_swap | 264.6 | 0.0 | 0 | $0 |
 | QR:v4 | 14.8 | 0.0 | 0 | $0 |
 | QR:v4_cal | 88.0 | 0.0 | 0 | $0 |
 | QR:v5 | 13.7 | 0.0 | 0 | $0 |
