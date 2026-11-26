@@ -201,7 +201,10 @@ def occupy(P):
         ub = union_box([m["bbox"] for m in members])
         cyn_ids = set()
         for c in ccomps:
-            if box_clearance(ub, c["bbox"]) <= 16 or box_iou(ub, c["bbox"]) > 0:
+            # r7: only text that sits ON the backing joins it. Raw SVG text is now in the mask too, and a label that merely
+            # sits near a pill (<= 16 px) must stay separate so the clearance check measures the gap instead of
+            # inflating the pill into a giant 'occupied' box.
+            if box_iou(ub, c["bbox"]) > 0:
                 cyn_ids.add(c["id"]); ub = union_box([ub, c["bbox"]])
         raw.append(dict(bbox=ub, cyn_ids=cyn_ids, split=len(cl) > 1, has_cyan=bool(cyn_ids)))
     # leftover cyan with no magenta still counts (empty pill / icon-only)
