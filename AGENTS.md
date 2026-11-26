@@ -69,6 +69,7 @@ Providers: `claude` (Claude Code), `agy` (Antigravity; reads `.mp4` at ~1 fps an
 8. **Do not commit secrets, tokens, `.env` files, model binaries, or rendered MP4s.** See `.gitignore`. API keys (e.g. `GEMINI_API_KEY`) are read from the environment only; never print them or put them in a URL, log or file.
 9. **Do not treat `IceDemo` as a shippable episode.** It is a template smoke test.
 10. **Prefer editing the brand kit over forking it.** Shared look lives in `remotion/src/brand/`. Episode files only provide the subject and shot list.
+11. **Headless agents run with a tool allowlist, never with permission checks bypassed.** Every LLM role goes through `scripts/llm.py` (`READ_TOOLS` / `WRITE_TOOLS`, per-role `tools` in `pipeline.config.json`, secret-free child env, QA/critic text wrapped as untrusted data). `scripts/check_portability.py` blocks `--dangerously-skip-permissions`, `bypassPermissions` and agent `--force`; `tests/test_llm_security.py` covers every provider.
 
 ## Pipeline stages
 

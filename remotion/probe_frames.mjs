@@ -10,11 +10,13 @@ if (out2) fs.mkdirSync(out2, { recursive: true });
 if (out3) fs.mkdirSync(out3, { recursive: true });
 const serveUrl = await bundle({ entryPoint: path.join(R, "remotion/src/index.ts"), publicDir: path.join(R, "remotion/public"), rspack: true });
 const chromiumOptions = { gl: "swangle" };
+// r10: PROBE_CONCURRENCY=N overrides the default 6
+const PROBE_CONC = Number(process.env.PROBE_CONCURRENCY) || 6;
 async function renderPass(dir, propsJson, every = nth) {
   const inputProps = JSON.parse(propsJson);
   const composition = await selectComposition({ serveUrl, id, inputProps, chromiumOptions });
   await renderFrames({ composition, serveUrl, inputProps, chromiumOptions, outputDir: dir, imageFormat: "png", everyNthFrame: Number(every), scale: Number(scale),
-    concurrency: 6, onStart: () => {}, onFrameUpdate: () => {}, logLevel: "error" });
+    concurrency: PROBE_CONC, onStart: () => {}, onFrameUpdate: () => {}, logLevel: "error" });
   return composition;
 }
 const composition = await renderPass(out, props);

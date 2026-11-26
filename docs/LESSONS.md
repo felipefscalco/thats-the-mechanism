@@ -250,3 +250,18 @@ One entry per finding. Newest at the bottom. Format:
 - Fix: restored the three files from git. The Microwave general_rules are still in qa/Microwave/v1/ship_it8/critic_cal.json, waiting to be merged.
 - Prevention (gate): lessons.py `guard_active()` exits 3 and writes nothing when a rebuild would drop a rule that is active in the committed docs/style_rules.json (`--force` to override). Tested on this Mac: refused to drop 23 active rules. Open: true incremental merge (BACKLOG).
 - Status: fixed (guard); incremental merge open
+
+### L-37 · 2026-11-26 · r10 security · major (agents ran with permission checks bypassed)
+- Problem: scripts/llm.py started every write role with `claude --dangerously-skip-permissions`, every agy role with `--dangerously-skip-permissions` (plus `--force` for cursor-agent writes), with the full parent environment (other API keys) and with critic/QA text pasted into the prompt as plain instructions. A prompt injection in a critic finding or generated rule could run any command on the machine.
+- Root cause: headless agents had no other way to edit files without prompting, and the only guard was the post-hoc scope revert.
+- Fix (code): claude write roles use `--permission-mode acceptEdits` + an explicit `--allowedTools` list (Read/Glob/Grep/Edit/Write + `npx tsc --noEmit`, `scripts/preview.py`, `scripts/lint_shots.py`) and `--disallowedTools` for web/agent tools; read-only roles get read tools only; agy runs `--sandbox --mode plan|accept-edits`; cursor-agent write roles are refused (no allowlist); `child_env()` strips *KEY/TOKEN/SECRET/PASSWORD/CREDENTIAL* vars except the provider's own login; `llm.untrusted()` wraps QA/critic text. SUF reaches agents via the environment, so no `VAR=... cmd` allow rule is needed. Real-CLI smoke test: agy (plan+sandbox) and claude (allowlist) both answered.
+- Prevention (gate + test): scripts/check_portability.py fails on `dangerously-skip-permissions`, `bypassPermissions` and `"--force"` agent args (runs before every render); tests/test_llm_security.py checks the argv/env of every provider and role. tests/test_r7_pipeline.py no longer asserts the bypass.
+- Status: fixed
+
+### L-38 · 2026-11-26 · r10 efficiency · major (parallelism made the pipeline slower; measure first)
+- Problem: the r10 "prefetch" ran the main render (concurrency 10), two stem renders and the contrast/occupancy probe pass at once. On the 15-core M5 Pro that is ~29 browser workers: the main render took 886 s instead of 235 s, the two simultaneous `remotion render` stem processes both failed, and QA crashed. Total 1247 s vs 898 s before.
+- Root cause: optimising without a profile. The new per-check timing (qa.py `res["timing"]`) showed the real split of the 663 s QA: SFX/voice stem renders 317 s + contrast/occupancy probe renders 315 s; all MP4 analyzers together 18 s.
+- Fix: prefetch and parallel stem renders removed; concurrency back to 6 (RENDER_CONCURRENCY / PROBE_CONCURRENCY env overrides). The voice stem is now copied from remotion/public/<slug>.wav, measured bit-identical (diff -240 dB): one full render fewer per QA. Verified: same 37 verdicts on the same MP4 (24 PASS / 13 FAIL). Kept: per-check timing, fail-fast static gates, parallel MP4 analyzers (small), parallel agy calls in ship_check.
+- Open: the r10 timings ran on battery (one SFX render measured 134-375 s across runs), so savings are by construction, not measured. Re-benchmark on AC power; next target is the occupancy probe pass (every 2nd frame).
+- Prevention: optimise from `report_itN.json` timing; never run two `remotion render` processes on the same project at once (comment in qa.py).
+- Status: fixed (correctness verified); timing re-check open

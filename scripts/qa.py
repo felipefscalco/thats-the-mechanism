@@ -3,7 +3,7 @@
 Usage: scripts/qa.py <CompositionId> <slug> <iteration> [--no-stems]
 Writes qa/<Id>/report_it<N>.json, transitions_it<N>.png (dense frames around every shot boundary + the loop seam),
 grid_it<N>.png (one frame per 1.5 s). Prints PASS/FAIL per automated check; visual checks are listed for the reviewer."""
-import json, os, re, subprocess, sys
+import json, os, re, shutil, subprocess, sys, time
 from pathlib import Path
 import numpy as np
 import soundfile as sf
@@ -19,7 +19,11 @@ OUT = ROOT / "qa" / ID / os.environ.get("QA_DIR", "" if SUF == "v2" else SUF); O
 LOOP_FRAMES, T_FRAMES = 14, 10  # keep in sync with brand/EpisodeShell.tsx and brand/Shot.tsx
 sh = lambda c: subprocess.run(c, shell=True, capture_output=True, text=True)
 res, checks = {}, []
-def check(name, ok, detail): checks.append(dict(check=name, ok=bool(ok), detail=detail))
+_T0 = _TL = time.time(); timing = []   # r10 (A): seconds spent before each check, to see where QA time goes
+def check(name, ok, detail):
+    global _TL
+    now = time.time(); timing.append(dict(check=name, s=round(now - _TL, 1))); _TL = now
+    checks.append(dict(check=name, ok=bool(ok), detail=detail))
 
 # 1. container
 pr = json.loads(sh(f"ffprobe -v error -show_streams -show_format -of json {MP4}").stdout)
@@ -37,9 +41,13 @@ check("loudness -15.5..-13 LUFS, true peak <= -1 dBTP", -15.5 <= I <= -13 and TP
 # 3. SFX vs voice from stems (rendered with --props stem)
 if STEMS:
     st = {}
+    # r10: the voice stem (narration + bed, SFX muted) IS remotion/public/<slug>.wav, bit for bit (measured: diff -240 dB on
+    # Microwave), so it is copied instead of rendered (~150 s saved). Only the SFX stem depends on the code and is rendered.
+    # Never run two `remotion render` processes at once here: in r10 tests they collided and both stems failed.
+    shutil.copy2(ROOT / "remotion" / "public" / f"{SLUG}.wav", OUT / "stem_voice.wav")
+    sh(f"cd {ROOT}/remotion && npx remotion render {ID} {OUT / 'stem_sfx.wav'} --codec=wav --props='{{\"stem\":\"sfx\"}}' --log=error")
     for stem in ("sfx", "voice"):
         w = OUT / f"stem_{stem}.wav"
-        sh(f"cd {ROOT}/remotion && npx remotion render {ID} {w} --codec=wav --props='{{\"stem\":\"{stem}\"}}' --log=error")
         x, sr = sf.read(w); x = x.mean(1) if x.ndim > 1 else x
         win, hop = int(0.4 * sr), int(0.1 * sr)
         st[stem] = np.array([20 * np.log10(np.sqrt(np.mean(x[i:i + win] ** 2)) + 1e-9) for i in range(0, len(x) - win, hop)])
@@ -125,6 +133,27 @@ ws_all = words(SLUG)
 card_at = phrase_time(ws_all, "That's the mechanism")
 k_mech = next(i for i, w in enumerate(ws_all) if w["start"] >= card_at and "mechanism" in w["text"].lower())
 card_until = ws_all[k_mech + 1]["start"] if k_mech + 1 < len(ws_all) else dur
+# r10 (C): contrast / framing / entrances / artedge only read the MP4 (+ source probes): start all four now, in parallel.
+# Their sections below just collect the result, so the report and the check order are unchanged.
+try:
+    _cuts = ",".join(f"{phrase_time(ws_all, r['at']):.2f}" for r in shots(SLUG) if r["at"])
+except Exception:
+    _cuts = ""
+_card = f"{card_at:.2f},{card_until:.2f}"
+_bg = {}
+_SERIAL = os.environ.get("QA_SERIAL") == "1"   # pre-r10 behaviour (one analyzer at a time): debugging / benchmarks
+def _spawn(key, flag, argv):
+    if flag not in sys.argv:
+        _bg[key] = argv if _SERIAL else subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+def _collect(key):
+    if _SERIAL: return subprocess.run(_bg[key], capture_output=True, text=True)
+    p_ = _bg[key]; out_, err_ = p_.communicate()
+    return subprocess.CompletedProcess(p_.args, p_.returncode, out_, err_)
+_S = ROOT / "scripts"
+_spawn("contrast", "--no-contrast", [sys.executable, str(_S / "contrast.py"), ID, str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
+_spawn("framing", "--no-framing", [sys.executable, str(_S / "framing.py"), str(MP4), str(OUT), "--card", _card])
+_spawn("entrances", "--no-entrances", [sys.executable, str(_S / "entrances.py"), str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
+_spawn("artedge", "--no-artedge", [sys.executable, str(_S / "artedge.py"), str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
 whip = len(fr) - LOOP_FRAMES - T_FRAMES  # first frame of the loop whip (LoopBack starts at loopFrom - T_FRAMES)
 ref = fr[whip - 1]; k = whip - 1
 while k > 0 and np.abs(fr[k] - ref).mean() < 6.0: k -= 1
@@ -162,12 +191,7 @@ check("loop: seam jump <= p95 frame step (and PSNR >= 25 dB)", seam <= np.percen
 
 # 6b. label contrast, WCAG >= 4.5:1 on real pixels (round 4, from L-8/L-13; scripts/contrast.py)
 if "--no-contrast" not in sys.argv:
-    try:
-        _cuts = ",".join(f"{phrase_time(ws_all, r['at']):.2f}" for r in shots(SLUG) if r["at"])
-    except Exception:
-        _cuts = ""
-    cr = subprocess.run([sys.executable, str(ROOT / "scripts" / "contrast.py"), ID, str(MP4), str(OUT), "--cuts", _cuts,
-                         "--card", f"{card_at:.2f},{card_until:.2f}"], capture_output=True, text=True)
+    cr = _collect("contrast")
     try:
         c = json.loads((OUT / "contrast.json").read_text()); res["contrast"] = c
         check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", c["ok"], dict(min=c["min_ratio"], p10=c["p10_ratio"], failures=[(f["t_start_s"], f["worst_ratio"]) for f in c["held_failures"]]))
@@ -203,7 +227,7 @@ if ep_tsx.exists():
 
 # 6c-r7. slide-deck boxing (scripts/framing.py): no whole-stage card held >= 1 s, boxed framing <= 50 % of runtime
 if "--no-framing" not in sys.argv:
-    subprocess.run([sys.executable, str(ROOT / "scripts" / "framing.py"), str(MP4), str(OUT), "--card", f"{card_at:.2f},{card_until:.2f}"], capture_output=True, text=True)
+    _collect("framing")
     try:
         fj = json.loads((OUT / "framing.json").read_text()); res["framing"] = {k: v for k, v in fj.items() if k != "series"}
         check("framing: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime", fj["ok"],
@@ -212,8 +236,7 @@ if "--no-framing" not in sys.argv:
         check("framing: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime", False, dict(error=str(e)))
 # 6c-r8. every element entrance arrives with motion (scripts/entrances.py): no snaps, no opacity-only fades (Sky_v7 critic cap)
 if "--no-entrances" not in sys.argv:
-    subprocess.run([sys.executable, str(ROOT / "scripts" / "entrances.py"), str(MP4), str(OUT), "--cuts", _cuts if "_cuts" in dir() else "",
-                    "--card", f"{card_at:.2f},{card_until:.2f}"], capture_output=True, text=True)
+    _collect("entrances")
     try:
         ej = json.loads((OUT / "entrances.json").read_text()); res["entrances"] = ej
         check("motion: every element entrance scales/slides/draws on (no snaps, <= 2 opacity-only fades)", ej["ok"],
@@ -222,8 +245,7 @@ if "--no-entrances" not in sys.argv:
         check("motion: every element entrance scales/slides/draws on (no snaps, <= 2 opacity-only fades)", False, dict(error=str(e)))
 # 6c-r9. artwork is not cut by a side edge (scripts/artedge.py; Elevator v7 critic: shaft wall + car off-screen x < 0 for 5+ s)
 if "--no-artedge" not in sys.argv:
-    subprocess.run([sys.executable, str(ROOT / "scripts" / "artedge.py"), str(MP4), str(OUT), "--cuts", _cuts if "_cuts" in dir() else "",
-                    "--card", f"{card_at:.2f},{card_until:.2f}"], capture_output=True, text=True)
+    _collect("artedge")
     try:
         aj = json.loads((OUT / "artedge.json").read_text()); res["artedge"] = aj
         check("framing: no artwork cut by a side edge for >= 0.6 s outside transitions", aj["ok"], dict(fails=aj["fails"][:5]))
@@ -308,6 +330,7 @@ def sheets():
 
 sheets() if '--no-sheets' not in sys.argv else None
 res["checks"] = checks; res["iteration"] = IT
+res["timing"] = dict(total_s=round(time.time() - _T0, 1), per_check=timing)
 (OUT / f"report_it{IT}.json").write_text(json.dumps(res, indent=2))
 for c in checks: print(("PASS" if c["ok"] else "FAIL"), "|", c["check"], "|", json.dumps(c["detail"]))
 print("VISUAL (reviewer):", f"{OUT}/transitions_it{IT}.png", f"{OUT}/grid_it{IT}.png", "— overlaps, caption readability, SFX sync, style failure list")

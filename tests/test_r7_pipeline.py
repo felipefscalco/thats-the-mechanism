@@ -12,7 +12,7 @@ def t_argv():
     c, _, _ = llm.build_cmd("claude", "sonnet", "hi", wd, sch, files, read_only=True)
     assert c[:4] == ["claude", "-p", "--output-format", "json"] and "--json-schema" in c and "--allowedTools=Read,Glob,Grep" in c and "hi" not in c
     c, _, _ = llm.build_cmd("claude", None, "hi", wd, None, [], read_only=False)
-    assert "--dangerously-skip-permissions" in c
+    assert "--dangerously-skip-permissions" not in c and c[c.index("--permission-mode") + 1] == "acceptEdits"   # r10: allowlist, no bypass
     c, _, p = llm.build_cmd("agy", "gemini-3.8-flash-high", "hi", wd, sch, files, read_only=False)
     assert c[0] == "agy" and c[c.index("--model") + 1] == "gemini-3.8-flash-high" and c[-2] == "-p" and "--json-schema" in c and str(files[0][1]) in p
     c, _, _ = llm.build_cmd("codex", "gpt-5.6", "hi", wd, sch, [("IMG", ROOT / "contact_sheet.png")], read_only=True, last_msg=Path("/x/last.txt"))
@@ -22,14 +22,16 @@ def t_argv():
     assert c[c.index("--sandbox") + 1] == "workspace-write"
     c, _, p = llm.build_cmd("cursor-agent", "sonnet-5.5", "hi", wd, sch, [], read_only=True)
     assert c[:4] == ["cursor-agent", "-p", "--output-format", "json"] and "--mode" in c and "ask" in c and "JSON Schema" in p
-    c, _, _ = llm.build_cmd("cursor-agent", None, "hi", wd, None, [], read_only=False)
-    assert "--force" in c
+    try:   # r10: cursor-agent has no tool allowlist, so write roles are refused instead of run with --force
+        llm.build_cmd("cursor-agent", None, "hi", wd, None, [], read_only=False); raise AssertionError("cursor-agent write must be refused")
+    except llm.ProviderUnavailable:
+        pass
     # role override + dry run (works even when the CLI is not installed)
     import os
     os.environ["LLM_BUILDER"] = "codex:gpt-5.6"; r = llm.run("builder", "x", dry_run=True); del os.environ["LLM_BUILDER"]
     assert r["meta"]["provider"] == "codex" and r["meta"]["cmd"][:2] == ["codex", "exec"]
     os.environ["LLM_FIXER"] = "cursor-agent:sonnet-5.5"; r = llm.run("fixer", "x", dry_run=True); del os.environ["LLM_FIXER"]
-    assert r["meta"]["provider"] == "cursor-agent"
+    assert r["meta"].get("provider") != "cursor-agent"   # r10: refused for a write role, falls back (or fails) instead
     assert llm._extract_json('noise ```json\n{"a": 1}\n``` tail') == {"a": 1}
     out = llm.parse_output("cursor-agent", json.dumps({"type": "result", "is_error": False, "result": 'ok {"b":2}'}), {"type": "object"})
     assert out["json"] == {"b": 2}

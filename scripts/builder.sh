@@ -16,5 +16,5 @@ t = (Path(root) / "prompts/builder.md").read_text()
 for k, v in dict(ROOT=root, ID=i, SLUG=slug, SUF=suf, MAX_TRIES=4, TASK=Path(task).read_text()).items(): t = t.replace("{" + k + "}", v)
 print(t)
 PYEOF
-"$PY" "$P/scripts/llm.py" run --role builder --prompt-file "$PROMPT" --workdir "$P" --log-dir "$LOG" \
+SUF="$SUF" "$PY" "$P/scripts/llm.py" run --role builder --prompt-file "$PROMPT" --workdir "$P" --log-dir "$LOG" \
   --scope "remotion/src/episodes/$ID.tsx,episodes/$SLUG/*.json,episodes/$SLUG/notes*.md"

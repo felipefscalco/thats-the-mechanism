@@ -5,6 +5,9 @@ would only run on the machine that wrote it. Every failure here broke a fresh ma
   - absolute paths into another box's workspace (/workspace/ttm-...)
   - ffmpeg -vsync (removed in FFmpeg 7+; use -fps_mode)
   - GNU-only `sed -i "..."` / `sed -i '...'` (BSD/macOS sed needs a suffix argument)
+and agent-safety rules (r10): no script may start an agent CLI with its permission checks bypassed
+  - --dangerously-skip-permissions / bypassPermissions (Claude Code, Antigravity)
+  - "--force" as an agent argument (cursor-agent auto-approves every command)
 Usage: scripts/check_portability.py   (exit 1 + one line per violation)"""
 import re, sys
 from pathlib import Path
@@ -16,6 +19,8 @@ RULES = [
     (re.compile(r"/workspace/"), "absolute path into another machine's workspace"),
     (re.compile(r"-vsync\b"), "ffmpeg -vsync was removed in FFmpeg 7+; use -fps_mode passthrough"),
     (re.compile(r"\bsed\s+-i\s+[\"']"), "GNU-only `sed -i \"...\"`; BSD/macOS sed needs `sed -i '' ...` (or edit with python)"),
+    (re.compile(r"dangerously-skip-permissions|bypassPermissions"), "agent started with permission checks bypassed; use a tool allowlist (scripts/llm.py WRITE_TOOLS)"),
+    (re.compile(r"[\"']--force[\"']\s*\]"), "agent CLI started with --force (auto-approves every command); use an allowlisted provider"),
 ]
 SELF = Path(__file__).resolve()
 

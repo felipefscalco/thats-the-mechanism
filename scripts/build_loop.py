@@ -37,6 +37,7 @@ def fill(tpl, **kw):
     for k, v in kw.items(): tpl = tpl.replace("{" + k + "}", str(v))
     return tpl
 def prompt(name, **kw): return fill((ROOT / "prompts" / f"{name}.md").read_text(), ROOT=ROOT, ID=A.id, SLUG=A.slug, SUF=A.suf, **kw)
+os.environ["SUF"] = A.suf   # r10: agents inherit SUF, so their allowlisted commands need no VAR=... prefix
 SCOPE = [TSX, f"episodes/{A.slug}/*.json", f"episodes/{A.slug}/notes*.md", f"episodes/{A.slug}/shots.md"]   # VIDEO.md is NOT in scope: the plan is frozen
 
 def sh(cmd, env=None):
@@ -49,7 +50,7 @@ def preview(n):
     fails = [c for c in rep["checks"] if not c["ok"]]
     ev("preview", it=n, wall_s=w, failed=[c["check"] for c in fails]); return fails
 
-def fmt(fails): return "\n".join(f"- {c['check']}: {json.dumps(c['detail'])[:900]}" for c in fails)
+def fmt(fails): return llm.untrusted("qa_report", "\n".join(f"- {c['check']}: {json.dumps(c['detail'])[:900]}" for c in fails))
 
 def run_builder(task, n):
     res = llm.run("builder", prompt("builder", TASK=task, MAX_TRIES=2), ROOT, scope=SCOPE, log_dir=LOGS)
