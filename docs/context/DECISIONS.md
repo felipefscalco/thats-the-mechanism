@@ -100,6 +100,22 @@ Related living docs: [`AGENTS.md`](../../AGENTS.md), [`STYLE_BRIEF.md`](../STYLE
 
 **Why:** Felipe judged that a cap could cut quality mid-run. Quality first. Planner/builder slowness should be fixed with a tighter context pack, not a kill switch.
 
+## 2026-11-26 — Round 9 scope: QR only
+
+**Decision:** Mid-round, Felipe limited the round-9 rebuilds to **QR**. ANC, Elevator, and Sky are deferred. Their task files stay ready in `qa/tasks/r9_*.md`.
+
+**Why:** Owner scope change during the round. The generic r9 gates still landed on `main` and apply to later rebuilds.
+
+## 2026-11-26 — Opus 5.5 speed A/B deferred
+
+**Decision:** A planned A/B that would try Claude Opus 5.5 at Medium effort for planner, builder, and `critic_tiebreak` (keeping cheaper models for narrow roles, and tightening prompts) was **deferred**, not rejected. If it is run, validate it on one episode (wall time, cost, verdict).
+
+## 2026-11-26 — Hard-gate failures do not block a ship after the render limit
+
+**Decision:** Once the ship-render limit is hit, failing hard gates do **not** block a ship. The pairwise judge / critic decides, as it already does today. QR v7 shipped on this rule with `labels_persist` and `label_sync` still failing.
+
+**Why:** Felipe confirmed the current policy rather than adding a hard-gate veto after the iteration cap.
+
 ## Other standing “no”s
 
 - Do not use MoneyPrinterTurbo-style stock footage, bundled YouTube-ripped music, unofficial Edge TTS as the primary voice, or Pexels/Pixabay as licensed stills.

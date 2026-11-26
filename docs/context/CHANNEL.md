@@ -54,15 +54,15 @@ Supporting figures from the 2026-11-19 research (directional; official RPMs are 
 
 ## Current pilots (unpublished)
 
-| # | Slug | Composition | Pillar | Version on `main` (after round 8) |
+| # | Slug | Composition | Pillar | Version on `main` (after round 9) |
 |---|---|---|---|---|
-| 001 | `01-qr-code` | `QR` | Tech | v6 |
+| 001 | `01-qr-code` | `QR` | Tech | v7 |
 | 002 | `02-elevator` | `Elevator` | Engineering | v6b (v7 did not ship) |
 | 003 | `03-sky` | `Sky` | Physics | v8 |
 | 005 | `05-anc-headphones` | `ANC` | Tech | v7 |
 | — | `04-ice-demo` | `IceDemo` | — | Template smoke test only; not shippable |
 
-Publish packs are review-only, for example `publish/03-sky/`. No `APPROVED` file, no upload.
+Publish packs are review-only, for example `publish/01-qr-code/` (QR v7) and `publish/03-sky/` (Sky v8). No `APPROVED` file, no upload.
 
 ## Topic backlog (from the 2026-11-19 plan; not a shooting schedule)
 

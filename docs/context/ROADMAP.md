@@ -2,25 +2,27 @@
 
 Open work and explicit non-goals. Update this file when a decision lands or a round closes. Round reports remain the source of truth for what already shipped.
 
-## Now — round 9 (in progress)
+## Now — pipeline on main; Felipe tests on the Mac
 
-Branch `r9` (do not assume it is merged). Generic kit fixes first, then rebuilds in order **QR → ANC → Elevator → Sky**. Each episode reaches `main` only if the pairwise critic prefers it to the current approved version.
+Round 9 landed on `main` (`40c17bb`). **QR v7 shipped.** ANC, Elevator, and Sky were deferred by Felipe's mid-round scope change (2026-11-26); ready task files are in `qa/tasks/r9_*.md`. Full report: [`ROUND9.md`](../ROUND9.md).
 
-Already in the r9 kit work (see the conversation log and the r9 branch when it is available):
+**Next:** Felipe will test the pipeline via **orca on his Mac**, from `main`. See [`MAC_SETUP.md`](MAC_SETUP.md).
 
-- Atomic `<Label>`: text and backing animate as one unit; lint against raw text over a separately animated pill; ghost-text test (flagged the four Sky v8 instants).
-- Fixed **1.5 s** end-card pause before the loop, with a test.
-- Label appearance within 0.5 s of the matching narrated word.
-- Measured wow / impact moment (size, centering, motion) from each episode's special moment.
-- Art-bbox edge gate (the kind of clip that caught Elevator v7's car).
+### Open decisions
 
-Settled for this round: **keep current hooks**; clutter counts **floating callouts only**; **no per-stage time or step limits**.
+- When to run the deferred ANC, Elevator, and Sky r9 loops.
+- When (or whether) to run the deferred **Opus 5.5 A/B** (below).
 
-Still to finish: the four rebuilds and ship tests; then merge. QR and ANC still carry known r8-gate issues until they are rebuilt (QR: holds, an easing miss, a near-edge label; ANC: five floating callouts around 0:31). Elevator still needs the v6b strengths (CAR/CW labels, voice-over lock at 0:19–0:26, car inside the stage) if it is attempted again.
+### Quality follow-ups from round 9
 
-## After round 9 — speed, without quality caps
+- Preview passed twice, then the full ship render failed cadence, entrances, and label gates. The still-based preview is too loose; consider running label checks on a cheap low-res preview render, or tighten preview cadence.
+- `labels_persist` conflicts with planned label swaps in one shot (BYTES GO MISSING → MISSING BYTES: REBUILT). `shots.md` needs per-label windows, or `@phrase` end times.
+- No gate yet for caption line count or caption-to-deck clearance (the critic's top QR v7 blocker at 0:13).
+- The hero gate measures size and motion, not novelty (the QR hero reused the hook card).
 
-Felipe agreed to finish the current quality pass first, then:
+## Speed work, without quality caps
+
+Planned after the quality pass (and useful to try on the Mac):
 
 1. **Ready context bundle** — planner and builder receive only what they need, so the planner does not spend a long time exploring the repo (one r9 plan step took ~18 minutes vs ~1.5 minutes earlier).
 2. **Parallel critic** — judge one video while the next is already building.
@@ -28,7 +30,9 @@ Felipe agreed to finish the current quality pass first, then:
 
 Do **not** add a time or step limit that aborts a stage mid-run.
 
-This context pack (`docs/context/`) is the first half of “leave all Grok Bot context in the repo” so Claude, Gemini, Codex, or Cursor can continue on the Mac. Keep it current when decisions change.
+**Deferred (Felipe):** a speed A/B of Claude Opus 5.5 at Medium effort for planner, builder, and `critic_tiebreak`, keeping Haiku/Sonnet for cheap, well-scoped roles; drop “think hard/carefully” phrasing; state the finished output and the stop condition up front; attach stills instead of transcribing values; name the styles to avoid. Validate on one episode (wall time, cost, verdict) before adopting it.
+
+This context pack (`docs/context/`) is on `main` so Claude, Gemini, Codex, Cursor, or orca can continue from the same tree. Keep it current when decisions change.
 
 ## Voice
 
@@ -40,19 +44,19 @@ This context pack (`docs/context/`) is the first half of “leave all Grok Bot c
 ## Channel operations (blocked on Felipe)
 
 - Confirm and reserve **`@thatsthemechanism`** (or another chosen handle) on YouTube, Instagram, and TikTok. Do not publish the scannable QR until this is confirmed.
-- Review publish packs (Sky v8 is in `publish/03-sky/`) and only then create `APPROVED` if a pack should be upload-ready. Upload code stays a refuse-stub until a later, explicit decision.
+- Review publish packs (`publish/01-qr-code/` for QR v7, `publish/03-sky/` for Sky v8) and only then create `APPROVED` if a pack should be upload-ready. Upload code stays a refuse-stub until a later, explicit decision.
 - Set a real publish start date and cadence. The November 2026 “five a week from 1 December” plan did not start; pilots are still unpublished.
 - Optional later: 61–70 s TikTok cut for Creator Rewards, once thresholds are in reach.
 - Weekly metrics loop (D+2 / D+7, median vs mean, pillar performance) only after something is actually posted.
 
-## Quality backlog worth promoting (from r8 open issues)
+## Quality backlog (older)
 
-See also [`ROUND8.md`](../ROUND8.md) and [`BACKLOG.md`](../BACKLOG.md).
+See also [`ROUND8.md`](../ROUND8.md), [`ROUND9.md`](../ROUND9.md), and [`BACKLOG.md`](../BACKLOG.md).
 
-- Stronger semantic label–narration sync (the advisory `vo_sync` check does not catch the wrong state on screen).
-- Automatic single retry when a ship render fails on infrastructure (transient stem/QA errors).
-- Longer timeout for `critic_deep` (agy has timed out).
+- Stronger semantic label–narration sync (the advisory `vo_sync` check still does not catch the wrong state on screen). Round 9 added hard `label_sync`, but QR v7 still failed it.
 - Mechanical foley and camera variety on schematic-heavy episodes (Elevator critic note).
+
+Round 9 already shipped a single infrastructure retry for ship render/QA crashes, and a 1800 s `critic_deep` timeout.
 
 ## Explicit non-goals
 

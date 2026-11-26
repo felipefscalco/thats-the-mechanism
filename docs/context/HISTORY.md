@@ -2,7 +2,7 @@
 
 Short, factual summary of rounds 1–9. Full reports, scores, and iteration notes live in the linked docs — do not copy them here. Nothing in any round was published.
 
-**Versions on `main` after round 8:** QR v6, Elevator v6b, Sky v8, ANC v7. Elevator v7 is kept on branch `r8-elevator-v7-candidate`. Round 9 is in progress on branch `r9` (see [`ROADMAP.md`](ROADMAP.md)).
+**Versions on `main` after round 9:** QR v7, Elevator v6b, Sky v8, ANC v7. Elevator v7 (round 8) was not shipped; its source lived on branch `r8-elevator-v7-candidate`.
 
 Calibrated critic scores are advisory and sit in the mid-5s (“ONE MORE PASS”). They are not comparable across episodes. **Shipping is decided by the pairwise critic**, not by the absolute score. The informal “7+” bar has not been reached.
 
@@ -63,8 +63,16 @@ QR and ANC were **not** rebuilt in round 8; they only ran the new tests (QR: hol
 
 New hard gate `labels_persist`; `vo_sync` is advisory only (it did not catch Elevator v7's semantic lag).
 
-## Round 9 — in progress
+## Round 9 — atomic labels, payoff hold, sync, hero and edge gates; QR v7 ships
 
-Generic kit work (on a branch off main, then episode rebuilds one by one): atomic labels (text and backing enter together; a ghost-text test found the four Sky v8 instants the critic had flagged); a fixed 1.5 s end-card pause before the loop; label–word sync within 0.5 s; a measured wow/impact moment; an art-bbox edge gate (caught the Elevator v7 clipped car).
+Full report: [`ROUND9.md`](../ROUND9.md). Branch `r9` was cut from `e6c2c47` and fast-forwarded into main (`40c17bb`). Settled earlier in the round: keep the current hooks; the clutter gate counts floating callouts only.
 
-Before rebuilds, new tests failed: QR 11, ANC 9, Elevator 12, Sky 8. Rebuild order: QR, then ANC, Elevator, Sky. Each ships to `main` only if it beats the current approved version. Felipe kept current hooks and floating-callout-only clutter. See [`ROADMAP.md`](ROADMAP.md).
+Generic kit (for future episodes too): atomic labels (text and backing are one transformed group; a ghost-text gate matched the four Sky v8 critic instants); a 1.5 s payoff hold before the loop whip, with audio tail padding; word→label sync within ±0.5 s (`label_sync.py`); a hero gate (exactly one `hero@` beat, size, centering, motion); an art-edge gate (it failed Elevator v7's car at 11–14 s, and passed v6b / Sky v8 / QR v6 / ANC v7); one retry for a ship-render or QA infrastructure crash; `critic_deep` timeout raised to 1800 s.
+
+r9-gate baseline on the then-current renders (35 checks, hard fails): QR v6 11, ANC v7 9, Elevator v6b 12, Sky v8 8. Every episode failed the hero gate until a beat was marked.
+
+**Scope change (Felipe, 2026-11-26, mid-round):** re-render **QR only**. ANC, Elevator, and Sky were deferred; their task files are in `qa/tasks/r9_*.md`.
+
+**QR v7: SHIP** vs v6 in both orders (+1.74 / +2.03, strength 3). Calibrated **5.35** (v6 was 4.98), ONE MORE PASS. Hook 5→6, motion 4→5, style 5→6. Shipped with two hard gates still failing after the ship-iteration cap: `labels_persist`, and `label_sync` on STILL PLAYING, LEVEL H, and 30 % REBUILDABLE. Under the 2026-11-26 decision, hard-gate failures do **not** block a ship once that cap is hit; the pairwise judge decides, as they did here. The critic's top remaining weaknesses: a 3-line caption collides with the chapter deck at 0:13; the hero reuses the hook's QR card; a static 24-box byte grid from 0:12–0:18; the hook title overlaps the top-left finder. Publish pack: `publish/01-qr-code/` (review only, nothing uploaded). Loop wall about 1 h 55 min; list-equivalent Claude spend about $2.67.
+
+A planned Opus 5.5 speed A/B was deferred, not run. See [`ROADMAP.md`](ROADMAP.md).
