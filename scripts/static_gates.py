@@ -27,7 +27,7 @@ def checks(comp_id: str, slug: str = None):
     # share one transform with their backing. Raw SVG <text>/<tspan> or a CSS text div in an episode bypasses that.
     raw = [f"{ln}: {line.strip()[:80]}" for ln, line in enumerate(src.splitlines(), 1) if re.search(r"<(text|tspan)\b", line)]
     out.append(("text: atomic labels only (no raw <text>/<tspan> in the episode; use Label/TagLabel/Badge/Pill)", not raw, dict(raw=raw[:10])))
-    if slug: out += hook_and_clarity(comp_id, slug) + payoff_hold(slug)
+    if slug: out += hook_and_clarity(comp_id, slug) + payoff_hold(slug) + hero_marked(slug)
     return out
 
 
@@ -64,3 +64,16 @@ def hook_and_clarity(comp_id, slug):
     c = clarity.check(comp_id, slug)
     out.append(("clarity: every causal step shows an on-screen keyword (sound-off test)", c["ok"], dict(covered=f"{c['covered']}/{c['steps']}", missing=[(m["t_s"], m["sentence"][:60]) for m in c["missing"]][:6])))
     return out
+
+
+def hero_marked(slug):
+    """r9: shots.md marks the ONE special moment as a beat `hero@<spoken phrase>` (measured by scripts/hero.py)."""
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from shotlib import shots, words, phrase_time
+    hb = [(r["n"], p) for r in shots(slug) for k, p in r["beats"] if k == "hero"]
+    ok, why = len(hb) == 1, None
+    if ok:
+        try: phrase_time(words(slug), hb[0][1])
+        except KeyError as e: ok, why = False, str(e)
+    return [("hero: shots.md marks exactly one hero@<spoken phrase> beat", ok, dict(hero_beats=hb, error=why))]

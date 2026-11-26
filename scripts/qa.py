@@ -237,6 +237,14 @@ if "--no-labels" not in sys.argv:
               dict(judged=ls_["judged"], failing=[{k: x[k] for k in ("label", "word_s", "first_seen_s", "dt_s")} for x in ls_["failing"]][:6]))
     except Exception as e:
         check("labels: every label that echoes a spoken phrase appears within ±0.5 s of its word (OCR)", False, dict(error=str(e)[:300]))
+    # r9: the marked hero beat is a real hero shot (size, centred, motion, duration, not edge-clipped): scripts/hero.py
+    try:
+        import hero as _hero
+        hj = _hero.check(ID, SLUG, MP4); res["hero"] = hj; (OUT / "hero.json").write_text(json.dumps(hj, indent=1))
+        check("hero: the hero beat is big (>= 35 % stage), centred, moving, >= 1.5 s and not edge-clipped", hj["ok"],
+              {k: hj.get(k) for k in ("fails", "error", "t_s", "duration_s", "size", "dx", "dy", "motion", "longest_still_s", "clipped_frac")})
+    except Exception as e:
+        check("hero: the hero beat is big (>= 35 % stage), centred, moving, >= 1.5 s and not edge-clipped", False, dict(error=str(e)[:300]))
     # VO sync is ADVISORY: a pixel-motion event near each beat word does not catch semantic lag (v6b and v7 both pass)
     try:
         import vo_sync as _vs
