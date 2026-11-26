@@ -2,7 +2,7 @@
 
 A local, LLM-agnostic pipeline for vertical explainer Shorts (YouTube, Instagram, TikTok). One everyday object is opened up to show the hidden mechanism. Videos are written and fact-checked here, spoken with local TTS, captioned with whisper.cpp, and rendered as original Remotion animation — no generative video model, no stock b-roll.
 
-This repository is the round-4 state of the channel kit (brand shell, SFX, episode sources, and the scripts that build a Short end to end). It is meant to be driven by **any** coding agent (Claude, Gemini, Cursor, Copilot, Codex, …). Canonical agent instructions live in [`AGENTS.md`](AGENTS.md).
+This repository is the round-4 state of the channel kit (brand shell, SFX, episode sources, and the scripts that build a Short end to end). It is meant to be driven by **any** coding agent (Claude, Gemini, Cursor, Copilot, Codex, …). Canonical agent instructions live in [`AGENTS.md`](AGENTS.md), including the [enforcement hierarchy: code over prose](AGENTS.md#enforcement-hierarchy-code-over-prose) (prefer a QA gate or a Remotion primitive over a written rule).
 
 **Nothing in this pipeline publishes.** A human approves the angle, the script, the style frames of any new look, and the final video, then uploads by hand.
 

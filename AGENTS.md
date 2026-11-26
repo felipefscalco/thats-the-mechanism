@@ -10,6 +10,16 @@ A local pipeline that turns a fact-checked script into a 35–55 second, 1080×1
 
 It is **not** a publisher. It does not call the YouTube, Instagram, or TikTok upload APIs.
 
+## Enforcement hierarchy: code over prose
+
+Every lesson and critic rule must be enforced. Prefer an implementation that cannot be ignored, in this order:
+
+1. **Gate** — an automated check (typically in `scripts/qa.py`, or a sibling such as `scripts/facts.py` / `scripts/contrast.py`) that **blocks the render** when it fails.
+2. **Component** — a Remotion primitive or layout in `remotion/src/brand/` that makes the error impossible (for example a lane that guarantees icon/label clearance, or a `LoopEnd` that locks the last frame to the frame-0 hook).
+3. **Prose** — only for subjective craft that cannot be measured or locked in structure (wow moment, script tone, conceptual framing). Those belong in `docs/STYLE_RULES.md`, not as a substitute for a gate or a component.
+
+New rules must declare their enforcement class (`gate`, `component`, or `prose`). A prose rule that becomes measurable must be promoted to a gate.
+
 ## Hard rules
 
 1. **Do not publish, schedule, or upload** a video, description, or comment anywhere. Stop at a reviewed MP4 + `metadata.md` entry and wait for a human.
