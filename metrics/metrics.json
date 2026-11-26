@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26T02:36:35-03:00",
+  "generated": "2026-11-26T04:45:59-03:00",
   "cost_usd_total": 0.0,
   "llm_tokens": "not available to the pipeline (authoring bot's token usage is not exposed)",
   "episodes": {
@@ -150,20 +150,20 @@
     "03-sky": {
       "stages": {
         "qa": {
-          "runs": 20,
-          "wall_s_total": 2503.86,
-          "wall_s_last": 190.21,
-          "cpu_s_total": 3469.88,
+          "runs": 24,
+          "wall_s_total": 2881.31,
+          "wall_s_last": 200.73,
+          "cpu_s_total": 4231.47,
           "peak_rss_mb": 4425,
           "out_mb_last": null
         },
         "render": {
-          "runs": 19,
-          "wall_s_total": 1958.0,
-          "wall_s_last": 98.15,
-          "cpu_s_total": 1573.67,
+          "runs": 22,
+          "wall_s_total": 2247.18,
+          "wall_s_last": 170.62,
+          "cpu_s_total": 1910.79,
           "peak_rss_mb": 4893,
-          "out_mb_last": 15.46
+          "out_mb_last": 17.23
         },
         "captions": {
           "runs": 3,
@@ -190,12 +190,12 @@
           "out_mb_last": 2.11
         },
         "master": {
-          "runs": 14,
-          "wall_s_total": 52.17,
-          "wall_s_last": 3.05,
-          "cpu_s_total": 58.09,
+          "runs": 17,
+          "wall_s_total": 62.05,
+          "wall_s_last": 3.55,
+          "cpu_s_total": 70.31,
           "peak_rss_mb": 204,
-          "out_mb_last": 15.46
+          "out_mb_last": 17.23
         },
         "loudnorm": {
           "runs": 1,
@@ -206,8 +206,8 @@
           "out_mb_last": 4.23
         }
       },
-      "qa_iterations": 5,
-      "render_iterations": 5,
+      "qa_iterations": 102,
+      "render_iterations": 102,
       "cost_usd": 0.0,
       "notes": {
         "script": "authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available",
@@ -1040,12 +1040,12 @@
     "Sky:ship": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 114.22,
-          "wall_s_last": 114.22,
+          "runs": 2,
+          "wall_s_total": 205.95,
+          "wall_s_last": 91.73,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0074
+          "out_mb_last": 0.007
         }
       },
       "qa_iterations": 0,
@@ -1055,12 +1055,12 @@
     "Sky:ship_swap": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 115.37,
-          "wall_s_last": 115.37,
+          "runs": 2,
+          "wall_s_total": 240.37,
+          "wall_s_last": 125.0,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0072
+          "out_mb_last": 0.0089
         }
       },
       "qa_iterations": 0,
@@ -1070,12 +1070,12 @@
     "Sky:ship_cal": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 200.89,
-          "wall_s_last": 200.89,
+          "runs": 2,
+          "wall_s_total": 827.0,
+          "wall_s_last": 626.11,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0175
+          "out_mb_last": 0.0176
         }
       },
       "qa_iterations": 0,
