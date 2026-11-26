@@ -28,5 +28,6 @@ def shots(slug):
         n, at, shot, subj, beats, text, tin, tout = cells
         beats = [tuple(b.strip().split("@", 1)) for b in beats.split(",") if "@" in b]
         rows.append(dict(n=int(n), at=at.strip("`"), shot=shot, subject=subj, beats=beats,
-                         text=[t.strip() for t in text.split(";") if t.strip()], tin=tin, tout=tout))
+                         text=[t.split("@", 1)[0].strip() for t in text.split(";") if t.strip()],   # r9: "LABEL @spoken phrase" = explicit sync
+                         text_raw=[t.strip() for t in text.split(";") if t.strip()], tin=tin, tout=tout))
     return rows

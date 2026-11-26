@@ -6,11 +6,12 @@ later label of the same shot appears (sequential callouts; at least 1 s). Measur
 so it catches labels that exist in code but are hidden, covered, clipped or faded out.
   ok   = every label seen in its shot and persists; brand card rows (shot == Card) are skipped
 Usage: labels_persist.py <CompId> <slug> <mp4> [--json] [--out <dir>]"""
-import json, re, subprocess, sys, tempfile
+import json, os, re, subprocess, sys, tempfile
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from shotlib import ROOT, words, phrase_time, shots
 
+_OCR_ENV = {**os.environ, "OMP_THREAD_LIMIT": "1"}   # tesseract spawns a thread per core; parallel calls thrash without this
 FPS, PERSIST, TAIL_S = 2, 0.6, 0.5
 STAGE = (0, 290, 1080, 900)          # x, y, w, h: content safe zone (captions band excluded)
 SKIP_SHOTS = {"Card"}
@@ -20,11 +21,11 @@ def ocr_frames(mp4, d):
     x, y, w, h = STAGE
     subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(mp4), "-vf", f"fps={FPS},crop={w}:{h}:{x}:{y},format=gray",
                     str(d / "f_%05d.png")], check=True)
-    out = []
-    for f in sorted(d.glob("f_*.png")):
-        txt = " ".join(subprocess.run(["tesseract", str(f), "-", "--psm", m], capture_output=True, text=True).stdout for m in ("11", "3"))  # sparse + auto: each misses some labels
-        out.append((set(toks(txt)), re.sub(r"[^A-Z0-9%]", "", txt.upper())))
-    return out
+    def one(f):
+        txt = " ".join(subprocess.run(["tesseract", str(f), "-", "--psm", m], capture_output=True, text=True, env=_OCR_ENV).stdout for m in ("11", "3"))  # sparse + auto: each misses some labels
+        return set(toks(txt)), re.sub(r"[^A-Z0-9%]", "", txt.upper())
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(os.cpu_count() or 4) as ex: return list(ex.map(one, sorted(d.glob("f_*.png"))))
 
 def seen(label, frame):   # every content token of the label (alternative), fuzzy on 1 char for words >= 5,
     words_on, flat = frame   # or the whole label as a substring of the space-less OCR text (OCR fuses "CAR RISES")

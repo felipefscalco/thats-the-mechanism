@@ -229,6 +229,14 @@ if "--no-labels" not in sys.argv:
               dict(labels=lp["labels"], failing=lp["failing"][:5]))
     except Exception as e:
         check("labels: every shots.md key label is readable in its shot and stays (OCR)", False, dict(error=str(e)[:300]))
+    # r9: echoed labels land on their spoken words (±0.5 s), OCR on the render (scripts/label_sync.py)
+    try:
+        import label_sync as _ls
+        ls_ = _ls.check(ID, SLUG, MP4); res["label_sync"] = ls_; (OUT / "label_sync.json").write_text(json.dumps(ls_, indent=1))
+        check("labels: every label that echoes a spoken phrase appears within ±0.5 s of its word (OCR)", ls_["ok"],
+              dict(judged=ls_["judged"], failing=[{k: x[k] for k in ("label", "word_s", "first_seen_s", "dt_s")} for x in ls_["failing"]][:6]))
+    except Exception as e:
+        check("labels: every label that echoes a spoken phrase appears within ±0.5 s of its word (OCR)", False, dict(error=str(e)[:300]))
     # VO sync is ADVISORY: a pixel-motion event near each beat word does not catch semantic lag (v6b and v7 both pass)
     try:
         import vo_sync as _vs
