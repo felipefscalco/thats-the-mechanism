@@ -137,6 +137,78 @@
       "model": "haiku"
      }
     ]
+   },
+   "hooks": {
+    "provider": "claude",
+    "model": "sonnet",
+    "timeout_s": 300,
+    "fallback": [
+     {
+      "provider": "agy",
+      "model": "claude-sonnet-5-5"
+     },
+     {
+      "provider": "agy",
+      "model": "gemini-3.8-flash-high"
+     },
+     {
+      "provider": "codex",
+      "model": null
+     },
+     {
+      "provider": "cursor-agent",
+      "model": null
+     }
+    ]
+   },
+   "hook_judge": {
+    "provider": "claude",
+    "model": "haiku",
+    "timeout_s": 200,
+    "fallback": [
+     {
+      "provider": "agy",
+      "model": "gemini-3.8-flash-high"
+     },
+     {
+      "provider": "codex",
+      "model": null
+     }
+    ]
+   },
+   "writer": {
+    "provider": "claude",
+    "model": "sonnet",
+    "timeout_s": 400,
+    "fallback": [
+     {
+      "provider": "agy",
+      "model": "claude-sonnet-5-5"
+     },
+     {
+      "provider": "codex",
+      "model": null
+     },
+     {
+      "provider": "cursor-agent",
+      "model": null
+     }
+    ]
+   },
+   "publisher": {
+    "provider": "claude",
+    "model": "haiku",
+    "timeout_s": 200,
+    "fallback": [
+     {
+      "provider": "agy",
+      "model": "gemini-3.8-flash-high"
+     },
+     {
+      "provider": "codex",
+      "model": null
+     }
+    ]
    }
   },
   "loop": {
@@ -150,5 +222,25 @@
     "text: no raw SVG/CSS fontSize"
    ]
   }
+ },
+ "qa_gates": {
+  "_doc": "r8 tunables for qa.py/preview.py/contrast.py. clutter.count: floating = count only callouts with no diagram art touching them (default; Felipe has not decided), all = r7 behaviour (every pill/badge).",
+  "clutter": {
+   "max": 3,
+   "count": "floating",
+   "attach_px": 25
+  },
+  "entrances": {
+   "max_fade_only": 2,
+   "_doc": "scripts/entrances.py: no snap entrances; at most N opacity-only fades (cross-fades)"
+  }
+ },
+ "hooks": {
+  "_doc": "r8 hook step (scripts/hooks.py) and hook gates (qa.py/preview.py).",
+  "max_spoken_words": 16,
+  "max_onscreen_words": 7,
+  "first_speech_max_s": 0.5,
+  "frame1_min_moved_frac": 0.05,
+  "frame1_min_hero_frac": 0.08
  }
 }
