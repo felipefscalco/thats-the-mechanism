@@ -50,6 +50,7 @@ Providers: `claude` (Claude Code), `agy` (Antigravity; reads `.mp4` at ~1 fps an
 
 - `scripts/preview.py <Id> <slug> <N>` runs every still-measurable gate without a full render: contrast (incl. raw SVG text), safe zone + side edges (intro frame by frame), clearance, badge pop (incl. hand-rolled), callout clutter, framing, hook brightness, loop frame 0 vs last, hold/cadence (approx.), font sizes, HUD. Builders and fixers iterate on this; **do not run a full render inside an iteration.**
 - Routing: if every failing check is a value fix (contrast, edge/safe zone, clearance, font size), the fixer gets it; otherwise the builder.
+- r9 render gates: atomic text only (`Label`/`TagLabel`/`Badge`/`Pill`/`TitleHook`, no raw `<text>`, `o` = scale pop, never opacity), ghost text, payoff hold (EpisodeShell freezes the last 1.5 s), labels on their spoken word ±0.5 s (`scripts/label_sync.py`, `LABEL @phrase` in shots.md), one `hero@<phrase>` beat measured by `scripts/hero.py`, no art cut by a side edge (`scripts/artedge.py`). See [`docs/ROUND9.md`](docs/ROUND9.md).
 - Ship = new render preferred by the `critic` in ≥ 1 order and never against; if undecided, `critic_tiebreak` decides; if still tied, per-gate deltas on the MP4 (`scripts/ship_decide.py`).
 
 ## Hard rules

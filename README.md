@@ -57,7 +57,7 @@ Every stage records wall time, CPU time, peak RAM, output size and tool cost ($0
 - **Script-aligned captions:** `scripts/captions.py` aligns whisper words to the script (Levenshtein) and fails if the alignment breaks. `[pause: 0.4s]` tags in `script.txt` give exact silences in TTS.
 - **Credit URL sanitising:** `scripts/credits.py`.
 - **New motion and clarity gates:** caption ghost frames, meaningful-motion hold, entrance easing, frame-1 hook motion, first on-screen line length, sound-off keyword clarity, and floating-callout clutter.
-- Round log: [`docs/ROUND8.md`](docs/ROUND8.md).
+- Round logs: [`docs/ROUND9.md`](docs/ROUND9.md) (atomic labels, payoff hold, label sync, hero and art-edge gates; QR v7), [`docs/ROUND8.md`](docs/ROUND8.md).
 
 ## Round 7: vendor-neutral roles + preview-first loop
 
