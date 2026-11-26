@@ -1,6 +1,6 @@
 import React from "react";
 import { useVideoConfig } from "remotion";
-import words from "../01-qr-code.captions.json";
+import words from "../../../episodes/01-qr-code/captions.json";
 import qr from "../qr-matrix.json";
 import { ScanLine, X, type LucideIcon } from "lucide-react";
 import { C, EpisodeShell, GearG, Label, LOOP_FRAMES, MONO, PILLARS, Pill, ProofCard, Shot, Stage, TitleHook, cue, ease, makeAt, pop, popOpacity, popScale, useG } from "../brand";
@@ -10,8 +10,8 @@ const N = qr.n;
 const isFinder = (r: number, c: number) => (r < 7 && c < 7) || (r < 7 && c >= N - 7) || (r >= N - 7 && c < 7);
 
 /** Real level-H QR for youtube.com/@thatsthemechanism (it actually scans in the render). */
-const QRCard: React.FC<{ cx: number; cy: number; size: number; logo?: number; finderGlow?: number; coverTL?: number; glare?: number; shake?: number; rot?: number }> =
-  ({ cx, cy, size, logo = 0, finderGlow = 0, coverTL = 0, glare = 0, shake = 0, rot = 0 }) => {
+const QRCard: React.FC<{ cx: number; cy: number; size: number; logo?: number; finderGlow?: number; coverTL?: number; glare?: number; shake?: number; rot?: number; budget?: number }> =
+  ({ cx, cy, size, logo = 0, finderGlow = 0, coverTL = 0, glare = 0, shake = 0, rot = 0, budget = 0 }) => {
     const f = useG();
     const pad = size * 0.08, m = (size - 2 * pad) / N;
     const logoW = Math.sqrt(logo) * (size - 2 * pad);
@@ -27,6 +27,20 @@ const QRCard: React.FC<{ cx: number; cy: number; size: number; logo?: number; fi
           {finderGlow > 0 && [[0, 0], [0, N - 7], [N - 7, 0]].map(([r, c], i) => (
             <rect key={i} x={c * m - 10} y={r * m - 10} width={7 * m + 20} height={7 * m + 20} rx={12} fill="none" stroke={P.color} strokeWidth={6} opacity={finderGlow * (0.6 + 0.4 * Math.sin(f / 4))} />
           ))}
+          {budget > 0 && (
+            <g>
+              {/* r6: amber repair-budget shading covers ONLY interior data/EC modules (never finders, separators); finders outlined in cyan */}
+              {Array.from({ length: N * N }).map((_, i) => {
+                const r = Math.floor(i / N), c = i % N;
+                const inFinderZone = (r < 8 && c < 8) || (r < 8 && c >= N - 8) || (r >= N - 8 && c < 8);
+                if (inFinderZone || r >= N * 0.3 * budget + 4 || r < 4) return null;
+                return <rect key={i} x={c * m} y={r * m} width={m + 0.6} height={m + 0.6} fill={C.amber} opacity={0.5 + 0.2 * Math.sin(f / 4)} />;
+              })}
+              {[[0, 0], [0, N - 7], [N - 7, 0]].map(([r, c], i) => (
+                <rect key={i} x={c * m - m} y={r * m - m} width={9 * m} height={9 * m} rx={10} fill="none" stroke={P.color} strokeWidth={6} />
+              ))}
+            </g>
+          )}
           {logo > 0 && (
             <g transform={`translate(${(N * m) / 2} ${(N * m) / 2})`}>
               <rect x={-logoW / 2} y={-logoW / 2} width={logoW} height={logoW} rx={logoW * 0.18} fill={C.ink} stroke={C.paper} strokeWidth={8} />
@@ -59,7 +73,7 @@ const Viewfinder: React.FC<{ cx: number; cy: number; size: number; color: string
   );
 };
 
-const W = 1080, CY = 815;
+const W = 1080, CY = 790;
 const bytesOf = "youtube.com/@thatsthemechanism".split("").slice(0, 12).map((ch) => ch.charCodeAt(0).toString(16).toUpperCase());
 
 /** Shot 1 = title-as-hook + scale reveal (also frozen at frame 0 by LoopBack: f=0 is zoomed 2.3x into the bright QR + gear). */
@@ -74,9 +88,9 @@ const Hook: React.FC = () => {
     <>
       <Stage>
         <g transform={`translate(${cx} ${cy}) scale(${z}) translate(${-cx} ${-cy})`}>
-          <QRCard cx={cx} cy={cy} size={560} logo={0.12} rot={f * 2} />
-          <Viewfinder cx={cx} cy={cy} size={560} color={f > cam ? C.green : C.paper} o={ease(f, cam - 6, cam + 2)} />
-          {f > cam && <rect x={cx - 300} y={cy - 300 + ((f - cam) * 28) % 600} width={600} height={6} fill={C.green} opacity={0.85} />}
+          <QRCard cx={cx} cy={cy} size={500} logo={0.12} rot={f * 2} />
+          <Viewfinder cx={cx} cy={cy} size={500} color={f > cam ? C.green : C.paper} o={ease(f, cam - 6, cam + 2)} />
+          {f > cam && <rect x={cx - 270} y={cy - 270 + ((f - cam) * 28) % 540} width={540} height={6} fill={C.green} opacity={0.85} />}
         </g>
       </Stage>
       {/* r5: title leaves before the push-out so the transition never flings it into the platform UI zone */}
@@ -170,8 +184,7 @@ const Repair: React.FC = () => {
       )}
       {mode === 1 && (
         <g>
-          <QRCard cx={W / 2} cy={700} size={580} logo={0.12} rot={f * 1.8} />
-          <rect x={W / 2 - 245} y={700 - 245} width={490} height={490 * 0.3 * g30} rx={18} fill={C.amber} opacity={0.28 + 0.14 * Math.sin(f / 4)} stroke={C.amber} strokeWidth={5} />
+          <QRCard cx={W / 2} cy={700} size={580} logo={0.12} rot={f * 1.8} budget={g30} />
           <rect x={W / 2 - 255} y={700 - 245 + ((f * 18) % 490)} width={510} height={6} rx={3} fill={C.amber} opacity={0.65} />
           <Label x={W / 2} y={1080} text={`${Math.round(30 * g30)}% REBUILDABLE (LEVEL H)`} size={42} color={C.amber} />
         </g>
@@ -222,8 +235,8 @@ const Finders: React.FC = () => {
   const cov = ease(f, corner, corner + 12), shk = f >= over && f < over + 16 ? 1 : 0;
   return (
     <Stage>
-      <QRCard cx={W / 2} cy={700} size={620} logo={0.13} finderGlow={ease(f, notData, notData + 8)} coverTL={cov} shake={shk} rot={f} />
-      <Viewfinder cx={W / 2} cy={700} size={620} color={f >= over ? C.red : C.paper} o={1} jitter={shk} />
+      <QRCard cx={W / 2} cy={650} size={560} logo={0.13} finderGlow={ease(f, notData, notData + 8)} coverTL={cov} shake={shk} rot={f} />
+      <Viewfinder cx={W / 2} cy={650} size={560} color={f >= over ? C.red : C.paper} o={1} jitter={shk} />
       {f >= notData && <Label x={W / 2} y={345} text="FINDER PATTERNS ≠ DATA" size={46} color={P.color} o={ease(f, notData, notData + 8)} />}
     </Stage>
   );
@@ -276,7 +289,7 @@ export const QRVideo: React.FC = () => {
       <Shot from={s2} to={s3} inT="push" outT="whip" cam={[{ at: 0, kind: "settle", s: 1.0, y: 90, dur: 1 }, { at: at("cut into bytes"), kind: "punch", s: 1.1, y: 70 }, { at: adds, kind: "glide", s: 1.04, y: 40 }, { at: at("error correction"), kind: "glide", s: 1.06, x: -30, y: 50 }, { at: at("same math"), kind: "push", s: 1.1, x: 0, y: 30 }, { at: cd - 6, kind: "pull", s: 0.96, y: 0 }]}><Bytes /></Shot>
       <Shot from={s3} to={s4} inT="whip" outT="push" cam={[{ at: reb, kind: "punch", s: 1.16, y: 70 }, { at: hi - 4, kind: "glide", s: 1.0, y: -40 }, { at: hi + 14, kind: "push", s: 1.1, x: -70, y: 20 }, { at: at("30%"), kind: "pull", s: 1.0, x: 0, y: 0 }]}><Repair /></Shot>
       <Shot from={s4} to={s5} inT="push" outT="whipUp" cam={[{ at: s4, kind: "push", s: 1.05, dur: 45 }, { at: at("In real tests"), kind: "glide", s: 1.08, y: -40 }, { at: gl, kind: "pull", s: 1.0, y: 0 }]}><Budget /></Shot>
-      <Shot from={s5} to={card} inT="whipUp" outT="push" cam={[{ at: corner, kind: "push", s: 1.08 }, { at: over, kind: "punch", s: 1.18, x: 160, y: 90 }, { at: at("Those aren't data"), kind: "pull", s: 1.0, x: 0, y: 0 }]} hud={<Verdict phrase="it's over" until="Those aren't data" text="NO SCAN" color={C.red} textColor={C.ink} w={400} icon={X} />}><Finders /></Shot>
+      <Shot from={s5} to={card} inT="whipUp" outT="push" cam={[{ at: corner, kind: "push", s: 1.08 }, { at: over, kind: "punch", s: 1.1, x: 120, y: 40 }, { at: at("Those aren't data"), kind: "pull", s: 1.0, x: 0, y: 0 }]} hud={<Verdict phrase="it's over" until="Those aren't data" text="NO SCAN" color={C.red} textColor={C.ink} w={400} icon={X} />}><Finders /></Shot>
       <Shot from={fin} to={loop} inT="push" outT="whip" cam={[{ at: fin, kind: "pull", s: 0.96, dur: 12 }]}><Final /></Shot>
     </EpisodeShell>
   );

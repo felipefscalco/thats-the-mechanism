@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/workspace/ttm-r6/.venv-tts/bin/python
 """Automated acceptance QA for one rendered episode (see docs/ACCEPTANCE.md).
 Usage: scripts/qa.py <CompositionId> <slug> <iteration> [--no-stems]
 Writes qa/<Id>/report_it<N>.json, transitions_it<N>.png (dense frames around every shot boundary + the loop seam),
@@ -106,12 +106,21 @@ check("loop: seam jump <= p95 frame step (and PSNR >= 25 dB)", seam <= np.percen
 
 # 6b. label contrast, WCAG >= 4.5:1 on real pixels (round 4, from L-8/L-13; scripts/contrast.py)
 if "--no-contrast" not in sys.argv:
-    cr = subprocess.run([sys.executable, str(ROOT / "scripts" / "contrast.py"), ID, str(MP4), str(OUT)], capture_output=True, text=True)
+    try:
+        _cuts = ",".join(f"{phrase_time(ws_all, r['at']):.2f}" for r in shots(SLUG) if r["at"])
+    except Exception:
+        _cuts = ""
+    cr = subprocess.run([sys.executable, str(ROOT / "scripts" / "contrast.py"), ID, str(MP4), str(OUT), "--cuts", _cuts], capture_output=True, text=True)
     try:
         c = json.loads((OUT / "contrast.json").read_text()); res["contrast"] = c
         check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", c["ok"], dict(min=c["min_ratio"], p10=c["p10_ratio"], failures=[(f["t_start_s"], f["worst_ratio"]) for f in c["held_failures"]]))
         # r5: Shorts UI safe zones on the same probe masks (top 220, bottom >1560, right column x>900 below y 900)
-        check("labels: inside Shorts UI safe zones", c.get("safe_zone_ok", True), dict(violations=c.get("safe_zone_violations", [])[:6]))
+        check("labels: inside Shorts UI safe zones + >= 24 px from side edges", c.get("safe_zone_ok", True), dict(violations=c.get("safe_zone_violations", [])[:6]))
+        check("labels: icon/label clearance >= 36 px (held >= 0.6 s)", c.get("overlap_ok", True),
+              dict(min_clearance=c.get("overlap_min_clearance"), violations=c.get("overlap_violations", [])[:6]))
+        # r6 (critic R-002, 3 episodes): badges never snap in at full size; component = TagLabel/Pill pop
+        check("motion: badge entrances pop with anticipation/overshoot", c.get("pop_ok", True),
+              dict(entrances=c.get("pop_entrances"), snaps=c.get("pop_snaps", [])[:6]))
     except Exception as e:
         check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)", False, dict(error=str(e), stderr=cr.stderr[-400:]))
 

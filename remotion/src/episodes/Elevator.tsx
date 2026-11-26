@@ -1,8 +1,8 @@
 import React from "react";
 import { Easing, interpolate, useVideoConfig } from "remotion";
 import words from "../02-elevator.captions.json";
-import { Check, X, Zap, ArrowUp, Scale } from "lucide-react";
-import { C, DISPLAY, EpisodeShell, Label, LOOP_FRAMES, MONO, PILLARS, Pill, ProofCard, Shot, Stage, TitleHook, cue, ease, makeAt, pop, popOpacity, popScale, reveal, useG } from "../brand";
+import { Check, X, Scale } from "lucide-react";
+import { C, DISPLAY, EpisodeShell, Label, Lane, LOOP_FRAMES, MONO, PILLARS, TagLabel, ProofCard, Shot, Stage, TitleHook, cue, ease, makeAt, pop, popOpacity, popScale, reveal, useG } from "../brand";
 
 const P = PILLARS.eng;
 const SX = 490, SY = 585, SR = 92;
@@ -63,15 +63,22 @@ const Rig: React.FC = () => {
   const { fps } = useVideoConfig();
   const at = makeAt(words, fps);
   const s2 = at("On the other side"), s3 = at("So the motor"), s4 = at("Here's the strange"), s5 = at("That's why a"), stamp = at("That's the mechanism");
-  const full = at("car is full"), empty = at("nearly empty"), holds = at("holds it back"), rel = at("Release"), rise = at("It would rise");
+  const full = at("car is full"), empty = at("nearly empty"), rel = at("Release"), rise = at("It would rise");
 
   // Scale reveal: f=0 zoomed 2.25x on the bright elevator car + rider, pulling out smoothly to show the full shaft & counterweight
   const zoom = interpolate(f, [3, 38], [1.95, 1.0], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) });
   const zFocusX = CAR_X, zFocusY = 980;
 
-  // Car vertical trajectory with anticipation dip and overshoot bounce on the release reveal
-  let carTop = smoothKeyed(f, [[0, 835], [75, 715], [at("plus about"), 715], [s3, 740], [full - 8, 705], [full + 8, 720], [full + 48, 675], [empty - 6, 675], [holds + 22, 845], [rel - 6, 845], [rel + 2, 855], [rise - 6, 845], [rise + 26, 625], [s5, 625], [s5 + 24, 750]], f >= rel && f <= rise + 28);
-  if (f >= 75 && f < s3) carTop += Math.sin((f - 75) / 8) * 18;
+  // Car vertical trajectory. r6 pass 2: the nearly-empty car is HELD (strain jitter, no descent) while
+  // "MOTOR HOLDS IT BACK" is on screen; it parks at the bottom only after that caption, then the release rises (longer).
+  const fdF = at("fights the difference");
+  const riseEnd = Math.min(rise + 34, s5 - 2);
+  let carTop = smoothKeyed(f, [[0, 835], [75, 715], [at("plus about"), 715], [s3, 740], [full - 8, 705], [full + 8, 720], [full + 48, 675], [s4, 675], [rel - 30, 845], [rel - 6, 845], [rel + 2, 855], [rise - 12, 845], [riseEnd, 625], [s5, 625], [s5 + 24, 750]], f >= rel && f <= riseEnd + 2);
+  // continuous secondary motion: slow bob while loading, strain jitter while held, tension shudder at brake release
+  const bobEnv = interpolate(f, [0, 40, 75, s3 - 10, s3, empty - 16, empty - 6], [0, 8, 18, 18, 8, 8, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const strainEnv = interpolate(f, [empty - 8, empty, s4, s4 + 10], [0, 2.4, 2.4, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const shudderEnv = interpolate(f, [rel, rel + 2, rel + 10, rel + 16], [0, 5, 5, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  carTop += bobEnv * Math.sin((f - 75) / 8) + strainEnv * Math.sin(f * 1.9) + shudderEnv * Math.sin(f * 2.7);
   if (f >= s5 + 24 && f < stamp) carTop = 740 + Math.sin((f - s5 - 24) / 14) * 115;
   const cwTop = SUM - carTop; // strictly coupled opposite motion
 
@@ -79,10 +86,17 @@ const Rig: React.FC = () => {
   const defDeg = (carTop - 815) * (180 / Math.PI / DEF_R);
   const motorDeg = (carTop - 815) * 4.2;
 
-  const people = f < full ? 2 : f < empty ? Math.min(7, 2 + Math.floor((f - full) / 4)) : f < s4 ? 1 : f < s5 ? 0 : Math.min(6, Math.floor((f - s5) / 4));
+  const people = f < full ? 2 : f < empty ? Math.min(7, 2 + Math.floor((f - full) / 4)) : f < empty + 8 ? 7 : f < s4 + 8 ? 1 : f < s5 ? 0 : Math.min(6, Math.floor((f - s5) / 4));
+  // riders pop in with overshoot / shrink out instead of snapping
+  const personSc = (i: number): number => {
+    if (f < full) return 1;
+    if (f < empty) return i < 2 ? 1 : popScale(pop(f, full + (i - 2) * 4, fps)) / 1;
+    if (f < s4 + 8) return i === 0 ? (f < s4 ? 1 : 1 - ease(f, s4, s4 + 8)) : 1 - ease(f, empty, empty + 8);
+    return popScale(pop(f, s5 + 4 * (i + 1) - 4, fps));
+  };
   const doorOpen = f >= full - 6 && f < full + 18 ? ease(f, full - 6, full + 2) * (1 - ease(f, full + 10, full + 18)) : 0;
   const brakeOpen = ease(f, rel + 2, rel + 12);
-  const showBrake = f >= s4 - 6 && f < s5;
+  const showBrake = f >= rel - 30 && f < s5;
   const cwSplit = f >= s2 && f < s3 ? ease(f, at("It's built"), at("It's built") + 10) : 0;
   const bars = f >= s3 && f < s4 ? ease(f, s3, s3 + 10) : 0;
   const carLoad = f < full ? 3300 + 2 * 175 : f < empty ? 6800 : 3300 + 175;
@@ -106,14 +120,14 @@ const Rig: React.FC = () => {
         {/* Architectural shaft framing (refined Look A depth, not a cartoonish backdrop) */}
         {[85, 975].map((x) => <rect key={x} x={x} y={290} width={20} height={870} rx={4} fill="#181C26" stroke="#282E3E" strokeWidth={2} />)}
         {Array.from({ length: 8 }).map((_, i) => (
-          <g key={i} opacity={0.45}>
-            <line x1={105} x2={shaftLeft - 14} y1={420 + i * 95} y2={420 + i * 95} stroke="#2A3040" strokeWidth={2} />
-            <text x={118} y={412 + i * 95} fill="#5A6174" fontFamily={MONO} fontSize={30} fontWeight={700}>L{String(8 - i).padStart(2, "0")}</text>
+          <g key={i} opacity={0.8}>
+            <line x1={105} x2={shaftLeft - 14} y1={420 + i * 95} y2={420 + i * 95} stroke="#3A4256" strokeWidth={2} />
+            <text x={118} y={412 + i * 95} fill="#9BA3B0" fontFamily={MONO} fontSize={30} fontWeight={700}>L{String(8 - i).padStart(2, "0")}</text>
           </g>
         ))}
 
         {/* Scale-reveal camera group centered on the bright car at f=0, pulling out to full hoistway */}
-        <g transform={`translate(540 860) scale(${zoom}) translate(${-540 + (540 - zFocusX) * ((zoom - 1) / 0.95)} ${-860 + (860 - zFocusY) * ((zoom - 1) / 0.95)})`}>
+        <g transform={`translate(${Math.sin(f / 37) * 5} ${Math.sin(f / 45) * 4}) translate(540 860) scale(${zoom}) translate(${-540 + (540 - zFocusX) * ((zoom - 1) / 0.95)} ${-860 + (860 - zFocusY) * ((zoom - 1) / 0.95)})`}>
           {/* Bright cutaway hoistway (guarantees high contrast and bright frame 0) */}
           <rect x={shaftLeft} y={SY - 70} width={shaftW} height={pitY - (SY - 70)} rx={22} fill="#EAE3D4" stroke="#5E6678" strokeWidth={4} />
           <rect x={shaftLeft + shaftW * 0.5} y={SY - 70} width={shaftW * 0.5} height={pitY - (SY - 70)} rx={0} fill="#DCD4C2" />
@@ -132,10 +146,10 @@ const Rig: React.FC = () => {
           {/* Machine room bedplate + Motor + cooling flywheel */}
           <rect x={SX - 20} y={SY - 12} width={355} height={24} rx={6} fill="#363D4E" />
           <g transform={`translate(${SX + 150} ${SY - 96})`}>
-            <rect x={0} y={0} width={172} height={92} rx={16} fill={motorOn ? P.color : "#3B4354"} stroke={C.ink} strokeWidth={4} />
+            <rect x={0} y={0} width={172} height={92} rx={16} fill={motorOn ? C.amber : "#3B4354"} stroke={C.ink} strokeWidth={4} />
             {[16, 34, 52, 70].map((y) => <line key={y} x1={14} x2={158} y1={y} y2={y} stroke={C.ink} strokeWidth={4} opacity={0.22} />)}
             <text x={86} y={56} fill={motorOn ? C.ink : C.paper} fontFamily={DISPLAY} fontWeight={700} fontSize={32} textAnchor="middle">MOTOR</text>
-            <circle cx={146} cy={22} r={8} fill={motorOn ? C.amber : C.green} />
+            <circle cx={146} cy={22} r={8} fill={motorOn ? C.ink : C.amber} />
             {/* Spinning end flywheel */}
             <g transform={`translate(178 46) rotate(${motorDeg})`}>
               <rect x={-10} y={-34} width={20} height={68} rx={6} fill="#5E6678" stroke={C.ink} strokeWidth={3} />
@@ -144,6 +158,14 @@ const Rig: React.FC = () => {
           </g>
           {/* Drive shaft coupling to main traction sheave */}
           <rect x={SX} y={SY - 62} width={150} height={18} rx={6} fill="#5E6678" stroke={C.ink} strokeWidth={3} />
+
+          {/* rise streaks: floor-speed lines trailing the empty car (surprise punch) */}
+          {f >= rise - 6 && f <= riseEnd + 6 && [0, 1, 2, 3, 4, 5].map((k) => {
+            const env = Math.min(1, ease(f, rise - 6, rise + 4)) * (1 - ease(f, riseEnd - 4, riseEnd + 6));
+            const y0 = carTop + ((k * 83 + (f - rise) * 34) % 330 + 330) % 330;
+            const x = CAR_X + (k % 2 === 0 ? -1 : 1) * (CAR_W / 2 + 34 + (k >> 1) * 0);
+            return <line key={k} x1={x} x2={x} y1={y0} y2={y0 + 62} stroke={C.amber} strokeWidth={6} strokeLinecap="round" opacity={0.85 * env} />;
+          })}
 
           {/* Running hoist cables (twin ropes + moving strand dashes coupled 1:1 to carTop) */}
           <line x1={CAR_X - 5} y1={SY} x2={CAR_X - 5} y2={carTop} stroke="#1B1F2A" strokeWidth={5} />
@@ -181,7 +203,7 @@ const Rig: React.FC = () => {
           {/* Articulated caliper brake shoes */}
           {showBrake && [-1, 1].map((d) => (
             <g key={d} transform={`translate(${SX} ${SY}) rotate(${d * 38 - 90})`}>
-              <rect x={SR + 10 + brakeOpen * 34} y={-28} width={32} height={56} rx={8} fill={brakeOpen > 0.5 ? C.amber : C.red} stroke={C.ink} strokeWidth={3} />
+              <rect x={SR + 10 + brakeOpen * 34 - (brakeOpen < 0.5 ? 3 + Math.sin(f / 3) * 3 : 0)} y={-28} width={32} height={56} rx={8} fill={brakeOpen > 0.5 ? C.amber : C.red} stroke={C.ink} strokeWidth={3} />
             </g>
           ))}
           {showBrake && (
@@ -198,7 +220,7 @@ const Rig: React.FC = () => {
             <rect x={14} y={24} width={CAR_W - 28} height={CAR_H - 38} rx={8} fill="#F9F4E8" />
             <rect x={28} y={28} width={CAR_W - 56} height={10} rx={5} fill={C.amber} opacity={0.85} />
             {Array.from({ length: people }).map((_, i) => (
-              <Person key={i} x={48 + (i % 4) * 42} y={CAR_H - 28 - Math.floor(i / 4) * 86} c={i % 2 === 0 ? "#1F2430" : "#C97D0C"} s={0.86} />
+              <Person key={i} x={48 + (i % 4) * 42} y={CAR_H - 28 - Math.floor(i / 4) * 86} c={i % 2 === 0 ? "#1F2430" : "#C97D0C"} s={0.86 * Math.max(0, personSc(i))} />
             ))}
             {/* Center-parting sliding doors */}
             <rect x={14} y={24} width={(CAR_W / 2 - 14) * (1 - doorOpen * 0.85)} height={CAR_H - 38} fill="#8B91A1" opacity={0.35} />
@@ -232,6 +254,46 @@ const Rig: React.FC = () => {
             )}
           </g>
 
+          {/* Force arrows (r6 clarity): gravity on car + counterweight (length = weight), motor torque on the sheave (width = difference) */}
+          {f >= fdF && f < s5 && (() => {
+            const a = ease(f, fdF, fdF + 10);
+            const gCar = carLoad * 0.03, gCw = 4875 * 0.03;
+            const diff = Math.abs(carLoad - 4875), cwSide = carLoad > 4875; // car heavier => motor pulls it up (clockwise); else motor holds counterweight back (counter-clockwise)
+            const torque = f < rel - 30 && f < s4;
+            const R = SR + 30, a0 = (190 * Math.PI) / 180, a1 = (290 * Math.PI) / 180;
+            const pt = (t: number): [number, number] => [SX + R * Math.cos(t), SY + R * Math.sin(t)];
+            const [x0, y0] = pt(a0), [x1, y1] = pt(a1);
+            const tw = 4 + diff / 90;
+            const tip = cwSide ? a1 : a0, dirS = cwSide ? 1 : -1;
+            const [px, py] = pt(tip), dx = -Math.sin(tip) * dirS, dy = Math.cos(tip) * dirS;
+            const head = `${px + dx * 30},${py + dy * 30} ${px - dy * 22},${py + dx * 22} ${px + dy * 22},${py - dx * 22}`;
+            const down = (x: number, y: number, len: number) => (
+              <g>
+                <line x1={x} x2={x} y1={y} y2={y + len - 24} stroke={C.ink} strokeWidth={22} strokeLinecap="round" />
+                <polygon points={`${x - 30},${y + len - 30} ${x + 30},${y + len - 30} ${x},${y + len + 6}`} fill={C.ink} stroke={C.ink} strokeWidth={6} strokeLinejoin="round" />
+                <line x1={x} x2={x} y1={y} y2={y + len - 24} stroke={C.amber} strokeWidth={12} strokeLinecap="round" />
+                <polygon points={`${x - 24},${y + len - 28} ${x + 24},${y + len - 28} ${x},${y + len}`} fill={C.amber} />
+              </g>
+            );
+            // arrows hang BELOW the bodies (clear of riders, on the dark shaft); the car's gravity arrow shows only while the car is the heavier side
+            const carBot = carTop + CAR_H, cwBot = cwTop + CW_H;
+            const showCarG = carLoad >= 4875 && f < rel - 30;
+            const lenC = Math.max(34, Math.min(gCar, 1112 - carBot)), lenW = Math.max(34, Math.min(gCw, 1112 - cwBot));
+            return (
+              <g opacity={a}>
+                {showCarG && down(CAR_X, carBot + 4, lenC)}
+                {down(CW_X, cwBot + 4, lenW)}
+                {torque && (
+                  <g>
+                    <path d={`M${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1}`} fill="none" stroke={C.ink} strokeWidth={tw + 8} strokeLinecap="round" />
+                    <path d={`M${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1}`} fill="none" stroke={C.amber} strokeWidth={tw} strokeLinecap="round" strokeDasharray="30 14" strokeDashoffset={-dirS * f * 2.5} />
+                    <polygon points={head} fill={C.amber} stroke={C.ink} strokeWidth={5} strokeLinejoin="round" />
+                  </g>
+                )}
+              </g>
+            );
+          })()}
+
           {/* Balanced tag in Shot 1 */}
           {f < s2 && (
             <g transform="translate(540 1100)" opacity={ease(f, at("almost balances"), at("almost balances") + 8)}>
@@ -248,17 +310,21 @@ const Rig: React.FC = () => {
 
           {/* Live weight comparison bars in Shot 3 */}
           {bars > 0 && (() => {
-            const sc = 0.078, hc = carLoad * sc * bars, hw = 4875 * sc * bars, base = 1090;
+            const sc = 0.062, hc = carLoad * sc * bars, hw = 4875 * sc * bars, base = 1050;
             const top = Math.min(hc, hw), diff = Math.abs(hc - hw), carHeavier = hc > hw;
+            const cx = 84, wx = 152; // panel x 64-224: >= 64 px from the frame edge even under the chapter-3 camera
             return (
               <g>
-                <rect x={45} y={base - 560} width={175} height={615} rx={16} fill={C.ink} opacity={0.85} />
-                <rect x={64} y={base - hc} width={56} height={hc} rx={8} fill={C.paper} />
-                <rect x={140} y={base - hw} width={56} height={hw} rx={8} fill={P.color} />
-                <rect x={carHeavier ? 64 : 140} y={base - top - diff} width={56} height={diff} rx={8} fill={C.amber} />
-                <line x1={55} x2={205} y1={base - top} y2={base - top} stroke={C.dim} strokeWidth={3} strokeDasharray="10 10" />
-                <Label x={92} y={base + 40} text="CAR" size={30} />
-                <Label x={168} y={base + 40} text="CW" size={30} color={P.color} />
+                <rect x={64} y={base - 440} width={160} height={460} rx={16} fill={C.ink} opacity={0.85} />
+                <rect x={cx} y={base - hc} width={52} height={hc} rx={8} fill={C.paper} />
+                <rect x={wx} y={base - hw} width={52} height={hw} rx={8} fill={P.color} />
+                <rect x={carHeavier ? cx : wx} y={base - top - diff} width={52} height={diff} rx={8} fill={C.amber} />
+                <line x1={74} x2={214} y1={base - top} y2={base - top} stroke={C.dim} strokeWidth={3} strokeDasharray="10 10" />
+                {/* legend keeps the colour cue: car = white, counterweight = teal (Lane guarantees the 36 px gap) */}
+                <Lane x={64} y={base - 440 - 44} dir="up" align="start" gap={44} items={[
+                  { w: 90, h: 52, node: <TagLabel x={18} y={34} text="CAR" size={30} color={C.paper} o={bars} anchor="start" /> },
+                  { w: 72, h: 52, node: <TagLabel x={18} y={34} text="CW" size={30} color={P.color} o={bars} anchor="start" /> },
+                ]} />
               </g>
             );
           })()}
@@ -293,9 +359,9 @@ const RigHud: React.FC = () => {
   return (
     <>
       <Stage>
-        {f >= fd && f < s4 && <Pill x={540} y={1152} w={580} text={carHeavier ? "MOTOR HELPS IT UP" : f > empty + 10 ? "MOTOR HOLDS IT BACK" : "MOTOR = DIFFERENCE"} color={C.amber} s={pop(f, fd, fps)} />}
-        {f >= at("wouldn't fall") && f < s5 && <Pill x={540} y={1152} w={540} text={f >= rise ? "EMPTY CAR RISES" : "IT WOULDN'T FALL"} color={f >= rise ? C.amber : C.paper} s={pop(f, at("wouldn't fall"), fps)} icon={f >= rise ? ArrowUp : undefined} />}
-        {f >= s5 && f < office && <Pill x={540} y={1152} w={680} text="SMALL MOTOR · FULL OFFICE" color={P.color} s={pop(f, at("modest motor"), fps)} icon={Zap} />}
+        {f >= fd && f < s4 && <TagLabel x={540} y={1150} size={44} text={carHeavier ? "MOTOR HELPS IT UP" : f > empty + 10 ? "MOTOR HOLDS IT BACK" : "MOTOR = DIFFERENCE"} color={C.amber} o={Math.min(1, pop(f, fd, fps))} />}
+        {f >= at("wouldn't fall") && f < s5 && <TagLabel x={540} y={1150} size={44} text={f >= rise ? "EMPTY CAR RISES" : "IT WOULDN'T FALL"} color={f >= rise ? C.amber : C.paper} o={Math.min(1, pop(f, at("wouldn't fall"), fps))} />}
+        {f >= s5 && f < office && <TagLabel x={540} y={1150} size={44} text="SMALL MOTOR · FULL OFFICE" color={P.color} o={Math.min(1, pop(f, at("modest motor"), fps))} />}
         {f >= s3 && f < fd && null}
       </Stage>
       {f >= office && f < stamp && (
@@ -379,18 +445,20 @@ export const ElevatorVideo: React.FC = () => {
       cardAt={card} cardUntil={fin} cues={cues} hook={<Rig />}
       chapters={[{ at: 0, label: "IT ALMOST BALANCES" }, { at: s2, label: "THE COUNTERWEIGHT" }, { at: s3, label: "ONLY THE DIFFERENCE" }, { at: s4, label: "THE STRANGE PART" }, { at: s5, label: "WHY IT'S CHEAP" }]}>
       <Shot from={0} to={card} inT="none" outT="push" cam={[
-        { at: s2, kind: "glide", s: 1.18, x: -120, y: 20 },
-        { at: at("It's built"), kind: "push", s: 1.24, x: -165, y: 20 },
-        { at: at("plus about"), kind: "glide", s: 1.18, x: -140, y: -20 },
-        { at: s3, kind: "pull", s: 0.94, x: 0, y: 15 },
-        { at: at("fights the difference"), kind: "punch", s: 1.12, x: 0, y: -40 }, // r5 cadence: 14.8-18.9 s gap
-        { at: full, kind: "push", s: 1.02, x: 0, y: 0 },
-        { at: empty, kind: "punch", s: 1.16, x: -120, y: 20 }, // r5 cadence: new visual state inside the 19.9-24.3 s gap
-        { at: at("heavier side"), kind: "glide", s: 1.06, x: 50, y: 20 },
-        { at: s4, kind: "push", s: 1.24, x: 40, y: 130 },
-        { at: rise - 2, kind: "punch", s: 1.04, x: 10, y: 40 },
-        { at: s5, kind: "glide", s: 1.02, x: 0, y: 10 },
-        { at: at("full office"), kind: "pull", s: 1.0, x: 0, y: 0 },
+        // r6 pass 2: camera keeps the pit/shaft floor above the caption band (390*s + y <= 435, <= 360 once the HUD tag is up)
+        // and the chapter-3 bar panel >= 24 px from the left edge.
+        { at: s2, kind: "glide", s: 1.18, x: -120, y: -30 },
+        { at: at("It's built"), kind: "push", s: 1.24, x: -165, y: -50 },
+        { at: at("plus about"), kind: "glide", s: 1.18, x: -140, y: -30 },
+        { at: s3, kind: "pull", s: 0.94, x: 0, y: -10 },
+        { at: at("fights the difference"), kind: "punch", s: 1.04, x: 0, y: -45 },
+        { at: full, kind: "push", s: 1.02, x: 0, y: -38 },
+        { at: empty, kind: "punch", s: 1.04, x: 0, y: -45 },
+        { at: at("heavier side"), kind: "glide", s: 1.02, x: 0, y: -38 },
+        { at: s4, kind: "push", s: 1.14, x: 30, y: -85 },
+        { at: rise - 2, kind: "punch", s: 1.06, x: 10, y: -55 },
+        { at: s5, kind: "glide", s: 1.02, x: 0, y: -38 },
+        { at: at("full office"), kind: "pull", s: 1.0, x: 0, y: -30 },
       ]} hud={<RigHud />}><Rig /></Shot>
       <Shot from={fin} to={loop} inT="push" outT="whip" cam={[{ at: fin, kind: "push", s: 1.02, dur: 40 }]}><ScaleNotCrane /></Shot>
     </EpisodeShell>

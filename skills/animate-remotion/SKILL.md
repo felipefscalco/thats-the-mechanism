@@ -70,3 +70,8 @@ Official Remotion guidance in `remotion/.agents/skills/` still applies (sequence
 - Camera `punch` = shotcraft crash-zoom: 5 f anticipation pull-back, 5 f push, 4 f recoil; its stamp/glint SFX land on the hit frame (+7 f).
 - A visual-state change every ≤4 s (qa.py cadence); hooks open on ONE subject; text that sits on art uses `TagLabel` (backing).
 - Finish: static procedural grain (7 % overlay) from `scripts/make_grain.py`; `--props '{"grain":"anim"}'` costs +30 % render.
+
+## Round-6 layout primitives (code over prose)
+- Stack callouts with `<Lane gap={LANE_GAP}>` and attach labels with `<LabeledBox box={...} gap={LANE_GAP} />` (`LANE_GAP` is 36). Do not hand-place a label so its box can sit on an icon or another pill; `scripts/qa.py` now fails a held clearance under 36 px.
+- Keep passing the same `hook` node to `EpisodeShell`. The loop whip is `LoopEnd` (`LoopBack`): it freezes the hook at frame 0 so the last frame matches frame 0. Do not invent a one-off end whip.
+- Before animating, read `docs/STYLE_RULES.md` and apply `docs/active_rules_prompt.txt`.

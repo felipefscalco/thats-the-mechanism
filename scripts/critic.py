@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/workspace/ttm-r6/.venv-tts/bin/python
 """Independent multimodal video critic using Gemini Files API (watches MP4 WITH audio).
 
 Usage:
@@ -15,6 +15,7 @@ Outputs:
 import argparse
 import json
 import os
+import subprocess
 import sys
 import time
 from datetime import datetime
@@ -28,6 +29,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BASE_URL = "https://generativelanguage.googleapis.com"
 # r5: 2.5-* return 404 for new users (L-20); 3.1-pro-preview has ~0 free-tier quota (429, L-22).
 DEFAULT_MODELS = ["gemini-3.1-pro-preview", "gemini-3.8-flash", "gemini-3-flash-preview"]
+DEFAULT_AGY_MODELS = ["gemini-3.8-flash-high", "gemini-4-neon-high"]
 REF_SHEET = ROOT / "research" / "r5" / "flatvector" / "sheet.jpg"
 
 RESPONSE_SCHEMA = {
@@ -95,6 +97,22 @@ CAL_DIMS = {  # weight in overall
     "concept_wow": 0.09, "style_fidelity": 0.08, "finish_texture": 0.07,
     "sound_sync": 0.10, "voice_captions": 0.06, "loop": 0.05,
 }
+
+_RULE = {
+    "type": "OBJECT",
+    "properties": {
+        "rule": {"type": "STRING"},
+        "category": {"type": "STRING"},
+        "evidence": {"type": "STRING"},
+        "measurable": {"type": "BOOLEAN"},
+        "proposed_gate": {"type": "STRING"},
+        "enforcement": {"type": "STRING", "enum": ["gate", "component", "prose"]},
+        "severity": {"type": "STRING", "enum": ["blocker", "major", "minor"]},
+    },
+    "required": ["rule", "category", "evidence", "measurable", "proposed_gate", "enforcement", "severity"],
+    "propertyOrdering": ["rule", "category", "evidence", "measurable", "proposed_gate", "enforcement", "severity"],
+}
+
 _ISSUE = {
     "type": "OBJECT",
     "properties": {
@@ -122,9 +140,10 @@ CAL_SCHEMA = {
         },
         "verdict": {"type": "STRING", "enum": ["SHIP", "ONE MORE PASS"]},
         "summary": {"type": "STRING"},
+        "general_rules": {"type": "ARRAY", "items": _RULE},
     },
-    "required": ["weaknesses", "reference_gaps", "strengths", "caps_triggered", "scores", "verdict", "summary"],
-    "propertyOrdering": ["weaknesses", "reference_gaps", "strengths", "caps_triggered", "scores", "verdict", "summary"],
+    "required": ["weaknesses", "reference_gaps", "strengths", "caps_triggered", "scores", "verdict", "summary", "general_rules"],
+    "propertyOrdering": ["weaknesses", "reference_gaps", "strengths", "caps_triggered", "scores", "verdict", "summary", "general_rules"],
 }
 
 CAL_PROMPT = """You are a senior motion-design jury member (Motionographer editor / Buck creative director) AND a YouTube Shorts
@@ -178,7 +197,24 @@ PROCESS (order matters - fill the JSON fields in this order):
 4. caps_triggered.
 5. scores - only now, consistent with the weaknesses and caps you listed.
 6. verdict: SHIP only if every dimension >= 7 and there is no blocker/major weakness; otherwise ONE MORE PASS.
+7. general_rules: 4-8 reusable, episode-agnostic imperatives derived from the weaknesses (see GENERAL RULES below).
 """
+
+CAL_PROMPT = CAL_PROMPT + '''
+GENERAL RULES (required; this is how future episodes improve — not a punch-list for this subject):
+After the verdict, add 4-8 items to general_rules. Each item is a REUSABLE, episode-agnostic imperative that would improve EVERY future video, derived from the weaknesses you listed.
+- `rule` is an imperative ("Never…", "Always…", "Keep…"). It MUST NOT contain episode names, unique subject nouns from this film (codes, elevators, sunsets, headphones, specific proper nouns), timestamps, quoted on-screen labels from this film, or shot-specific hex colours. Those belong only in `evidence`.
+- `evidence` is the MM:SS timestamp (or "A 0:12 / B 0:12") in THIS video that justifies the rule.
+- `measurable` is true only if a pixel, audio, or script check could catch a violation automatically.
+- `proposed_gate` describes that check in one sentence (empty string if not measurable).
+- `enforcement` is exactly one of:
+  - "gate": a deterministic automated check should block the render (layout, timing, audio, contrast, overlap, type size, loop seam, safe zones).
+  - "component": a Remotion primitive or layout should make the mistake impossible (e.g. a lane that guarantees icon/label clearance, a LoopEnd that locks the last frame to frame 0).
+  - "prose": ONLY for subjective craft that cannot be measured or locked in structure (wow moment, script tone, conceptual framing, taste).
+  Prefer gate, then component, over prose whenever the mistake is mechanically detectable or structurally preventable.
+- `severity` is the highest severity of the supporting weakness (blocker, major, or minor).
+- `category` is a short slug such as design_typography, motion_craft, hook, loop, sound_sync, clarity.
+'''
 
 VERIFY_ADDON = """
 
@@ -214,9 +250,10 @@ CMP_SCHEMA = {
         "preference_strength": {"type": "INTEGER"},
         "confidence": {"type": "STRING", "enum": ["low", "medium", "high"]},
         "summary": {"type": "STRING"},
+        "general_rules": {"type": "ARRAY", "items": _RULE},
     },
-    "required": ["weaknesses_A", "weaknesses_B", "per_dimension", "preferred", "preference_strength", "confidence", "summary"],
-    "propertyOrdering": ["weaknesses_A", "weaknesses_B", "per_dimension", "preferred", "preference_strength", "confidence", "summary"],
+    "required": ["weaknesses_A", "weaknesses_B", "per_dimension", "preferred", "preference_strength", "confidence", "summary", "general_rules"],
+    "propertyOrdering": ["weaknesses_A", "weaknesses_B", "per_dimension", "preferred", "preference_strength", "confidence", "summary", "general_rules"],
 }
 CMP_PROMPT = """You are a senior motion-design jury member and YouTube Shorts retention editor. You made neither film.
 You get TWO versions of the same 1080x1920 vertical science-explainer Short ("That's the Mechanism"), same script and voice:
@@ -226,7 +263,25 @@ anticipation/overshoot, secondary motion, continuous mechanical motion, camera),
 clarity of the mechanism with sound off, typography/legibility, finish, sound design and sync, hook, loop.
 Order of work: 1) list the weaknesses of A, 2) list the weaknesses of B, 3) for EVERY dimension say which is better and by
 how much (margin 0 = tie, 1 = slight, 2 = clear, 3 = night and day), 4) overall preference and its strength (0-3).
-Do not reward length of your own analysis; ignore which one is first. Ties are allowed only if you truly cannot tell."""
+Do not reward length of your own analysis; ignore which one is first. Ties are allowed only if you truly cannot tell.
+5. general_rules: 4-8 reusable, episode-agnostic imperatives drawn from the weaknesses of either film (see GENERAL RULES). Prefer rules that would have prevented a regression from A to B or that both versions still violate."""
+
+
+CMP_PROMPT = CMP_PROMPT + '''
+GENERAL RULES (required; this is how future episodes improve — not a punch-list for this subject):
+After the verdict, add 4-8 items to general_rules. Each item is a REUSABLE, episode-agnostic imperative that would improve EVERY future video, derived from the weaknesses you listed.
+- `rule` is an imperative ("Never…", "Always…", "Keep…"). It MUST NOT contain episode names, unique subject nouns from this film (codes, elevators, sunsets, headphones, specific proper nouns), timestamps, quoted on-screen labels from this film, or shot-specific hex colours. Those belong only in `evidence`.
+- `evidence` is the MM:SS timestamp (or "A 0:12 / B 0:12") in THIS video that justifies the rule.
+- `measurable` is true only if a pixel, audio, or script check could catch a violation automatically.
+- `proposed_gate` describes that check in one sentence (empty string if not measurable).
+- `enforcement` is exactly one of:
+  - "gate": a deterministic automated check should block the render (layout, timing, audio, contrast, overlap, type size, loop seam, safe zones).
+  - "component": a Remotion primitive or layout should make the mistake impossible (e.g. a lane that guarantees icon/label clearance, a LoopEnd that locks the last frame to frame 0).
+  - "prose": ONLY for subjective craft that cannot be measured or locked in structure (wow moment, script tone, conceptual framing, taste).
+  Prefer gate, then component, over prose whenever the mistake is mechanically detectable or structurally preventable.
+- `severity` is the highest severity of the supporting weakness (blocker, major, or minor).
+- `category` is a short slug such as design_typography, motion_craft, hook, loop, sound_sync, clarity.
+'''
 
 
 def cal_overall(scores: dict) -> float:
@@ -349,6 +404,97 @@ def call_model(model: str, file_uri: str, api_key: str, prompt: str = PROMPT,
     return resp.json()
 
 
+
+def to_json_schema(node):
+    if isinstance(node, dict):
+        out = {}
+        for k, v in node.items():
+            if k == "propertyOrdering":
+                continue
+            if k == "type" and isinstance(v, str):
+                out[k] = v.lower()
+            else:
+                out[k] = to_json_schema(v)
+        return out
+    if isinstance(node, list):
+        return [to_json_schema(x) for x in node]
+    return node
+
+
+def extract_audio_wav(mp4: Path, dst: Path) -> Path:
+    subprocess.run(
+        ["ffmpeg", "-v", "error", "-y", "-i", str(mp4), "-vn", "-ac", "1", "-ar", "24000", str(dst)],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return dst
+
+
+def call_agy(model: str, labeled_files: list[tuple[str, Path]], prompt: str, schema: dict,
+             work_dir: Path, tag: str, timeout_s: int = 300) -> dict:
+    schema_path = work_dir / f"_agy_schema_{tag}.json"
+    schema_path.write_text(json.dumps(to_json_schema(schema), indent=2))
+    try:
+        file_lines = "\n".join(f"- {label}: {path.resolve()}" for label, path in labeled_files)
+        full_prompt = (
+            "INDEPENDENT VIDEO CRITIC INPUTS:\n"
+            f"{file_lines}\n\n"
+            "STRICT RULES FOR THIS RUN:\n"
+            "1. Do NOT run any shell commands and do NOT read any other files in the workspace "
+            "(do not read scripts, qa reports, episodes, docs, or source code).\n"
+            "2. Call read_file on EACH path listed above (the MP4 provides ~1 fps visual frames and the WAV provides the full mixed audio track).\n"
+            "3. Base your critique strictly on the visual frames and audio you observed, then return JSON matching the schema.\n\n"
+            + prompt
+        )
+        add_dirs = []
+        seen_dirs = {ROOT.resolve()}
+        for _, fpath in labeled_files:
+            d = fpath.resolve().parent
+            if d not in seen_dirs:
+                seen_dirs.add(d)
+                add_dirs.extend(["--add-dir", str(d)])
+        cmd = [
+            "agy",
+            "--model", model,
+            "--output-format", "json",
+            "--json-schema", str(schema_path),
+            "--dangerously-skip-permissions",
+            "--print-timeout", f"{timeout_s}s",
+            *add_dirs,
+            "-p", full_prompt,
+        ]
+        cp = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=timeout_s + 30)
+        if cp.returncode != 0:
+            raise RuntimeError(f"agy exit={cp.returncode}: {(cp.stderr or cp.stdout)[-300:]}")
+        data = json.loads(cp.stdout)
+        if data.get("status") != "SUCCESS":
+            raise RuntimeError(f"agy status={data.get('status')}: {cp.stdout[-300:]}")
+        parsed = data.get("structured_output")
+        if parsed is None:
+            parsed = json.loads(data["response"])
+        u = data.get("usage") or {}
+        return {
+            "candidates": [{"content": {"parts": [{"text": json.dumps(parsed)}]}}],
+            "usageMetadata": {
+                "promptTokenCount": u.get("input_tokens"),
+                "candidatesTokenCount": u.get("output_tokens"),
+                "totalTokenCount": u.get("total_tokens"),
+            },
+            "_agy_meta": {
+                "conversation_id": data.get("conversation_id"),
+                "duration_seconds": data.get("duration_seconds"),
+                "num_turns": data.get("num_turns"),
+                "thinking_tokens": u.get("thinking_tokens"),
+                "cache_read_tokens": u.get("cache_read_tokens"),
+            },
+        }
+    finally:
+        try:
+            schema_path.unlink()
+        except OSError:
+            pass
+
 def render_md_cal(data: dict) -> str:
     s = data["scores"]
     L = [f"# Calibrated Critic — {data['episode']} ({data['label']})", "",
@@ -364,6 +510,16 @@ def render_md_cal(data: dict) -> str:
     if data.get("score_samples"):
         L += ["", "Per-sample overall: " + ", ".join(f"{x:.2f}" for x in data["score_samples"])]
     L += ["", "## Summary", data.get("summary", "").strip(), ""]
+    rules = data.get("general_rules") or []
+    L += ["", "## General rules (reusable, episode-agnostic)"]
+    if not rules:
+        L.append("- (none returned)")
+    else:
+        for r in rules:
+            meas = "measurable" if r.get("measurable") else "not measurable"
+            gate = f" — gate: {r.get('proposed_gate')}" if r.get("proposed_gate") else ""
+            L.append(f"- **[{r.get('enforcement','?')} · {r.get('severity','?')} · {r.get('category','')}]** {r.get('rule')} ({meas}; evidence {r.get('evidence','?')}{gate})")
+    L.append("")
     return "\n".join(L)
 
 
@@ -399,13 +555,28 @@ def render_md(data: dict) -> str:
 
 def compare_main(args, api_key: str, mp4_b: Path, out_dir: Path, models: list) -> int:
     mp4_a = Path(args.compare)
-    t0 = time.time(); fa = fb = None; raw = None; used = None; last = ""
+    if not mp4_a.is_absolute():
+        mp4_a = ROOT / mp4_a
+    t0 = time.time(); fa = fb = None; wa = wb = None; raw = None; used = None; last = ""
     try:
-        fa = upload_video(mp4_a, api_key); fb = upload_video(mp4_b, api_key)
+        if args.backend == "agy":
+            wa = extract_audio_wav(mp4_a, out_dir / f"_agy_cmp_a_{args.name}.wav")
+            wb = extract_audio_wav(mp4_b, out_dir / f"_agy_cmp_b_{args.name}.wav")
+            files = [
+                ("VIDEO A (1 fps visual frames)", mp4_a),
+                ("AUDIO A (full mixed audio track for VIDEO A)", wa),
+                ("VIDEO B (1 fps visual frames)", mp4_b),
+                ("AUDIO B (full mixed audio track for VIDEO B)", wb),
+            ]
+        else:
+            fa = upload_video(mp4_a, api_key); fb = upload_video(mp4_b, api_key)
         for m in models:
             for attempt in range(2):
                 try:
-                    raw = call_model(m, fb["uri"], api_key, CMP_PROMPT, CMP_SCHEMA, None, first_uri=fa["uri"]); break
+                    if args.backend == "agy":
+                        raw = call_agy(m, files, CMP_PROMPT, CMP_SCHEMA, out_dir, f"cmp_{args.name}"); break
+                    else:
+                        raw = call_model(m, fb["uri"], api_key, CMP_PROMPT, CMP_SCHEMA, None, first_uri=fa["uri"]); break
                 except Exception as exc:
                     last = f"{m}: {exc}"[:200]; print(f"[critic] {m} attempt {attempt + 1} failed ({str(exc)[:80]})", file=sys.stderr)
                     if "429" in str(exc) or "404" in str(exc): break
@@ -415,10 +586,14 @@ def compare_main(args, api_key: str, mp4_b: Path, out_dir: Path, models: list) -
     finally:
         for fo in (fa, fb):
             if fo and fo.get("name"): delete_video(fo["name"], api_key)
+        for wf in (wa, wb):
+            if wf and wf.exists():
+                try: wf.unlink()
+                except OSError: pass
     res = json.loads(raw["candidates"][0]["content"]["parts"][0]["text"]); usage = raw.get("usageMetadata", {})
     sign = {"A": -1, "B": 1, "tie": 0}
     net = sum(sign[d["better"]] * d["margin"] * CAL_DIMS.get(d["dimension"], 0.1) for d in res["per_dimension"])
-    out = {"episode": args.id, "label": args.label, "mode": "compare", "A": str(mp4_a), "B": str(mp4_b), "model": used,
+    out = {"episode": args.id, "label": args.label, "backend": args.backend, "mode": "compare", "A": str(mp4_a), "B": str(mp4_b), "model": used,
            "wall_s": round(time.time() - t0, 2), "cost_usd": 0.0, "weighted_margin_B_minus_A": round(net, 2),
            "usage": {"prompt_tokens": usage.get("promptTokenCount"), "output_tokens": usage.get("candidatesTokenCount")},
            "timestamp": datetime.now().astimezone().isoformat(timespec="seconds"), **res}
@@ -426,7 +601,9 @@ def compare_main(args, api_key: str, mp4_b: Path, out_dir: Path, models: list) -
     md = [f"# Pairwise critic — {args.id} ({args.label})", "", f"- A: `{mp4_a}`", f"- B: `{mp4_b}`", f"- Model: `{used}` · free tier $0",
           f"- **Preferred: {res['preferred']}** (strength {res['preference_strength']}/3, confidence {res['confidence']}); weighted margin B−A = {net:+.2f}", "",
           "## Weaknesses A"] + [f"- {w}" for w in res["weaknesses_A"]] + ["", "## Weaknesses B"] + [f"- {w}" for w in res["weaknesses_B"]] + \
-         ["", "| dimension | better | margin | why |", "|---|---|---:|---|"] + [f"| {d['dimension']} | {d['better']} | {d['margin']} | {d['why']} |" for d in res["per_dimension"]] + ["", res["summary"], ""]
+         ["", "| dimension | better | margin | why |", "|---|---|---:|---|"] + [f"| {d['dimension']} | {d['better']} | {d['margin']} | {d['why']} |" for d in res["per_dimension"]] + ["", res["summary"], "", "## General rules (reusable, episode-agnostic)"] + (
+        [f"- **[{r.get('enforcement','?')} · {r.get('severity','?')} · {r.get('category','')}]** {r.get('rule')} (evidence {r.get('evidence','?')})" for r in res.get("general_rules") or []] or ["- (none returned)"]
+    ) + [""]
     (out_dir / f"{args.name}.md").write_text("\n".join(md))
     metrics.record({"ts": out["timestamp"], "ep": f"{args.id}:{args.label}", "stage": "critic", "iter": None,
                     "cmd": f"critic.py {args.id} --compare --model {used}", "exit": 0, "wall_s": out["wall_s"], "cpu_s": 0.0, "peak_rss_mb": 0,
@@ -441,7 +618,8 @@ def main() -> int:
     ap.add_argument("id", help="Composition id (e.g. QR, Elevator, Sky)")
     ap.add_argument("--mp4", help="Path to MP4 (default: renders/<Id>_<SUF>.mp4)")
     ap.add_argument("--out-dir", help="Output directory (default: qa/<Id>/<SUF>)")
-    ap.add_argument("--models", default=",".join(DEFAULT_MODELS), help="Comma-separated model fallback order")
+    ap.add_argument("--backend", choices=["gemini-api", "agy"], default="gemini-api", help="Critic backend: gemini-api (Files API) or agy (Antigravity CLI)")
+    ap.add_argument("--models", default=None, help="Comma-separated model fallback order")
     ap.add_argument("--label", default="", help="Optional label stored in metadata (e.g. baseline_v3)")
     ap.add_argument("--mode", choices=["calibrated", "legacy"], default="calibrated", help="legacy = round-4 prompt (kept for before/after)")
     ap.add_argument("--samples", type=int, default=1, help="Independent samples; scores are averaged (calibrated mode)")
@@ -453,7 +631,7 @@ def main() -> int:
     args = ap.parse_args()
 
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-    if not api_key:
+    if args.backend == "gemini-api" and not api_key:
         print("ERROR: GEMINI_API_KEY environment variable is not set", file=sys.stderr)
         return 2
 
@@ -470,7 +648,8 @@ def main() -> int:
         out_dir = ROOT / out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    models = [m.strip() for m in args.models.split(",") if m.strip()]
+    default_models = DEFAULT_AGY_MODELS if args.backend == "agy" else DEFAULT_MODELS
+    models = [m.strip() for m in args.models.split(",") if m.strip()] if args.models else default_models
     t0 = time.time()
     finfo = None
     last_err = None
@@ -492,16 +671,29 @@ def main() -> int:
     ref = None if (args.no_ref or not cal) else REF_SHEET
     samples = []
     usage_tot = {"promptTokenCount": 0, "candidatesTokenCount": 0, "totalTokenCount": 0}
+    wav_tmp = None
     try:
-        finfo = upload_video(mp4, api_key)
-        file_uri = finfo["uri"]
+        if args.backend == "agy":
+            wav_tmp = extract_audio_wav(mp4, out_dir / f"_agy_audio_{args.name}.wav")
+            agy_files = [
+                ("VIDEO (1 fps visual frames)", mp4),
+                ("AUDIO (full mixed audio track)", wav_tmp),
+            ]
+            if ref and ref.exists():
+                agy_files.append(("REFERENCE CONTACT SHEET (mg-styles-15 Flat Vector, 7.6/10)", ref))
+        else:
+            finfo = upload_video(mp4, api_key)
+            file_uri = finfo["uri"]
         for _ in range(max(1, args.samples if cal else 1)):
             raw_resp = None
             order = ([used_model] + [m for m in models if m != used_model]) if used_model else models
             for m in order:
                 for attempt in range(2):  # transient 503 / dropped connections get one retry
                     try:
-                        raw_resp = call_model(m, file_uri, api_key, prompt, schema, ref)
+                        if args.backend == "agy":
+                            raw_resp = call_agy(m, agy_files, prompt, schema, out_dir, args.name)
+                        else:
+                            raw_resp = call_model(m, file_uri, api_key, prompt, schema, ref)
                         break
                     except Exception as exc:
                         last_err = f"{m}: {exc}"[:200]
@@ -526,6 +718,9 @@ def main() -> int:
     finally:
         if finfo and finfo.get("name"):
             delete_video(finfo["name"], api_key)
+        if wav_tmp and wav_tmp.exists():
+            try: wav_tmp.unlink()
+            except OSError: pass
 
     wall = round(time.time() - t0, 2)
     critique = samples[0]
@@ -541,6 +736,7 @@ def main() -> int:
     out = {
         "episode": args.id,
         "label": args.label or suf,
+        "backend": args.backend,
         "mode": args.mode,
         "mp4": str(mp4.relative_to(ROOT)) if mp4.is_relative_to(ROOT) else str(mp4),
         "model": used_model,

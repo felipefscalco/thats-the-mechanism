@@ -52,9 +52,9 @@ Updated: 2026-11-25 ~20:00 BRT. Step 1 (repo sync) DONE: 45ed8c5..1718c89 pushed
 - Not pushed.
 
 ## Pilot 05 Microwave (paused 2026-11-26, owner shut down the machine)
-- Done: setup on macOS (py3.12 venv, Kokoro, whisper.cpp, ffmpeg-normalize; portability fixes L-28); angle + script + storyboard approved by Felipe;
+- Done: setup on macOS (py3.12 venv, Kokoro, whisper.cpp, ffmpeg-normalize; portability fixes L-31); angle + script + storyboard approved by Felipe;
   facts PASS; TTS/captions/mix (46.3 s with 1.4 s tail); Microwave.tsx; it4 = ALL 15 QA gates PASS -> renders/Microwave_v1.mp4 (it3 copy: Microwave_v1_it3.mp4).
-- Antigravity critic (scripts/critic_agy.py, gemini-4-neon-high, watched the video): it3 = 5.06 ONE MORE PASS; valid items fixed in it4 (L-30).
+- Antigravity critic (scripts/critic_agy.py, gemini-4-neon-high, watched the video): it3 = 5.06 ONE MORE PASS; valid items fixed in it4 (L-33).
 - Next: 1) `.venv-tts/bin/python scripts/critic_agy.py Microwave 05-microwave-door --suf v1 --iter 4 --verify qa/Microwave/v1/critic_agy_3.json`
   (it was interrupted by the shutdown). 2) minor: "OVEN, SIDE-ON" touches "2 in · 5 cm" at ~35 s. 3) final gate = Felipe watches renders/Microwave_v1.mp4.
   Nothing committed yet; do not publish.

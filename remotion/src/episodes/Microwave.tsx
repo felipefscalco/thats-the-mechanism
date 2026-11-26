@@ -1,7 +1,7 @@
 import React from "react";
 import { Easing, interpolate, useVideoConfig } from "remotion";
 import { Check, X } from "lucide-react";
-import words from "../05-microwave-door.captions.json";
+import words from "../06-microwave-door.captions.json";
 import {
   C, EpisodeShell, LOOP_FRAMES, MONO, PILLARS, Pill, Shot, Stage, TagLabel, TitleHook, Label,
   cue, ease, makeAt, pop, popOpacity, popScale, reveal, squash, useG,
@@ -346,7 +346,7 @@ export const MicrowaveVideo: React.FC = () => {
     cue(fin, "pop", 0.85), cue(at("a window for you"), "confirm", 0.85),
   ];
   return (
-    <EpisodeShell audio="05-microwave-door.wav" words={words} pillar={P} ep="005" source="FDA · 21 CFR 1030.10"
+    <EpisodeShell audio="06-microwave-door.wav" words={words} pillar={P} ep="006" source="FDA · 21 CFR 1030.10"
       cardAt={card} cardUntil={fin} cues={cues} hook={<Front />}
       chapters={[{ at: 0, label: "SEE IN, NOT OUT" }, { at: closer, label: "THE SCREEN" }, { at: runs, label: "THE WAVE" }, { at: twa, label: "BLOCKED" },
         { at: li, label: "LIGHT" }, { at: esc, label: "THE LIMIT" }, { at: same, label: "SAME DOOR" }]}>

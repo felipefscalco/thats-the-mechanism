@@ -190,21 +190,40 @@ One entry per finding. Newest at the bottom. Format:
 - Fix: mapped to f-0004 (noon vs sunset observers) instead of loosening the scan.
 - Status: fixed. Keep the scan strict; map rhetorical numbers to the fact they describe.
 
-### L-28 · 2026-11-26 · setup (macOS) · major (pipeline did not run on a fresh Mac)
+### L-28 · 2026-11-25 · 05-anc · minor
+- Problem: beat check failed (-34.8 dBFS before the catchphrase) and safe-zone/contrast checks failed on the first full render (title fling under a punch, 17-char label in x>900, red text on a 82% ink TagLabel over a light panel = 2.4:1).
+- Root cause: tail of the riser plus my own clank + glide-swish cues landed inside the 0.2 s window; TagLabel backing width is estimated (0.6 em/glyph) and is too narrow for caps over light panels.
+- Fix: removed clank/glide-swish cues in the last 1.5 s before the card, title fades before the punch, labels moved to x<=900, light-panel labels use paper text on the ink tag.
+- Prevention: on light panels use TagLabel with paper text only; keep camera swishes out of the 1.5 s before "That's the mechanism". Checked by qa.py (beat, contrast, safe zones).
+- Status: fixed (15/15 on ANC v6 it3)
+### L-29 · 2026-11-25 · env · minor
+- Problem: `npx remotion render` crashed (Cannot find module @babel/core/lib/tools/build-external-helpers.js) in ttm-r6.
+- Root cause: incomplete node_modules install (only the CLI path needs it; the node API used by storyboard.py worked).
+- Fix: restored the missing lib/tools folder from the identical @babel/core 7.29.13 in a sibling checkout.
+- Status: fixed locally
+
+### L-30 · 2026-11-26 · r6 · major
+- Problem: the critic found defects every existing gate passed: an icon hiding the `CHIP` label (ANC_v6, 16 s), a label pushed off the left edge (Elevator_v6, 17–26 s), and flat-popping badges.
+- Root cause: gates measured contrast and safe zones but not geometry between elements or distance to the frame edge, and not entrance motion.
+- Fix: added A13 (icon/label clearance ≥ 36 px), A14 (badge pop with anticipation/overshoot) and A15 (text ≥ 24 px from the side edges), plus `Lane` / `LabeledBox` / `TagLabel` components in `Kit.tsx`.
+- Prevention: critic findings that are measurable are promoted to gates by `scripts/lessons.py` output (`docs/STYLE_RULES.md`, candidate gates). Open gaps are listed in `docs/ROUND6.md`.
+- Status: fixed for A13–A15; gaps in ROUND6.md remain.
+
+### L-31 · 2026-11-26 · setup (macOS) · major (pipeline did not run on a fresh Mac)
 - Problem: on a fresh macOS box, `scripts/setup.sh` failed (`onnxruntime` has no wheel for Homebrew's default Python 3.15). `new-episode.sh` used GNU `sed -i` with a `\n` replacement, which fails on BSD sed. `metrics.py` read `/proc`, which crashed every timed stage, and `build-episode.sh` (`set -e`) aborted after TTS. `contrast.py` used `-vsync 0`, which FFmpeg 9 removed, so the WCAG/safe-zone gate errored without measuring anything. `master.sh` needed `tools/fn-venv`, which setup never created.
 - Root cause: the scripts had only been run on Linux with older FFmpeg/Python.
 - Fix: venv built with python3.12. new-episode.sh edits Root.tsx with Python (portable). metrics.py has a `ps` fallback when there is no /proc. contrast.py uses `-fps_mode passthrough`. setup.sh installs ffmpeg-normalize into tools/fn-venv.
 - Prevention: setup.sh should pick a Python <= 3.13 for .venv-tts (BACKLOG). Treat a gate that *errors* as a tooling bug, not a design FAIL; check the error text before touching the episode.
 - Status: fixed (Python pin open in BACKLOG)
 
-### L-29 · 2026-11-26 · Microwave · minor (hold after the hook zoom)
+### L-32 · 2026-11-26 · Microwave · minor (hold after the hook zoom)
 - Problem: Microwave it1 had a 2.4 s stage hold at 0.97–3.4 s: the scale reveal ends at 1.0 s and the next visual event came at "So why" (3.2 s). Mug rotation and steam were too small to count as motion.
 - Root cause: the hook had a single reveal and no secondary motion that the motion metric can see.
 - Fix: a slow camera push from 1.0 to 2.7 s, and the microwave rings faintly visible from frame 0 (full strength on "So why").
 - Prevention: qa.py motion gate (already present). In the storyboard, check the gap between the end of the hook reveal and the first spoken beat.
 - Status: fixed in it2 (pending QA)
 
-### L-30 · 2026-11-26 · Microwave · major (critic round 1, Antigravity gemini-4-neon-high, it3 = 5.06)
+### L-33 · 2026-11-26 · Microwave · major (critic round 1, Antigravity gemini-4-neon-high, it3 = 5.06)
 - Problem: (a) "SEES A WALL" was drawn over "MICROWAVE · ≈ 12 cm" at 0:38; (b) "ONE HOLE" was on screen for < 0.5 s before the whip; (c) light rays (±9 px) crossed the screen bars instead of passing through the 14 px gaps, which contradicts the narration; (d) "METAL SCREEN" sat on top of the holes; (e) the leakage-limit oven was a featureless slab.
 - Root cause: two TagLabels shared one anchor; the hole pop was timed to the last word of its shot; wave amplitude was not checked against the gap size; the side-view oven had no identifying details.
 - Fix (it4): the label slot is handed over (MICROWAVE fades as MICROWAVE SEES A WALL arrives); the hole appears at "twelve" (+1.5 s on screen); bars 34 px, gaps 20 px, light amplitude 4 px; METAL SCREEN moved above the plate; the oven gets a body shadow, vents, feet, door seam and handle.

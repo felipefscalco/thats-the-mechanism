@@ -1,4 +1,4 @@
-# Shot table — 005 Microwave (pillar: physics)
+# Shot table — 006 Microwave (pillar: physics)
 One persistent world: the microwave door (front view -> magnified screen -> side-on cross-section of the screen).
 
 | # | at | shot | subject | beats | on-screen text | in | out |

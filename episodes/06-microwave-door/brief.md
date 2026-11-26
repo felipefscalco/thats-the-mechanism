@@ -1,4 +1,4 @@
-# Style brief — 005 Microwave  (see docs/STYLE_BRIEF.md)
+# Style brief — 006 Microwave  (see docs/STYLE_BRIEF.md)
 - Angle (approved by Felipe 2026-11-25): You can see through a microwave door, but the microwaves stay in, because the holes are tiny next to a ~12 cm wave and huge next to light.
 - Persistent subject: the microwave door, front-on; the camera pushes into the mesh, then shows the two waves meeting it.
 - Grammar: 3b1b morph (door -> mesh close-up -> waves vs holes, to scale)

@@ -1,0 +1,156 @@
+{
+ "facts": [
+  {
+   "id": "f-0001",
+   "claim": "Noise-cancelling headphones use a microphone on the ear cup to listen to outside noise and report it to the circuitry.",
+   "value": "microphone listens to outside noise",
+   "status": "verified",
+   "sources": [
+    "s-0002",
+    "s-0003",
+    "s-0001"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "Tiny microphones on each ear cup listen to the noise outside"
+   ]
+  },
+  {
+   "id": "f-0002",
+   "claim": "The circuitry generates an inverted (180-degree out-of-phase, antiphase) copy of the noise and plays it through a speaker.",
+   "value": "inverted copy of the noise",
+   "status": "verified",
+   "sources": [
+    "s-0002",
+    "s-0003",
+    "s-0001"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "A chip flips that wave upside down",
+    "and plays it through a speaker into your ear"
+   ]
+  },
+  {
+   "id": "f-0003",
+   "claim": "Where the noise wave is at a peak the anti-noise is at a trough, so they sum to (near) zero: destructive interference.",
+   "value": "peak + valley = flat",
+   "status": "verified",
+   "sources": [
+    "s-0002",
+    "s-0001",
+    "s-0003"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "so every peak becomes a valley",
+    "When the waves meet, peak plus valley adds up to flat",
+    "Engineers call it destructive interference"
+   ]
+  },
+  {
+   "id": "f-0004",
+   "claim": "ANC is most effective at low frequencies; steady, constant, repetitive noise such as engine rumble or ventilation is easier to cancel than sudden, random sound.",
+   "value": "low, steady, repeating noise cancels best",
+   "status": "verified",
+   "sources": [
+    "s-0003",
+    "s-0001",
+    "s-0004",
+    "s-0005"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "It works best on steady, low rumbles, like engines and ventilation, because they repeat and the chip can predict them"
+   ]
+  },
+  {
+   "id": "f-0005",
+   "claim": "Sudden sounds and high-frequency noise are hard for ANC to track; passive isolation (physical blocking by the cushions) is what handles them.",
+   "value": "sudden / high-pitched sound is blocked physically",
+   "status": "verified",
+   "sources": [
+    "s-0005",
+    "s-0004",
+    "s-0001",
+    "s-0003"
+   ],
+   "caveat": "",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "A sudden clap changes too fast, so the cushions have to block it instead"
+   ]
+  },
+  {
+   "id": "f-0006",
+   "claim": "Pitch-of-a-jet-engine illustration: ANC headphones make a loud steady jet-engine drone much quieter (noise reduction, not total silence).",
+   "value": "jet-engine drone much quieter",
+   "status": "verified",
+   "sources": [
+    "s-0004",
+    "s-0006",
+    "s-0003"
+   ],
+   "caveat": "illustrative: ANC reduces, not eliminates, engine noise (freeCodeCamp: not total silence)",
+   "checkedAt": "2026-11-25",
+   "spoken": [
+    "A jet engine roars, and you barely hear it",
+    "So the quiet you hear is sound fighting sound"
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "id": "s-0001",
+   "title": "Wikipedia: Active noise control",
+   "url": "https://en.wikipedia.org/wiki/Active_noise_control",
+   "publisher": "wikipedia.org",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0002",
+   "title": "How do noise-cancelling headphones cancel sounds? (Science Focus)",
+   "url": "https://www.sciencefocus.com/science/how-do-noise-cancelling-headphones-cancel-sounds/",
+   "publisher": "sciencefocus.com",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0003",
+   "title": "How do noise-canceling headphones work? (Mental Floss)",
+   "url": "https://www.mentalfloss.com/article/49988/how-do-noise-canceling-headphones-work",
+   "publisher": "mentalfloss.com",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0004",
+   "title": "How noise cancelling headphones work (SoundGuys)",
+   "url": "https://www.soundguys.com/how-noise-cancelling-headphones-work-12380",
+   "publisher": "soundguys.com",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0005",
+   "title": "How noise cancelling headphones work (freeCodeCamp)",
+   "url": "https://www.freecodecamp.org/news/how-noise-cancelling-headphones-work/",
+   "publisher": "freecodecamp.org",
+   "accessed": "2026-11-25",
+   "http": 200
+  },
+  {
+   "id": "s-0006",
+   "title": "How Active Noise Cancellation Works (MakeTechEasier)",
+   "url": "https://maketecheasier.com/how-active-noise-cancellation-works/",
+   "publisher": "maketecheasier.com",
+   "accessed": "2026-11-25",
+   "http": 200
+  }
+ ]
+}
