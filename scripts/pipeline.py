@@ -54,7 +54,7 @@ def resolve(t):
         existing = {d.name.split("-", 1)[1]: d.name for d in (ROOT / "episodes").iterdir() if d.is_dir() and "-" in d.name}
         base = kebab(t["title"])
         if base in existing: t["slug"] = existing[base]
-        elif not t.get("approved"): t["slug"] = f"xx-{base}"   # skipped topics don't consume an episode number
+        elif t.get("approved") is not True: t["slug"] = f"xx-{base}"   # skipped topics don't consume an episode number
         else:
             _NEW.append(base); t["slug"] = f"{len([d for d in (ROOT / 'episodes').iterdir() if d.is_dir()]) + len(_NEW):02d}-{base}"
     if not t.get("id"):
@@ -187,7 +187,7 @@ RUN = dict(plan=st_plan, hooks=st_hooks, script=st_script, audio=st_audio, previ
 
 def process(t, stop_at, retry_failed, dry):
     s = load_state(t["slug"]); s.update(title=t["title"], id=t["id"])
-    if not t.get("approved"):
+    if t.get("approved") is not True:
         s["status"] = "skipped"; (None if dry else save_state(s)); print(f"[{t['slug']}] skipped (approved != true)"); return s
     if s["status"] == "failed" and not retry_failed:
         print(f"[{t['slug']}] failed earlier at {s.get('failed_stage')} (use --retry-failed)"); return s

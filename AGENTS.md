@@ -31,6 +31,10 @@ The pipeline is **vendor-neutral**: no script calls a vendor CLI directly. Every
 | `fixer` | Value-only fixes: copy, font/element size, palette colour, contrast, clearance, edge margin, timing/easing | `claude:sonnet` | the episode `.tsx`, diffed by `scripts/fixer_guard.py` |
 | `critic` / `critic_deep` / `critic_tiebreak` | Pairwise ship test (both orders), calibrated review, tie-break with a second model | `agy:gemini-3.8-flash-high` / `agy:gemini-4-neon-high` | `qa/<Id>/<SUF>/ship/` |
 | `clusterer` | Merges critic `general_rules` for `scripts/lessons.py` | `agy:gemini-3.8-flash-high` | `docs/STYLE_RULES.md` (via lessons.py) |
+| `hooks` (r8) | Drafts 3–5 hook candidates (curiosity gap / visual pattern interrupt / specific question / careful contrarian) with payoff quote and frame-1 visual | `claude:sonnet` | nothing (`scripts/hooks.py gen` saves `hooks.json`, `hooks.md`, `script.hook.txt`) |
+| `hook_judge` (r8) | Rubric-scores the hooks that pass the code rules (ban list, word caps, curiosity signal, payoff found later in the script) | `claude:haiku` | nothing |
+| `writer` (r8) | Queue `plan` stage: drafts `script.txt`, `brief.md` and a claims list (`facts.json`, all unverified) for a new topic | `claude:sonnet` | `episodes/<slug>/` drafts |
+| `publisher` (r8) | Drafts title/caption/tags once for the publish pack (limits, flags and credits are enforced in code) | `claude:haiku` | nothing (`scripts/publish.py` writes the pack) |
 
 Providers: `claude` (Claude Code), `agy` (Antigravity; reads `.mp4` at ~1 fps and `.wav`), `codex` (`codex exec`), `cursor-agent` (Cursor CLI), `gemini-api` (critic roles only, `GEMINI_API_KEY`). A critic that cannot read video gets 1 fps frame sheets and is told it has no audio.
 
@@ -77,6 +81,8 @@ Providers: `claude` (Claude Code), `agy` (Antigravity; reads `.mp4` at ~1 fps an
 | 7a | Preview-first build loop | `skills/qa-loop` | `scripts/build_loop.py <Id> <slug> <SUF> --prev <last approved mp4>` (roles from `pipeline.config.json`) |
 | 7b | Independent critic | `skills/critic` | `scripts/critic.py <Id> --role critic` (provider from config; `--backend gemini-api` needs `GEMINI_API_KEY`) → `qa/<Id>/<SUF>/critic.{json,md}` |
 | 8 | Package metadata | `skills/package-metadata` | Title, description (with photo credits), hashtags, pinned comment, AI-label notes |
+| 8a | Publish pack (r8) | — | `scripts/publish.py pack <Id> <slug> --suf <SUF>` → `publish/<slug>/` (per-platform limits, synthetic-media flag, credits, `review.md`). **No upload**: needs a Felipe-created `APPROVED`; the stub refuses. See [`docs/QUEUE_AND_PUBLISH.md`](docs/QUEUE_AND_PUBLISH.md) |
+| — | Batch queue (r8) | — | `scripts/pipeline.py --batch queue/topics.jsonl --stop-at <plan\|hooks\|script\|audio\|preview\|ship>`; preflight before any LLM spend; per-topic resumable state. See [`docs/QUEUE_AND_PUBLISH.md`](docs/QUEUE_AND_PUBLISH.md) |
 
 `scripts/build-episode.sh <slug> <CompId>` runs stages 3–7 once. After you change animation or shots, `scripts/iterate.sh <N> <CompId>` re-lints, re-renders and re-QAs.
 
