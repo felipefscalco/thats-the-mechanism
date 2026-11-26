@@ -84,7 +84,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Sky:A=v4 B=v5 | critic | 1 | 21.97 | 21.97 | 0.0 | 0 | 0.0026 | $0 |
 | Sky:agy_v4_vs_v5 | critic | 1 | 62.53 | 62.53 | 0.0 | 0 | 0.0046 | $0 |
 | Sky:ship | critic | 3 | 94.61 | 300.56 | 0.0 | 0 | 0.0076 | $0 |
-| Sky:ship_cal | critic | 2 | 626.11 | 827.0 | 0.0 | 0 | 0.0176 | $0 |
+| Sky:ship_cal | critic | 3 | 256.98 | 1083.98 | 0.0 | 0 | 0.0172 | $0 |
 | Sky:ship_retry | critic | 1 | 143.87 | 143.87 | 0.0 | 0 | 0.0078 | $0 |
 | Sky:ship_swap | critic | 3 | 165.4 | 405.77 | 0.0 | 0 | 0.0078 | $0 |
 | Sky:v4 | critic | 2 | 13.09 | 40.46 | 0.0 | 0 | 0.0035 | $0 |
@@ -209,7 +209,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Sky:A=v4 B=v5 | 22.0 | 0.0 | 0 | $0 |
 | Sky:agy_v4_vs_v5 | 62.5 | 0.0 | 0 | $0 |
 | Sky:ship | 300.6 | 0.0 | 0 | $0 |
-| Sky:ship_cal | 827.0 | 0.0 | 0 | $0 |
+| Sky:ship_cal | 1084.0 | 0.0 | 0 | $0 |
 | Sky:ship_retry | 143.9 | 0.0 | 0 | $0 |
 | Sky:ship_swap | 405.8 | 0.0 | 0 | $0 |
 | Sky:v4 | 40.5 | 0.0 | 0 | $0 |

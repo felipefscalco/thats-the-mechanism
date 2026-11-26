@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26T08:27:21-03:00",
+  "generated": "2026-11-26T09:05:49-03:00",
   "cost_usd_total": 0.0,
   "llm_tokens": "not available to the pipeline (authoring bot's token usage is not exposed)",
   "episodes": {
@@ -1070,12 +1070,12 @@
     "Sky:ship_cal": {
       "stages": {
         "critic": {
-          "runs": 2,
-          "wall_s_total": 827.0,
-          "wall_s_last": 626.11,
+          "runs": 3,
+          "wall_s_total": 1083.98,
+          "wall_s_last": 256.98,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0176
+          "out_mb_last": 0.0172
         }
       },
       "qa_iterations": 0,
