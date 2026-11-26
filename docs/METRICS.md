@@ -11,12 +11,12 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | 01-qr-code | tts | 3 | 10.7 | 29.96 | 186.32 | 787 | 2.41 | $0 |
 | 01-qr-code | master | 11 | 4.35 | 43.49 | 52.2 | 201 | 19.21 | $0 |
 | 01-qr-code | loudnorm | 2 | 1.29 | 2.31 | 1.93 | 79 | 4.81 | $0 |
-| 02-elevator | qa | 19 | 143.37 | 2542.03 | 2929.56 | 4111 | – | $0 |
-| 02-elevator | render | 18 | 58.41 | 1023.5 | 1390.61 | 4576 | 16.24 | $0 |
+| 02-elevator | qa | 22 | 226.7 | 3051.88 | 3780.68 | 4731 | – | $0 |
+| 02-elevator | render | 22 | 70.62 | 1284.66 | 1749.5 | 4576 | 16.21 | $0 |
 | 02-elevator | captions | 3 | 8.42 | 21.81 | 113.62 | 954 | 0.01 | $0 |
 | 02-elevator | mix | 3 | 1.53 | 4.05 | 4.22 | 54 | 7.92 | $0 |
 | 02-elevator | tts | 2 | 8.24 | 15.34 | 94.94 | 702 | 1.93 | $0 |
-| 02-elevator | master | 13 | 2.79 | 46.68 | 49.04 | 204 | 16.24 | $0 |
+| 02-elevator | master | 16 | 3.06 | 56.32 | 60.02 | 204 | 16.21 | $0 |
 | 02-elevator | r4_contrast_check | 1 | 25.06 | 25.06 | 71.4 | 2537 | – | $0 |
 | 02-elevator | loudnorm | 1 | 0.76 | 0.76 | 0.72 | 79 | 3.85 | $0 |
 | 03-sky | qa | 24 | 200.73 | 2881.31 | 4231.47 | 4425 | – | $0 |
@@ -52,9 +52,10 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Elevator:agy_v4_vs_v5 | critic | 1 | 134.82 | 134.82 | 0.0 | 0 | 0.0048 | $0 |
 | Elevator:agy_v5_vs_v4_swap | critic | 1 | 162.37 | 162.37 | 0.0 | 0 | 0.006 | $0 |
 | Elevator:baseline_v3 | critic | 1 | 63.4 | 63.4 | 0.0 | 0 | 0.0017 | $0 |
-| Elevator:ship | critic | 3 | 131.68 | 891.86 | 0.0 | 0 | 0.0084 | $0 |
-| Elevator:ship_cal | critic | 3 | 539.87 | 969.07 | 0.0 | 0 | 0.0155 | $0 |
-| Elevator:ship_swap | critic | 3 | 168.1 | 883.95 | 0.0 | 0 | 0.0079 | $0 |
+| Elevator:ship | critic | 4 | 157.71 | 1049.57 | 0.0 | 0 | 0.0072 | $0 |
+| Elevator:ship_cal | critic | 4 | 783.65 | 1752.72 | 0.0 | 0 | 0.0164 | $0 |
+| Elevator:ship_swap | critic | 4 | 157.54 | 1041.49 | 0.0 | 0 | 0.0075 | $0 |
+| Elevator:ship_tiebreak | critic | 1 | 876.03 | 876.03 | 0.0 | 0 | 0.013 | $0 |
 | Elevator:v3_cal | critic | 1 | 232.22 | 232.22 | 0.0 | 0 | 0.0032 | $0 |
 | Elevator:v3_cal2 | critic | 1 | 44.31 | 44.31 | 0.0 | 0 | 0.0039 | $0 |
 | Elevator:v3_legacy38 | critic | 1 | 215.45 | 215.45 | 0.0 | 0 | 0.0021 | $0 |
@@ -97,7 +98,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | episode | render iterations | QA iterations |
 |---|---|---|
 | 01-qr-code | 7 | 7 |
-| 02-elevator | 5 | 5 |
+| 02-elevator | 102 | 102 |
 | 03-sky | 102 | 102 |
 | 04-ice-demo | 2 | 2 |
 | 05-anc-headphones | 3 | 3 |
@@ -120,6 +121,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Elevator:ship | 0 | 0 |
 | Elevator:ship_cal | 0 | 0 |
 | Elevator:ship_swap | 0 | 0 |
+| Elevator:ship_tiebreak | 0 | 0 |
 | Elevator:v3_cal | 0 | 0 |
 | Elevator:v3_cal2 | 0 | 0 |
 | Elevator:v3_legacy38 | 0 | 0 |
@@ -157,7 +159,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | episode | total machine wall time (s) | total CPU (s) | peak RAM (MB) | cost |
 |---|---|---|---|---|
 | 01-qr-code | 3260.4 | 4877.1 | 4597 | $0 |
-| 02-elevator | 3679.2 | 4654.1 | 4576 | $0 |
+| 02-elevator | 4459.9 | 5875.1 | 4731 | $0 |
 | 03-sky | 5232.3 | 6432.1 | 4893 | $0 |
 | 04-ice-demo | 99.9 | 221.6 | 3332 | $0 |
 | 05-anc-headphones | 1579.5 | 1613.2 | 4305 | $0 |
@@ -177,9 +179,10 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Elevator:agy_v4_vs_v5 | 134.8 | 0.0 | 0 | $0 |
 | Elevator:agy_v5_vs_v4_swap | 162.4 | 0.0 | 0 | $0 |
 | Elevator:baseline_v3 | 63.4 | 0.0 | 0 | $0 |
-| Elevator:ship | 891.9 | 0.0 | 0 | $0 |
-| Elevator:ship_cal | 969.1 | 0.0 | 0 | $0 |
-| Elevator:ship_swap | 884.0 | 0.0 | 0 | $0 |
+| Elevator:ship | 1049.6 | 0.0 | 0 | $0 |
+| Elevator:ship_cal | 1752.7 | 0.0 | 0 | $0 |
+| Elevator:ship_swap | 1041.5 | 0.0 | 0 | $0 |
+| Elevator:ship_tiebreak | 876.0 | 0.0 | 0 | $0 |
 | Elevator:v3_cal | 232.2 | 0.0 | 0 | $0 |
 | Elevator:v3_cal2 | 44.3 | 0.0 | 0 | $0 |
 | Elevator:v3_legacy38 | 215.4 | 0.0 | 0 | $0 |

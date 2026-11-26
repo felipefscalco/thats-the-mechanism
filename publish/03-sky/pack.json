@@ -1,0 +1,135 @@
+{
+ "episode": "03-sky",
+ "composition": "Sky",
+ "render": "renders/Sky_v7.mp4",
+ "video_sha256": "b1df677d442ae19524e1e202ed12d4929cbf0a31fbe83fdb5d0e343d64d9172a",
+ "created": "2026-11-26T05:16:52-0300",
+ "platforms": {
+  "tiktok": {
+   "title": "The Sunset Made of Someone Else's Blue Sky",
+   "caption": "Sunlight is every color mixed together, and air scatters short blue waves far more than long red ones. The blue that gets scattered is what makes the daytime sky. At sunset, light crosses many times more air, so the blue is scattered out and only orange and red reach your eyes. Which sunset have you watched recently?\n\nImages: NASA (JSC) (Public domain (NASA media usage guidelines))\n\n#ThatsTheMechanism #science #physics #sunset #sky",
+   "hashtags": [
+    "#ThatsTheMechanism",
+    "#science",
+    "#physics",
+    "#sunset",
+    "#sky"
+   ],
+   "lengths": {
+    "title": 42,
+    "caption": 435,
+    "hashtags": 5
+   },
+   "limits": {
+    "title": 100,
+    "caption": 2200,
+    "hashtags": 5
+   },
+   "ai_generated_content_label": true,
+   "request_id": "b48c25d559dea284952d"
+  },
+  "youtube_shorts": {
+   "title": "The Sunset Made of Someone Else's Blue Sky",
+   "caption": "Sunlight is every color mixed together, and air scatters short blue waves far more than long red ones. The blue that gets scattered is what makes the daytime sky. At sunset, light crosses many times more air, so the blue is scattered out and only orange and red reach your eyes. Which sunset have you watched recently?\n\nImages: NASA (JSC) (Public domain (NASA media usage guidelines))\n\n#Shorts #ThatsTheMechanism #science",
+   "hashtags": [
+    "#Shorts",
+    "#ThatsTheMechanism",
+    "#science"
+   ],
+   "lengths": {
+    "title": 42,
+    "caption": 421,
+    "hashtags": 3
+   },
+   "limits": {
+    "title": 100,
+    "caption": 5000,
+    "hashtags": 3
+   },
+   "synthetic_media": true,
+   "made_for_kids": false,
+   "category": "Education",
+   "visibility": "private_until_approved",
+   "request_id": "964f5a0b0daacd48df1b"
+  },
+  "instagram_reels": {
+   "title": "The Sunset Made of Someone Else's Blue Sky",
+   "caption": "Sunlight is every color mixed together, and air scatters short blue waves far more than long red ones. The blue that gets scattered is what makes the daytime sky. At sunset, light crosses many times more air, so the blue is scattered out and only orange and red reach your eyes. Which sunset have you watched recently?\n\nImages: NASA (JSC) (Public domain (NASA media usage guidelines))\n\n#ThatsTheMechanism #science #physics #sunset #sky #optics #lightscattering #HowItWorks",
+   "hashtags": [
+    "#ThatsTheMechanism",
+    "#science",
+    "#physics",
+    "#sunset",
+    "#sky",
+    "#optics",
+    "#lightscattering",
+    "#HowItWorks"
+   ],
+   "lengths": {
+    "title": 42,
+    "caption": 472,
+    "hashtags": 8
+   },
+   "limits": {
+    "title": 125,
+    "caption": 2200,
+    "hashtags": 8
+   },
+   "ai_info_label": true,
+   "request_id": "bbccfa15defc3172a1ef"
+  }
+ },
+ "credits": {
+  "images": [
+   {
+    "title": "Earth Observation",
+    "author": "NASA (JSC)",
+    "license": "Public domain (NASA media usage guidelines)",
+    "source_url": "https://images.nasa.gov/details/iss028e007274",
+    "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+   }
+  ],
+  "sources": [
+   {
+    "title": "NOAA SPC, Corfidi",
+    "url": "https://www.spc.noaa.gov/publications/corfidi/sunset.html"
+   },
+   {
+    "title": "Met Office",
+    "url": "https://weather.metoffice.gov.uk/learn-about/weather/optical-effects/why-is-the-sky-blue"
+   },
+   {
+    "title": "Univ. of Newcastle",
+    "url": "https://carmamaths.org/brailey/secondary_maths_publications/red_sunset.pdf"
+   },
+   {
+    "title": "Leibniz Univ. Hannover: 'more than four times'",
+    "url": "https://www.itp.uni-hannover.de/fileadmin/itp/emeritus/zawischa/static_html/scattering.html"
+   }
+  ]
+ },
+ "draft": {
+  "title": "The Sunset Made of Someone Else's Blue Sky",
+  "caption": "Sunlight is every color mixed together, and air scatters short blue waves far more than long red ones. The blue that gets scattered is what makes the daytime sky. At sunset, light crosses many times more air, so the blue is scattered out and only orange and red reach your eyes. Which sunset have you watched recently?",
+  "tags": [
+   "science",
+   "physics",
+   "sunset",
+   "sky",
+   "optics",
+   "lightscattering"
+  ]
+ },
+ "llm": {
+  "provider": "claude",
+  "cost_usd": 0.00077784
+ },
+ "approval": {
+  "required": true,
+  "file": "publish/03-sky/APPROVED",
+  "status": "pending"
+ },
+ "upload": "not implemented (r8): stub refuses",
+ "pack_sha": "3dedb8eb5038068d",
+ "violations": []
+}
