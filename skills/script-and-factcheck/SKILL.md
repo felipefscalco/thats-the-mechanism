@@ -18,6 +18,8 @@ Turn an approved angle into a spoken script, a sourced claim list, and a shot ta
 
 ## How to write
 
+0. Read `docs/STYLE_RULES.md` and apply every item in `docs/active_rules_prompt.txt` (active prose rules from the critic).
+
 1. Open with the object, not a title card. The first sentence is the hook; the subject will be on screen at 0.3 s.
 2. Build tension, then 2–3 mechanism beats, then a turn, then the catchphrase, then a 6–10 word callback that can loop into the hook.
 3. Prefer concrete numbers and named mechanisms over vague wonder. If a number cannot be sourced twice, drop it.

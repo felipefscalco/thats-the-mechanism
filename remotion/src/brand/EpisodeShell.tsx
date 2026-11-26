@@ -69,6 +69,11 @@ const LoopBack: React.FC<{ from: number; hook: React.ReactNode }> = ({ from, hoo
   );
 };
 
+/** Public alias of the frame-0 lock used on the loop whip. Episodes should keep passing
+ *  the same `hook` node to EpisodeShell; LoopEnd is the primitive that makes the last
+ *  frame identical to frame 0 (do not roll a one-off whip). */
+export const LoopEnd = LoopBack;
+
 /** r5 finish texture (mg-styles "finish_texture"; Texturelabs technique, our own procedural tiles from scripts/make_grain.py):
  *  default: one static tile (paper/film texture) at 7% overlay; --props '{"grain":"anim"}' cycles 4 tiles every 2 frames
  *  (frames near the loop seam use tile 0 so last == first); '{"grain":"off"}' disables. */

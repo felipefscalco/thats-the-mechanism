@@ -43,9 +43,20 @@ for ep in sys.argv[1:]:
         words, engine = faster_whisper(wav)
     script = open(f"{ep}/script.txt").read().split()
     sm = difflib.SequenceMatcher(a=[norm(w["text"]) for w in words], b=[norm(t) for t in script], autojunk=False)
-    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+    for tag, i1, i2, j1, j2 in reversed(sm.get_opcodes()):  # reversed: span rebuilds change lengths
         if tag == "equal" or (tag == "replace" and i2 - i1 == j2 - j1):
             for k in range(i2 - i1): words[i1 + k]["text"] = script[j1 + k]
+        elif tag == "replace" and "".join(norm(w["text"]) for w in words[i1:i2]) and difflib.SequenceMatcher(
+                a="".join(norm(w["text"]) for w in words[i1:i2]), b="".join(norm(t) for t in script[j1:j2])).ratio() >= 0.75:
+            # r6 (QR "Reed-Solom and"): whisper split/truncated a word. Rebuild the span from the SCRIPT words,
+            # timing spread by character length, so a caption can never show a fragment.
+            t0, t1 = words[i1]["start"], words[i2 - 1]["end"]
+            ln = [max(1, len(norm(s))) for s in script[j1:j2]]; tot = sum(ln); acc = 0; span = []
+            for s, l in zip(script[j1:j2], ln):
+                a = t0 + (t1 - t0) * acc / tot; acc += l
+                span.append(dict(text=s, start=a, end=t0 + (t1 - t0) * acc / tot))
+            words[i1:i2] = span
+            print(ep, "rebuilt", script[j1:j2])
         elif tag != "equal":
             print(ep, tag, [w["text"] for w in words[i1:i2]], script[j1:j2])
     out = []
