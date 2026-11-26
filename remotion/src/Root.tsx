@@ -7,6 +7,7 @@ import durations from "./durations.json";
 import { IceDemoVideo } from "./episodes/IceDemo";
 import { StyleFrame } from "./style/StyleFrames";
 import { LottiePreview } from "./style/LottiePreview";
+import { ANCVideo } from "./episodes/ANC";
 // @new-episode-imports
 
 const fps = 30;
@@ -20,6 +21,7 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="IceDemo" component={IceDemoVideo} durationInFrames={frames((durations as Record<string, number>)["04-ice-demo"] ?? 10)} {...portrait} />
     <Composition id="LottiePreview" component={LottiePreview} durationInFrames={60} fps={30} width={512} height={512} />
     <Composition id="StyleFrame" component={StyleFrame} durationInFrames={90} {...portrait} />
+    <Composition id="ANC" component={ANCVideo} durationInFrames={frames((durations as Record<string, number>)["05-anc-headphones"] ?? 10)} {...portrait} />
     {/* @new-episode-compositions */}
   </>
 );

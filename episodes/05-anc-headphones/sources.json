@@ -1,0 +1,61 @@
+{
+ "topic": "How noise-cancelling headphones cancel sound",
+ "claims": [
+  {
+   "claim": "Noise-cancelling headphones use a microphone on the ear cup to listen to outside noise and report it to the circuitry.",
+   "sources": [
+    "https://www.sciencefocus.com/science/how-do-noise-cancelling-headphones-cancel-sounds/",
+    "https://www.mentalfloss.com/article/49988/how-do-noise-canceling-headphones-work",
+    "https://en.wikipedia.org/wiki/Active_noise_control"
+   ],
+   "confidence": "high"
+  },
+  {
+   "claim": "The circuitry generates an inverted (180-degree out-of-phase, antiphase) copy of the noise and plays it through a speaker.",
+   "sources": [
+    "https://www.sciencefocus.com/science/how-do-noise-cancelling-headphones-cancel-sounds/",
+    "https://www.mentalfloss.com/article/49988/how-do-noise-canceling-headphones-work",
+    "https://en.wikipedia.org/wiki/Active_noise_control"
+   ],
+   "confidence": "high"
+  },
+  {
+   "claim": "Where the noise wave is at a peak the anti-noise is at a trough, so they sum to (near) zero: destructive interference.",
+   "sources": [
+    "https://www.sciencefocus.com/science/how-do-noise-cancelling-headphones-cancel-sounds/",
+    "https://en.wikipedia.org/wiki/Active_noise_control",
+    "https://www.mentalfloss.com/article/49988/how-do-noise-canceling-headphones-work"
+   ],
+   "confidence": "high"
+  },
+  {
+   "claim": "ANC is most effective at low frequencies; steady, constant, repetitive noise such as engine rumble or ventilation is easier to cancel than sudden, random sound.",
+   "sources": [
+    "https://www.mentalfloss.com/article/49988/how-do-noise-canceling-headphones-work",
+    "https://en.wikipedia.org/wiki/Active_noise_control",
+    "https://www.soundguys.com/how-noise-cancelling-headphones-work-12380",
+    "https://www.freecodecamp.org/news/how-noise-cancelling-headphones-work/"
+   ],
+   "confidence": "high"
+  },
+  {
+   "claim": "Sudden sounds and high-frequency noise are hard for ANC to track; passive isolation (physical blocking by the cushions) is what handles them.",
+   "sources": [
+    "https://www.freecodecamp.org/news/how-noise-cancelling-headphones-work/",
+    "https://www.soundguys.com/how-noise-cancelling-headphones-work-12380",
+    "https://en.wikipedia.org/wiki/Active_noise_control",
+    "https://www.mentalfloss.com/article/49988/how-do-noise-canceling-headphones-work"
+   ],
+   "confidence": "high"
+  },
+  {
+   "claim": "Pitch-of-a-jet-engine illustration: ANC headphones make a loud steady jet-engine drone much quieter (noise reduction, not total silence).",
+   "sources": [
+    "https://www.soundguys.com/how-noise-cancelling-headphones-work-12380",
+    "https://maketecheasier.com/how-active-noise-cancellation-works/",
+    "https://www.mentalfloss.com/article/49988/how-do-noise-canceling-headphones-work"
+   ],
+   "confidence": "high"
+  }
+ ]
+}

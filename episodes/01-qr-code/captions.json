@@ -175,14 +175,9 @@
   "end": 13.340000000000002
  },
  {
-  "text": "Reed-Solom",
+  "text": "Reed-Solomon",
   "start": 13.72,
-  "end": 13.8
- },
- {
-  "text": "and",
-  "start": 14.4,
-  "end": 14.48
+  "end": 14.45
  },
  {
   "text": "error",
@@ -600,14 +595,9 @@
   "end": 45.18
  },
  {
-  "text": "They",
+  "text": "They're",
   "start": 45.68,
   "end": 45.76
- },
- {
-  "text": "are",
-  "start": 45.760000000000005,
-  "end": 45.84
  },
  {
   "text": "how",

@@ -1,0 +1,9 @@
+These headphones fight sound with sound. A jet engine roars, and you barely hear it.
+
+Tiny microphones on each ear cup listen to the noise outside. A chip flips that wave upside down, so every peak becomes a valley, and plays it through a speaker into your ear.
+
+When the waves meet, peak plus valley adds up to flat. Engineers call it destructive interference.
+
+It works best on steady, low rumbles, like engines and ventilation, because they repeat and the chip can predict them. A sudden clap changes too fast, so the cushions have to block it instead.
+
+That's the mechanism. So the quiet you hear is sound fighting sound.
