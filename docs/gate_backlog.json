@@ -1,0 +1,347 @@
+{
+ "generated": "2026-11-26T14:38:00-03:00",
+ "items": [
+  {
+   "id": "R-023",
+   "kind": "candidate_gate",
+   "rule": "Label each force or physical-quantity vector with its unit or concept, style static gravitational or applied forces differently from motion arrows, and never draw an arrow against a body's travel direction unless it is labeled as an opposing force.",
+   "category": "clarity",
+   "severity": "blocker",
+   "proposed_gate": "Assert that any directional arrow icon within a translating component container matches the sign of the container velocity vector unless an explicit vector label prop is present.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "Elevator",
+     "timestamp": "A 0:19 / B 0:19",
+     "severity": "minor",
+     "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:31-0:32",
+     "severity": "blocker",
+     "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:17-0:30",
+     "severity": "minor",
+     "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:18: Both opposing weights display identical solid downward arrows, which can momentarily look like both components are moving downwards at once.",
+     "severity": "minor",
+     "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
+    }
+   ]
+  },
+  {
+   "id": "R-007",
+   "kind": "candidate_gate",
+   "rule": "Render captions and persistent chrome on a dedicated top-level track at full opacity, isolated from camera zooms, overlays, and transitions so nothing moves or dims them.",
+   "category": "voice_captions",
+   "severity": "blocker",
+   "proposed_gate": "Verify that all persistent UI elements and headers maintain minimum padding within the safe boundary (y >= 100) across all rendered frames.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "QR",
+     "timestamp": "B 0:53",
+     "severity": "major",
+     "source": "qa/QR/v6/ship/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "00:38-00:39 (captions dim to ~25-35% opacity during the climax line) and 00:41-00:42 (catchphrase caption spills onto the callback screen after the end card exits).",
+     "severity": "blocker",
+     "source": "qa/Sky/v6/ship/critic_cal.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "00:38-00:39",
+     "severity": "blocker",
+     "source": "qa/Sky/v7/ship/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-011",
+   "kind": "candidate_gate",
+   "rule": "Break caption text at natural clause boundaries, never strand an article, preposition, or lone short word on a line, and cap burned-in captions at two lines kept clear of the stage hero and navigation deck.",
+   "category": "voice_captions",
+   "severity": "blocker",
+   "proposed_gate": "Lint generated caption chunks before render and reject blocks ending a line with a dangling function word or starting a new sentence with one trailing word.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "Elevator",
+     "timestamp": "A 0:05 / B 0:05 ('the other side of / the'), A 0:18 / B 0:18 ('difference. When / the'), A 0:20 / B 0:20 ('motor helps it up. / When'), A 0:29 / B 0:29 ('Release the brake / on an')",
+     "severity": "minor",
+     "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "00:05 ('the'), 00:18 ('the'), and 00:38 ('An') strand single short articles alone on line 2 of the caption track.",
+     "severity": "minor",
+     "source": "qa/Elevator/v7/ship/critic_cal.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "00:13-00:14 (third caption line overlaps the chapter deck); 00:00 (caption overlaps bottom edge of opening hero)",
+     "severity": "blocker",
+     "source": "qa/QR/v7/ship/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-026",
+   "kind": "candidate_gate",
+   "rule": "Sync callout and badge appearance and removal to the narration cue and to the physical state: introduce a component's callout only once it is named, finish it within 0.5 s of the cue, unmount transient or stale badges before the next callout, and keep each demonstration state on screen through the full spoken clause that describes it.",
+   "category": "clarity",
+   "severity": "major",
+   "proposed_gate": "Assert that section comparison overlay components maintain mounted state across all sub-beats of their parent sequence.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:20",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:31 / A 0:31",
+     "severity": "major",
+     "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:00 vs A 0:14",
+     "severity": "major",
+     "source": "qa/Elevator/v7/ship/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:19 / B 0:23 lingering callout stacks on top of active state badges.",
+     "severity": "major",
+     "source": "qa/Elevator/v7/ship/cmp_prev_vs_new.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:19–0:26 (car still holds 8 to 6 passengers during 'nearly empty, the counterweight is the heavier side', and the footer reverts to 'DIFFERENCE' from 0:22 to 0:25 before flashing 'MOTOR HOLDS IT BACK' only at 0:26)",
+     "severity": "major",
+     "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "00:02-00:04 (damage state vanishes before narration mentions a damaged object); 00:38-00:40 (photo highlights tearing while narration names glare and scratches)",
+     "severity": "major",
+     "source": "qa/QR/v7/ship/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-041",
+   "kind": "candidate_gate",
+   "rule": "Label every comparison chart with a top-level descriptor and fixed headers outside the plot area, bind each series label, meter header, and comparator column to its own bar or position, keep columns consistent across states, and keep meters persistent while the evidence they measure is discussed.",
+   "category": "clarity",
+   "severity": "major",
+   "proposed_gate": "Ensure comparative telemetry components enforce a required title or descriptor prop in their component signature.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "Elevator",
+     "timestamp": "A 0:14 / B 0:14: Version A displays comparative vertical bars identified only by bottom abbreviations 'CAR' and 'CW', whereas Version B provides an explicit top-level descriptor 'CAR vs CW'.",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship/cmp_prev_vs_new.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:24",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:24",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "B 0:17–0:26 (CAR and CW bar-chart labels vanish during the active weight comparison), A 0:14–0:16 / B 0:14–0:16 (series labels stacked vertically on one side rather than anchored over each bar)",
+     "severity": "major",
+     "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "00:08-00:09 fills the secondary color 2 s before its narration arrives, 00:14-00:26 stacks two meter headers vertically rather than directly above each bar, 00:19-00:21 shows a downward arrow directly above an upward-action label, and 00:29-00:31 delays motion for 2.5 s after brake release.",
+     "severity": "major",
+     "source": "qa/Elevator/v7/ship/critic_cal.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "A 0:38 drops the budget progress bar when the evidence card enters; B 0:38 retains the meter and subdivides it to match spoken expense categories.",
+     "severity": "major",
+     "source": "qa/QR/v7/ship/cmp_prev_vs_new.json"
+    }
+   ]
+  },
+  {
+   "id": "R-017",
+   "kind": "candidate_gate",
+   "rule": "Start primary subject motion or a state transform within the first 500 ms (no later than 12 frames) of the opening shot, and introduce the core conflict on the hero subject within the first second.",
+   "category": "hook",
+   "severity": "major",
+   "proposed_gate": "Verify that the pixel delta between frame 0 and frame 12 exceeds 5% of the central stage bounding box.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "QR",
+     "timestamp": "00:00",
+     "severity": "major",
+     "source": "qa/QR/agy_rules/critic_rules.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "A 0:01 / B 0:01",
+     "severity": "major",
+     "source": "qa/QR/v7/ship/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "A 0:00 / B 0:00",
+     "severity": "minor",
+     "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "00:00 - 00:03 (static title card over horizon), 00:07 - 00:13 (stock-like triangle and magnifying glass), 00:22 - 00:27 (hard cut from ground diagram to cropped sphere)",
+     "severity": "major",
+     "source": "qa/Sky/v8/ship/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-039",
+   "kind": "candidate_gate",
+   "rule": "Keep background layers subordinate and thematically neutral, draw every foreground element in one hard-edged layered flat-vector grammar with accurate scale and lighting, and clear scene silhouettes when moving to abstract beats; never place decorative illustrations behind technical diagrams.",
+   "category": "style_fidelity",
+   "severity": "major",
+   "proposed_gate": "Ensure background layer behind scientific focal elements maintains low visual complexity and minimum contrast against diagram elements.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "ANC",
+     "timestamp": "00:00-00:42 (unexplained grey clouds overlapping waveforms/labels at 00:11, 00:15, 00:29, 00:33; thin wireframe stock icons mixed with filled flat shapes at 00:16-00:20)",
+     "severity": "major",
+     "source": "qa/ANC/v7/ship/critic_cal.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "A 0:08 / B 0:08",
+     "severity": "minor",
+     "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "B 0:07 - B 0:20",
+     "severity": "major",
+     "source": "qa/Sky/v7/ship/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "00:00-00:06, 00:07-00:17, 00:27-00:36",
+     "severity": "major",
+     "source": "qa/Sky/v7/ship/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-033",
+   "kind": "candidate_gate",
+   "rule": "Transition between beats and out of end cards with crisp directional whips or element morphs, never with blur, opacity cross-dissolves, or double-exposure frames, and ease any dismissal back to the underlying diagram along its spatial direction.",
+   "category": "motion_craft",
+   "severity": "major",
+   "proposed_gate": "Enforce section boundaries through a shared world-move transition component and fail QA if any transition frame blends two section canvases or applies blur above threshold.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "QR",
+     "timestamp": "00:05 (blurred hero dissolving into background), 00:49 (end card cross-fading directly over returning hero graphic)",
+     "severity": "major",
+     "source": "qa/QR/v6/ship/critic_cal.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "00:05 (blurry crossfade with stray box); 00:49 (ghosted opacity dissolve between end card and callback visual)",
+     "severity": "major",
+     "source": "qa/QR/v7/ship/critic_cal.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "A 0:34 / B 0:34",
+     "severity": "minor",
+     "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+    }
+   ]
+  },
+  {
+   "id": "R-008",
+   "kind": "candidate_gate",
+   "rule": "Reveal captions and stage labels at full target contrast from their first visible frame using position or mask reveals rather than opacity ramps, and end each caption block before any hard scene cut.",
+   "category": "voice_captions",
+   "severity": "major",
+   "proposed_gate": "Cross-check caption chunk timestamps against section and end-card cut frames and fail if any caption phrase spans across a card transition boundary.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "Elevator",
+     "timestamp": "00:38-00:39",
+     "severity": "minor",
+     "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "00:17, 00:36, 00:44, 00:49 (mid-fade captions and labels dropping to measured min_ratio=1.12), 00:23 (previous caption lingering past hard cut)",
+     "severity": "major",
+     "source": "qa/QR/v6/ship/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-043",
+   "kind": "candidate_gate",
+   "rule": "Animate continuous displacement across at least two intermediate frames, and keep one fixed observer frame of reference when a spatial diagram changes, rather than teleporting objects or moving the light source and subject together.",
+   "category": "clarity",
+   "severity": "major",
+   "proposed_gate": "Scan animated transform properties across keyframe transitions to ensure the maximum delta between consecutive frames does not exceed fifty percent of the total displacement.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "Elevator",
+     "timestamp": "A 0:31-0:32",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "A 0:26 / B 0:26",
+     "severity": "major",
+     "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
+    }
+   ]
+  }
+ ]
+}

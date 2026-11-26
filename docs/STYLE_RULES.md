@@ -102,6 +102,12 @@ Measurable rules that are not yet an automated check. Implement these as `qa.py`
   - proposed: Lint component stroke and fill colors against a whitelist that forbids semantic status tokens on passive machinery or structural containers.
 
 
+## Gate misses (a gate exists but the critic still saw it)
+
+The QA report of the judged render shows the gate PASSING while the critic reports the rule. Fix the gate (threshold, coverage, what it measures); until then the rule is also in the builder prompt.
+
+_None._
+
 ## Not yet active
 
 - (candidate_gate, 1 ep) Strip markdown punctuation, leading underscores, stray dashes, and orphaned hyphens from caption text before rendering.

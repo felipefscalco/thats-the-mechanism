@@ -140,5 +140,6 @@ Do not call a video “acceptable” from metrics alone. Look at `qa/<Id>/grid_i
 
 ## Review memory (mandatory)
 - Before any work on an episode or the kit, read `docs/LESSONS.md` and `docs/STYLE_RULES.md`, and apply every active prose rule in `docs/active_rules_prompt.txt`.
+- Interim rules (`I1..In` in `docs/active_rules_prompt.txt`) are measurable rules with no gate yet, or rules a gate missed: check them on the preview stills. Turning one into code: take it from `docs/gate_backlog.json` (it lists the render + timestamp a new gate must FAIL on), add the gate, then `scripts/lessons.py --refresh`.
 - After every review or QA iteration, append each finding to `docs/LESSONS.md` (format in that file) and each non-bug idea to `docs/BACKLOG.md`. A repeated finding is a regression: reopen the entry and add an automated check.
 - Commit the log updates together with the fix.

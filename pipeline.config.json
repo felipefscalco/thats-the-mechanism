@@ -221,7 +221,9 @@
     "labels: icon/label clearance",
     "labels: minimum font size",
     "text: no raw SVG/CSS fontSize"
-   ]
+   ],
+   "max_polish_rounds": 1,
+   "_polish_doc": "r10: after a SHIP whose calibrated critic still says ONE MORE PASS, the builder fixes the blocker/major weaknesses (scripts/polish.py) and the result must beat the accepted render pairwise, else it is reverted."
   }
  },
  "qa_gates": {

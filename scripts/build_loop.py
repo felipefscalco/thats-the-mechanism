@@ -9,13 +9,16 @@
   critique  builder self-reviews the preview contact sheet + key stills before any critic sees the video
   ship      ONE full render + master + qa.py (all gates incl. audio); failures route back (max_ship_iters)
   judge     scripts/ship_check.sh (critic roles; tie-breaker) vs the previous render
+  polish    r10: if it ships but the calibrated critic says ONE MORE PASS, the builder fixes the blocker/major weaknesses
+            (scripts/polish.py) and the result goes back through preview -> ship -> judge AGAINST THE ACCEPTED RENDER;
+            a polish that loses is reverted (TSX + MP4). Up to loop.max_polish_rounds (default 1).
 State is saved after every step in qa/<Id>/<SUF>/loop_state.json, so a rerun resumes where it stopped.
 Usage: build_loop.py <CompId> <slug> <SUF> --prev renders/X.mp4 [--prev-qa report.json] [--task-file F] [--replan] [--until preview|ship|judge]
 """
 import argparse, json, os, shutil, subprocess, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
-import llm, fixer_guard
+import llm, fixer_guard, polish
 
 ROOT = llm.ROOT
 PY = str(ROOT / ".venv-tts/bin/python") if (ROOT / ".venv-tts/bin/python").exists() else sys.executable
@@ -25,6 +28,7 @@ ap.add_argument("--replan", action="store_true"); ap.add_argument("--until", def
 A = ap.parse_args()
 CFG = llm.config().get("loop", {})
 MAXP, MAXS = int(CFG.get("max_preview_iters", 4)), int(CFG.get("max_ship_iters", 2))
+MAXPOL = int(CFG.get("max_polish_rounds", 1))   # r10: critic-driven passes after a SHIP that the calibrated critic still marks ONE MORE PASS
 FIXER_CHECKS = CFG.get("fixer_checks", ["labels: WCAG", "labels: inside Shorts UI safe zones", "labels: icon/label clearance", "labels: minimum font size", "text: no raw SVG/CSS fontSize"])
 QA = ROOT / "qa" / A.id / A.suf; QA.mkdir(parents=True, exist_ok=True); LOGS = QA / "llm"
 TSX = f"remotion/src/episodes/{A.id}.tsx"; VIDEO = ROOT / "episodes" / A.slug / "VIDEO.md"
@@ -92,49 +96,85 @@ if A.until == "plan": sys.exit(0)
 if st["step"] == "build":
     task = Path(A.task_file).read_text() if A.task_file else "Implement VIDEO.md in the composition. Start with the three key stills (hook / mid / end) and confirm them before the rest."
     run_builder(task, 0); st.update(step="preview", it=1); save()
-# ---- preview loop ----
-while st["step"] == "preview":
-    fails = preview(st["it"])
-    if not fails:
-        st["step"] = "critique"; save(); break
-    if st["it"] >= MAXP:
-        ev("preview_cap", it=st["it"]); st["step"] = "critique"; save(); break
-    st["last_route"] = route(fails, st["it"], "preview"); st["it"] += 1; save()
-# ---- self-critique ----
-if st["step"] == "critique":
-    n = st["it"]; before = (ROOT / TSX).read_text()
-    res = llm.run("builder", prompt("selfcritique", SHEET=QA / f"preview_sheet_it{n}.png", KEYS=QA / f"keystills_it{n}.png", N=n + 1),
-                  ROOT, scope=SCOPE, log_dir=LOGS, files=[("contact sheet", QA / f"preview_sheet_it{n}.png"), ("key stills", QA / f"keystills_it{n}.png")])
-    changed = (ROOT / TSX).read_text() != before
-    ev("selfcritique", ok=res["ok"], changed=changed, reply=(res["text"] or "")[-600:], **{k: res["meta"].get(k) for k in ("provider", "wall_s", "cost_usd")})
-    if changed:
-        st["it"] = n + 1; fails = preview(st["it"])
-        if fails: ev("selfcritique_regressed", failed=[c["check"] for c in fails])
-    st["step"] = "ship"; save()
-if A.until == "preview": sys.exit(0)
-# ---- ship: one full render + master + all gates ----
-while st["step"] == "ship":
-    st["ship_it"] += 1; k = st["ship_it"]; save()
-    r, w = sh(["bash", "scripts/iterate.sh", str(100 + k), A.id], env=dict(SUF=A.suf, MASTER="1"))
-    rep = QA / f"report_it{100 + k}.json"
-    fails = [c for c in json.loads(rep.read_text())["checks"] if not c["ok"]] if rep.exists() else [dict(check="render", detail=r.stderr[-600:])]
-    ev("ship_render_qa", ship_it=k, wall_s=w, failed=[c["check"] for c in fails])
-    if not rep.exists():   # infrastructure failure (render/master/QA crashed): not the builder's job -> retry ONCE (r9), then stop and keep state
-        st["ship_it"] -= 1
-        if not st.get("infra_retried_it") == k:
-            st["infra_retried_it"] = k; save(); ev("ship_infra_retry", ship_it=k, stderr_tail=r.stderr[-300:]); time.sleep(20); continue
-        save(); sys.exit(f"ship render/QA infrastructure failure (after 1 retry), see {QA}; stderr tail: {r.stderr[-600:]}")
-    if not fails:
-        st.update(step="judge", ship_report=str(rep)); save(); break
-    if k >= MAXS:
-        st.update(step="judge", ship_report=str(rep), ship_gates_failed=[c["check"] for c in fails]); save(); break
-    route(fails, k, "full-render"); pf = preview(st["it"] + 1); st["it"] += 1; save()
-if A.until == "ship": sys.exit(0)
-# ---- judge ----
-if st["step"] == "judge" and A.prev:
-    out = QA / "ship"
-    r, w = sh(["bash", "scripts/ship_check.sh", A.id, str(ROOT / "renders" / f"{A.id}_{A.suf}.mp4"), A.prev, st["ship_report"], str(out)] + ([A.prev_qa] if A.prev_qa else []))
-    verdict = json.loads((out / "ship.json").read_text()) if (out / "ship.json").exists() else dict(error=r.stderr[-500:])
-    ev("judge", wall_s=w, ship=verdict.get("ship"), decided_by=verdict.get("decided_by"), calibrated=verdict.get("calibrated"))
-    st["step"] = "done"; st["verdict"] = verdict; save()
+while st["step"] != "done":   # r10: preview -> critique -> ship -> judge -> polish can loop back to preview
+    # ---- preview loop ----
+    while st["step"] == "preview":
+        fails = preview(st["it"])
+        if not fails:
+            st["step"] = "critique"; save(); break
+        if st["it"] >= MAXP:
+            ev("preview_cap", it=st["it"]); st["step"] = "critique"; save(); break
+        st["last_route"] = route(fails, st["it"], "preview"); st["it"] += 1; save()
+    # ---- self-critique ----
+    if st["step"] == "critique" and st.get("polish"):
+        st["step"] = "ship"; save()
+    if st["step"] == "critique":
+        n = st["it"]; before = (ROOT / TSX).read_text()
+        res = llm.run("builder", prompt("selfcritique", SHEET=QA / f"preview_sheet_it{n}.png", KEYS=QA / f"keystills_it{n}.png", N=n + 1),
+                      ROOT, scope=SCOPE, log_dir=LOGS, files=[("contact sheet", QA / f"preview_sheet_it{n}.png"), ("key stills", QA / f"keystills_it{n}.png")])
+        changed = (ROOT / TSX).read_text() != before
+        ev("selfcritique", ok=res["ok"], changed=changed, reply=(res["text"] or "")[-600:], **{k: res["meta"].get(k) for k in ("provider", "wall_s", "cost_usd")})
+        if changed:
+            st["it"] = n + 1; fails = preview(st["it"])
+            if fails: ev("selfcritique_regressed", failed=[c["check"] for c in fails])
+        st["step"] = "ship"; save()
+    if A.until == "preview": sys.exit(0)
+    # ---- ship: one full render + master + all gates ----
+    while st["step"] == "ship":
+        st["ship_it"] += 1; k = st["ship_it"]; save()
+        sb = 100 + 10 * st.get("polish", 0)   # r10: each polish round renders into its own iteration range (no report overwrite)
+        r, w = sh(["bash", "scripts/iterate.sh", str(sb + k), A.id], env=dict(SUF=A.suf, MASTER="1"))
+        rep = QA / f"report_it{sb + k}.json"
+        fails = [c for c in json.loads(rep.read_text())["checks"] if not c["ok"]] if rep.exists() else [dict(check="render", detail=r.stderr[-600:])]
+        ev("ship_render_qa", ship_it=k, wall_s=w, failed=[c["check"] for c in fails])
+        if not rep.exists():   # infrastructure failure (render/master/QA crashed): not the builder's job -> retry ONCE (r9), then stop and keep state
+            st["ship_it"] -= 1
+            if not st.get("infra_retried_it") == k:
+                st["infra_retried_it"] = k; save(); ev("ship_infra_retry", ship_it=k, stderr_tail=r.stderr[-300:]); time.sleep(20); continue
+            save(); sys.exit(f"ship render/QA infrastructure failure (after 1 retry), see {QA}; stderr tail: {r.stderr[-600:]}")
+        if not fails:
+            st.update(step="judge", ship_report=str(rep)); save(); break
+        if k >= MAXS:
+            st.update(step="judge", ship_report=str(rep), ship_gates_failed=[c["check"] for c in fails]); save(); break
+        route(fails, k, "full-render"); pf = preview(st["it"] + 1); st["it"] += 1; save()
+    if A.until == "ship": sys.exit(0)
+    # ---- judge ----
+    if st["step"] == "judge":
+        k = st.get("polish", 0)
+        prev, prev_qa = (st["polish_base_mp4"], st.get("polish_base_report")) if k else (A.prev, A.prev_qa)
+        if not prev:
+            st["step"] = "done"; save(); break
+        out = QA / ("ship" if k == 0 else f"ship_polish{k}")
+        r, w = sh(["bash", "scripts/ship_check.sh", A.id, str(ROOT / "renders" / f"{A.id}_{A.suf}.mp4"), prev, st["ship_report"], str(out)] + ([prev_qa] if prev_qa else []))
+        verdict = json.loads((out / "ship.json").read_text()) if (out / "ship.json").exists() else dict(error=r.stderr[-500:])
+        ev("judge", polish=k, wall_s=w, ship=verdict.get("ship"), decided_by=verdict.get("decided_by"), calibrated=verdict.get("calibrated"))
+        if k and not verdict.get("ship"):   # the polish did not beat the accepted render: put the accepted one back
+            (ROOT / TSX).write_text(Path(st["polish_base_tsx"]).read_text())
+            shutil.copy2(st["polish_base_mp4"], ROOT / "renders" / f"{A.id}_{A.suf}.mp4")
+            ev("polish_reverted", polish=k)
+            st.update(step="done", verdict=st.get("accepted_verdict"), ship_report=st["polish_base_report"]); save(); break
+        st.update(verdict=verdict, accepted_verdict=verdict, accepted_report=st["ship_report"], step="polish_check"); save()
+    # ---- polish (r10): critic weaknesses -> builder -> preview/ship/judge vs the accepted render ----
+    if st["step"] == "polish_check":
+        k = st.get("polish", 0)
+        cal_p = QA / ("ship" if k == 0 else f"ship_polish{k}") / "critic_cal.json"
+        cal = json.loads(cal_p.read_text()) if cal_p.exists() else {}
+        rep = json.loads(Path(st["accepted_report"]).read_text()) if Path(st["accepted_report"]).exists() else None
+        items = polish.select(cal, rep) if cal.get("verdict") and cal.get("verdict") != "SHIP" else []
+        if not (st["verdict"].get("ship") and items and k < MAXPOL):
+            ev("polish_stop", polish=k, items=len(items), cal_verdict=cal.get("verdict")); st["step"] = "done"; save(); break
+        k += 1
+        base_mp4 = ROOT / "renders" / f"{A.id}_{A.suf}_polish{k}_base.mp4"; shutil.copy2(ROOT / "renders" / f"{A.id}_{A.suf}.mp4", base_mp4)
+        base_tsx = QA / f"polish{k}_base.tsx"; base_tsx.write_text((ROOT / TSX).read_text())
+        base_rep = QA / f"polish{k}_base_report.json"; shutil.copy2(st["accepted_report"], base_rep)
+        st.update(polish=k, polish_items=items, polish_base_mp4=str(base_mp4), polish_base_tsx=str(base_tsx),
+                  polish_base_report=str(base_rep), step="polish"); save()
+    if st["step"] == "polish":
+        n = st["it"] + 1
+        res = llm.run("builder", prompt("polish", ROUND=st["polish"], N=n, MAX_TRIES=2, WEAK=polish.task_text(st["polish_items"])), ROOT, scope=SCOPE, log_dir=LOGS)
+        ev("polish_builder", polish=st["polish"], items=len(st["polish_items"]), ok=res["ok"], reply=(res["text"] or "")[-600:],
+           **{k_: res["meta"].get(k_) for k_ in ("provider", "wall_s", "cost_usd", "reverted")})
+        st.update(step="preview", it=n, ship_it=0); save()
+    if st["step"] == "done":
+        break
 print(json.dumps(dict(step=st["step"], verdict=st.get("verdict")), indent=1))

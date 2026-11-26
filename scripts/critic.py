@@ -746,6 +746,9 @@ def main() -> int:
         "backend": args.backend,
         "mode": args.mode,
         "mp4": str(mp4.relative_to(ROOT)) if mp4.is_relative_to(ROOT) else str(mp4),
+        # r10: the QA report of this exact render, so lessons.py can tell "a gate exists but let this through" (gate_miss)
+        "qa_report": (str(Path(args.qa_report).resolve().relative_to(ROOT)) if Path(args.qa_report).resolve().is_relative_to(ROOT)
+                      else str(args.qa_report)) if args.qa_report else None,
         "model": used_model,
         "wall_s": wall,
         "cost_usd": 0.0,
