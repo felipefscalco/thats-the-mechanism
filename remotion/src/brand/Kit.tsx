@@ -121,3 +121,29 @@ export const LabeledBox: React.FC<{
   else if (side === "left") { lx = box.x - gap - 18; ly = box.y + box.h / 2 + size * 0.35; anchor = "end"; }
   return <TagLabel x={lx} y={ly} text={label} size={size} color={color} o={o} anchor={anchor} />;
 };
+
+/**
+ * r8 component (gate: qa.py "every element entrance scales/slides/draws on", scripts/entrances.py): the one way to bring
+ * ANY element on stage. `p` is the entrance progress 0..1 (e.g. ease(f, a, b) or pop(f, at, fps)); the element anticipates
+ * (dips to 0.94x for the first 15 %), overshoots (~1.08x) and settles at 1x, or slides in along `from` with the same
+ * overshoot. Opacity only carries the first 25 % so an entrance can never be an opacity-only fade. (cx, cy) = pivot.
+ */
+export const Enter: React.FC<{ p: number; cx: number; cy: number; from?: "scale" | "up" | "down" | "left" | "right"; dist?: number; children: React.ReactNode }> =
+  ({ p, cx, cy, from = "scale", dist = 120, children }) => {
+    if (p <= 0) return null;
+    if (p >= 1) return <g>{children}</g>;
+    const o = Math.min(1, p / 0.25);
+    const k = EASE.OVERSHOOT(p);                       // 0 -> ~1.1 -> 1
+    const antic = p < 0.15 ? 1 - 0.06 * Math.sin((p / 0.15) * Math.PI) : 1;
+    let tf: string;
+    if (from === "scale") {
+      const sc = (0.6 + 0.4 * k) * antic;
+      tf = `translate(${cx} ${cy}) scale(${sc}) translate(${-cx} ${-cy})`;
+    } else {
+      const d = dist * (1 - k);
+      const [dx, dy] = from === "up" ? [0, d] : from === "down" ? [0, -d] : from === "left" ? [-d, 0] : [d, 0];
+      const sc = 0.92 + 0.08 * k;
+      tf = `translate(${dx} ${dy}) translate(${cx} ${cy}) scale(${sc}) translate(${-cx} ${-cy})`;
+    }
+    return <g opacity={PROBE_OCC ? 1 : o} transform={tf}>{children}</g>;
+  };

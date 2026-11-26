@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 HUD_RE = re.compile(r"[\"'>`]\s*((?:\d{1,2}:\d{2}(?::\d{2})?(?:[.:]\d{1,3})?)|REC\b[^\"'<`]{0,8}|T\s?[+-]\s?\d+[^\"'<`]{0,6}|\d+\s?FPS|ISO\s?\d+|HUD\b)")
 
 
-def checks(comp_id: str):
+def checks(comp_id: str, slug: str = None):
     out = []
     ep = ROOT / "remotion" / "src" / "episodes" / f"{comp_id}.tsx"
     if not ep.exists():
@@ -22,4 +22,26 @@ def checks(comp_id: str):
     out.append(("text: no raw SVG/CSS fontSize < 30 px (episode + brand kit)", not raw_small, dict(min_allowed=30, small=raw_small)))
     hud = sorted(set(HUD_RE.findall(src)))
     out.append(("text: no decorative HUD / fake timecode strings in the episode", not hud, dict(matches=hud)))
+    if slug: out += hook_and_clarity(comp_id, slug)
+    return out
+
+
+def hook_and_clarity(comp_id, slug):
+    """r8 hook gates that need no render + the sound-off clarity gate."""
+    import json, sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import hooks, clarity
+    from shotlib import shots
+    cfg = json.loads((ROOT / "pipeline.config.json").read_text()).get("hooks", {})
+    out = []
+    caps = json.loads((ROOT / "episodes" / slug / "captions.json").read_text())
+    t0 = caps[0]["start"] if caps else 99
+    out.append((f"hook: first speech <= {cfg.get('first_speech_max_s', 0.5)} s", t0 <= cfg.get("first_speech_max_s", 0.5), dict(first_word=caps[0]["text"] if caps else None, start_s=round(t0, 2))))
+    rows = shots(slug); first = rows[0]["text"][0] if rows and rows[0]["text"] else ""
+    nw = len(first.split()); mx = cfg.get("max_onscreen_words", 7)
+    out.append((f"hook: first on-screen line <= {mx} words", 0 < nw <= mx, dict(line=first, words=nw)))
+    h = hooks.check(slug)
+    out.append(("hook: opening has a curiosity gap, no padding/clickbait, promise paid off", h["ok"], dict(first_sentence=h["first_sentence"], failures=h["failures"], signals=h["curiosity"]["signals"], payoff_match=h["payoff_match"])))
+    c = clarity.check(comp_id, slug)
+    out.append(("clarity: every causal step shows an on-screen keyword (sound-off test)", c["ok"], dict(covered=f"{c['covered']}/{c['steps']}", missing=[(m["t_s"], m["sentence"][:60]) for m in c["missing"]][:6])))
     return out

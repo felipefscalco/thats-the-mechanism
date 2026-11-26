@@ -37,7 +37,7 @@ def fill(tpl, **kw):
     for k, v in kw.items(): tpl = tpl.replace("{" + k + "}", str(v))
     return tpl
 def prompt(name, **kw): return fill((ROOT / "prompts" / f"{name}.md").read_text(), ROOT=ROOT, ID=A.id, SLUG=A.slug, SUF=A.suf, **kw)
-SCOPE = [TSX, f"episodes/{A.slug}/*.json", f"episodes/{A.slug}/notes*.md"]   # VIDEO.md is NOT in scope: the plan is frozen
+SCOPE = [TSX, f"episodes/{A.slug}/*.json", f"episodes/{A.slug}/notes*.md", f"episodes/{A.slug}/shots.md"]   # VIDEO.md is NOT in scope: the plan is frozen
 
 def sh(cmd, env=None):
     t = time.time(); r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, env={**os.environ, **(env or {})})

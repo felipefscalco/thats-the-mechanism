@@ -74,6 +74,51 @@ for i, s in enumerate(still):
 res["motion"] = dict(longest_hold_s=round(longest / fps, 2), hold_starts_s=round(at_ / fps, 2), mean_diff=round(float(d.mean()), 2))
 check("motion: no stage hold > 2.0 s", longest / fps <= 2.0, res["motion"])
 
+# 4a-r8. captions never dimmed (Sky_v7 0:38 critic blocker: pages faded in from opacity 0 -> ghost frames).
+#        Every frame inside a spoken word (outside the card and the loop fade) must show caption fill at full
+#        strength: >= 400 px brighter than 225 AND >= 400 px of the black stroke (< 30) in the caption band.
+cap = subprocess.run(f"ffmpeg -v error -i {MP4} -vf crop=984:208:48:1222,format=gray -f rawvideo -", shell=True, capture_output=True).stdout
+cb = np.frombuffer(cap, np.uint8).reshape(-1, 208, 984)
+_ws = words(SLUG); _ca = phrase_time(_ws, "That's the mechanism")
+_fade_from = len(cb) - LOOP_FRAMES - T_FRAMES
+need_cap = sorted({k for w in _ws for k in range(int(np.ceil(w["start"] * fps)) + 1, int(w["end"] * fps))
+                   if k < _fade_from and not (_ca - 0.2 <= k / fps <= _ca + 2.0)})
+ghost = [k for k in need_cap if k < len(cb) and ((cb[k] > 225).sum() < 400 or (cb[k] < 30).sum() < 400)]
+runs_g, cur_g = [], []
+for k in ghost:
+    if cur_g and k != cur_g[-1] + 1: runs_g.append(cur_g); cur_g = []
+    cur_g.append(k)
+if cur_g: runs_g.append(cur_g)
+res["captions_full_opacity"] = dict(frames_checked=len(need_cap), ghost_frames=len(ghost), worst_runs=[[round(r[0] / fps, 2), len(r)] for r in sorted(runs_g, key=len, reverse=True)[:6]])
+check("captions: never dimmed while a word is spoken (no ghost frames)", len(ghost) <= max(2, 0.005 * len(need_cap)) and all(len(r) <= 1 for r in runs_g), res["captions_full_opacity"])
+
+# 4a-r8b. captions are the SCRIPT words, aligned to whisper.cpp timing (scripts/captions.py writes captions_align.json)
+_alp = ROOT / "episodes" / SLUG / "captions_align.json"
+if _alp.exists():
+    _al = json.loads(_alp.read_text()); res["captions_align"] = {k: _al.get(k) for k in ("match_rate", "max_unmatched_run", "unmatched", "window_violations", "initial_prompt")}
+    check("captions: script-aligned (match >= 90 %, no unmatched run > 3 words, words inside their TTS chunk)", _al.get("ok"), res["captions_align"])
+else:
+    check("captions: script-aligned (match >= 90 %, no unmatched run > 3 words, words inside their TTS chunk)", False, dict(error="captions_align.json missing: re-run scripts/captions.py"))
+
+# 4c-r8. meaningful-motion hold (Sky_v7 critic cap "static for > 2 s"): ambient particles/drift do not count. Change is
+#        measured on a blurred stage (sigma 3 px at 1/5 scale, so dots and grain vanish) over 0.33 s; motion counts only
+#        when one connected region >= 1 % of the stage changes. Longest run without it <= 1.75 s, excluding the end hold
+#        (catchphrase card onward) and the loop whip.
+from scipy import ndimage as _ndi
+_bl = np.stack([_ndi.gaussian_filter(x, 3) for x in fr]); _W = 10; _big = []
+for i in range(len(_bl) - _W):
+    m = np.abs(_bl[i + _W] - _bl[i]) > 8
+    if m.sum() < 0.01 * m.size: _big.append(0.0); continue
+    lab, n = _ndi.label(m); _big.append(float(np.bincount(lab.ravel())[1:].max() / m.size) if n else 0.0)
+_end = int((card_at - 0.2) * fps) if (card_at := phrase_time(words(SLUG), "That's the mechanism")) else len(_big)
+_runs, _cur = [], 0
+for i, b in enumerate(_big[:_end]):
+    _cur = _cur + 1 if b < 0.01 else 0
+    if _cur and (i + 1 == _end or _big[i + 1] >= 0.01): _runs.append((round((i - _cur + 1) / fps, 2), round((_cur + _W) / fps, 2)))
+_worst = max(_runs, key=lambda r: r[1], default=(0, 0))
+res["meaningful_motion"] = dict(longest_s=_worst[1], at_s=_worst[0], over_limit=[r for r in sorted(_runs, key=lambda r: -r[1]) if r[1] > 1.75][:6], limit_s=1.75)
+check("motion: meaningful (structure-level) change at least every 1.75 s (particles/drift don't count; end hold excluded)", _worst[1] <= 1.75, res["meaningful_motion"])
+
 # 4b. end card hold (round 4, from L-9): (a) the "THAT'S THE MECHANISM." card is up long enough to read,
 #     (b) the payoff state is complete and settled >= 1.5 s before the loop whip starts.
 ws_all = words(SLUG)
@@ -94,6 +139,17 @@ res["hook"] = dict(bright_frac_at_0_3s=round(bright, 3), change_0_to_1s=round(mo
 check("hook: subject on screen at 0.3 s and visible change by 1 s", bright > 0.02 and moved > 1.0, res["hook"])
 # round 4 (L-14): frame 0 must read as a bright, finished picture (the thumbnail/first impression); v3 Elevator was 0.04
 b0 = float((fr[0] > 90).mean()); res["hook"]["bright_frac_at_0s"] = round(b0, 3)
+# r8 hook gate: frame 1 already shows a hero/anomaly (one connected high-contrast structure >= 8 % of the stage) that is
+#    MOVING (>= 5 % of stage pixels change by > 25 levels within the first 0.33 s). Sky_v7 (critic: "static title card"):
+#    1.6 %; QR/Elevator/ANC 13-60 %.
+from scipy import ndimage as _nd
+_g = np.hypot(_nd.sobel(fr[0], 0), _nd.sobel(fr[0], 1)) > 60
+_lab, _n = _nd.label(_nd.binary_dilation(_g, iterations=2))
+_hero = float(np.bincount(_lab.ravel())[1:].max() / _g.size) if _n else 0.0
+_mv = float((np.abs(fr[10] - fr[0]) > 25).mean())
+_hc = json.loads((ROOT / "pipeline.config.json").read_text()).get("hooks", {})
+res["hook"].update(hero_frac_frame0=round(_hero, 3), moved_frac_0_to_0_33s=round(_mv, 4))
+check("hook: frame 1 has a moving hero/anomaly (hero >= 8 % of stage, >= 5 % of pixels change in 0.33 s)", _hero >= _hc.get("frame1_min_hero_frac", 0.08) and _mv >= _hc.get("frame1_min_moved_frac", 0.05), dict(hero_frac=round(_hero, 3), moved_frac=round(_mv, 4)))
 check("hook: frame 0 bright (>= 12% of stage pixels > 90/255) and at 0.3 s", b0 >= 0.12 and bright >= 0.12, dict(bright_frac_at_0s=round(b0, 3), bright_frac_at_0_3s=round(bright, 3)))
 
 # 6. exact loop: seam jump (last -> first) vs normal frame-to-frame motion, full frame
@@ -152,11 +208,23 @@ if "--no-framing" not in sys.argv:
               dict(boxed_frac=fj["boxed_frac"], whole_stage_card=fj["whole_stage_card_runs"][:6]))
     except Exception as e:
         check("framing: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime", False, dict(error=str(e)))
+# 6c-r8. every element entrance arrives with motion (scripts/entrances.py): no snaps, no opacity-only fades (Sky_v7 critic cap)
+if "--no-entrances" not in sys.argv:
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "entrances.py"), str(MP4), str(OUT), "--cuts", _cuts if "_cuts" in dir() else "",
+                    "--card", f"{card_at:.2f},{card_until:.2f}"], capture_output=True, text=True)
+    try:
+        ej = json.loads((OUT / "entrances.json").read_text()); res["entrances"] = ej
+        check("motion: every element entrance scales/slides/draws on (no snaps, <= 2 opacity-only fades)", ej["ok"],
+              dict(entrances=ej["entrances"], snaps=ej["snaps"][:5], fades=ej["fades"][:5]))
+    except Exception as e:
+        check("motion: every element entrance scales/slides/draws on (no snaps, <= 2 opacity-only fades)", False, dict(error=str(e)))
 # 6c-r7b. no decorative HUD / fake timecodes (AI LABS 'AI tells'); the real chapter deck lives in brand/Chrome.tsx, not here
 from static_gates import checks as _static_checks
-for _name, _ok, _detail in _static_checks(ID):
+for _name, _ok, _detail in _static_checks(ID, SLUG):
     if _name.startswith("text: no decorative HUD"):
         res["hud"] = _detail; check(_name, _ok, _detail)
+    elif _name.startswith(("hook:", "clarity:")):  # r8
+        res.setdefault("hook_static", {})[_name] = _detail; check(_name, _ok, _detail)
 
 # 6d. visual-state change cadence (r5, Gemini/The Why Side: a new visual state every 3-4 s, not just motion):
 #     a "state change" = stage ROI differs from 0.5 s earlier by >= STATE_DIFF mean grey levels; max gap between changes <= 4.0 s

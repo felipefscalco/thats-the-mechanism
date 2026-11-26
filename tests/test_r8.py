@@ -38,5 +38,40 @@ def t_pause_and_align():
 
 TESTS.append(t_pause_and_align)
 
+
+def t_hooks():
+    import hooks
+    assert hooks.banned("Hey guys, in this video I'll show you") and hooks.banned("Wait, don't scroll! You won't believe this secret")
+    assert not hooks.banned("This QR code repairs itself.")
+    assert hooks.curiosity("This QR code repairs itself.")["ok"] and hooks.curiosity("Where does a sunset's missing blue end up?")["ok"]
+    assert not hooks.curiosity("The sky is blue because air scatters blue light.")["ok"]
+    script = "Old first line.\n\nThe counterweight matches the empty car plus half the load.\n\nThat's the mechanism."
+    good = dict(pattern="contrarian", line="The motor barely lifts anything.", on_screen="BARELY LIFTS", promise="the counterweight does the lifting",
+                payoff_quote="The counterweight matches the empty car plus half the load")
+    assert hooks.rule_check(good, script)["ok"], hooks.rule_check(good, script)
+    bad = dict(good, payoff_quote="a sentence that is not in the script at all", on_screen="ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT")
+    f = hooks.rule_check(bad, script)["failures"]; assert any("payoff" in x for x in f) and any("on-screen" in x for x in f), f
+
+def t_publish():
+    import publish
+    base = dict(title="T" * 300, caption="word " * 3000, tags=[f"tag{i}" for i in range(20)], credit_line="Images: A (CC0)")
+    for p, L in publish.LIMITS.items():
+        post = publish.platform_post(p, base, base["tags"])
+        assert len(post["title"]) <= L["title"] and len(post["caption"]) <= L["caption"] and len(post["hashtags"]) <= L["hashtags"], (p, post["lengths"])
+        assert ("#Shorts" in post["hashtags"]) == (p == "youtube_shorts")
+    yt = publish.platform_post("youtube_shorts", base, [])
+    assert yt["synthetic_media"] is True and yt["made_for_kids"] is False
+
+def t_queue():
+    import pipeline, tempfile
+    d = Path(tempfile.mkdtemp()); f = d / "t.jsonl"
+    f.write_text('{"title":"B","angle":"x","priority":1,"approved":true}\n{"title":"A","angle":"y","priority":5,"approved":false}\n')
+    ts = pipeline.load_topics(f); assert [t["title"] for t in ts] == ["A", "B"]
+    (d / "bad.jsonl").write_text('{"title":"x"}\n')
+    try: pipeline.load_topics(d / "bad.jsonl"); assert False
+    except SystemExit: pass
+
+TESTS += [t_hooks, t_publish, t_queue]
+
 if __name__ == "__main__":
     for t in TESTS: t(); print("PASS", t.__name__)

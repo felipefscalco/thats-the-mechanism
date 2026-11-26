@@ -116,7 +116,11 @@ export const Captions: React.FC<{ words: Word[]; hideFrom?: number; hideTo?: num
   const s = pop(local, 0, fps, 16);
   return (
     <div style={{ position: "absolute", left: LAYOUT.safeLeft, width: LAYOUT.safeRight - LAYOUT.safeLeft, top: LAYOUT.captionTop, opacity: loopFade, display: "flex", justifyContent: "center" }}>
-      <div style={{ textAlign: "center", fontFamily: SANS, fontWeight: 900, fontSize: 84, lineHeight: 1.12, color: "white", transform: `scale(${0.88 + 0.12 * s})`, opacity: Math.min(1, s * 1.5) }}>
+      {/* r8 root cause (Sky_v7 0:38, critic "captions drop to ghostly dark grey"): every page faded in from opacity 0
+          (Math.min(1, s * 1.5) on a spring that starts at 0), so each page started with 3-4 ghost frames at 0-60 %,
+          and fast speech (pages every ~0.5 s) spent up to a third of the time dimmed. Pages now land at full opacity
+          and pop by scale only; qa.py "captions: never dimmed" holds it. */}
+      <div style={{ textAlign: "center", fontFamily: SANS, fontWeight: 900, fontSize: 84, lineHeight: 1.12, color: "white", transform: `scale(${0.9 + 0.1 * s})` }}>
         {page.tokens.map((t, i) => {
           const active = ms >= t.fromMs && ms < t.toMs + 80;
           return (

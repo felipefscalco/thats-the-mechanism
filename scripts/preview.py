@@ -36,7 +36,7 @@ cuts = ",".join(f"{phrase_time(ws, r['at']):.2f}" for r in shots(SLUG) if r["at"
 # 1. key stills
 KD = OUT / f"_keys_it{IT}"
 t = time.time()
-r = subprocess.run(["node", "stills.mjs", ID, str(KD), "0,9,29,mid,-1", "0.5", "{}"], cwd=ROOT / "remotion", capture_output=True, text=True)
+r = subprocess.run(["node", "stills.mjs", ID, str(KD), "0,9,10,29,mid,-1", "0.5", "{}"], cwd=ROOT / "remotion", capture_output=True, text=True)
 if r.returncode: sys.exit(r.stderr[-1500:])
 res["timing_keys_s"] = round(time.time() - t, 1)
 g = lambda tok: np.asarray(Image.open(KD / f"still_{tok}.png").convert("L"), np.float32)
@@ -46,6 +46,13 @@ b0, b9 = float((st(f0) > 90).mean()), float((st(f9) > 90).mean())
 check("hook: frame 0 bright (>= 12% of stage pixels > 90/255) and at 0.3 s", b0 >= 0.12 and b9 >= 0.12, dict(bright_frac_at_0s=round(b0, 3), bright_frac_at_0_3s=round(b9, 3)))
 mv = float(np.abs(st(f29) - st(f0)).mean())
 check("hook: visible change by 1 s", mv > 1.0, dict(change_0_to_1s=round(mv, 2)))
+# r8 hook gate (same rule as qa.py): frame 1 shows a moving hero/anomaly
+from scipy import ndimage as _nd
+_hc = json.loads((ROOT / "pipeline.config.json").read_text()).get("hooks", {})
+_s0 = np.asarray(Image.fromarray(st(f0).astype(np.uint8)).resize((216, 180)), np.float32); _s10 = np.asarray(Image.fromarray(st(g("10")).astype(np.uint8)).resize((216, 180)), np.float32)
+_e = np.hypot(_nd.sobel(_s0, 0), _nd.sobel(_s0, 1)) > 60; _lab, _n = _nd.label(_nd.binary_dilation(_e, iterations=2))
+_hero = float(np.bincount(_lab.ravel())[1:].max() / _e.size) if _n else 0.0; _mv = float((np.abs(_s10 - _s0) > 25).mean())
+check("hook: frame 1 has a moving hero/anomaly (hero >= 8 % of stage, >= 5 % of pixels change in 0.33 s)", _hero >= _hc.get("frame1_min_hero_frac", 0.08) and _mv >= _hc.get("frame1_min_moved_frac", 0.05), dict(hero_frac=round(_hero, 3), moved_frac=round(_mv, 4)))
 mse = float(((fl - f0) ** 2).mean()); psnr = 99.0 if mse == 0 else 10 * np.log10(255 ** 2 / mse)
 check("loop: last frame == frame 0 (PSNR >= 25 dB, stills)", psnr >= 25, dict(psnr_last_vs_first=round(psnr, 1)))
 
@@ -78,6 +85,15 @@ if ND.is_dir():
     longest = cur = 0
     for s_ in still: cur = cur + 1 if s_ else 0; longest = max(longest, cur)
     check("motion: no stage hold > 2.0 s (0.2 s stills, approx.)", longest * 0.2 <= 2.0, dict(longest_hold_s=round(longest * 0.2, 2)))
+    # r8 meaningful-motion hold (approx. on 0.2 s stills; exact gate runs at ship in qa.py)
+    from scipy import ndimage as _nd2
+    _bl = np.stack([_nd2.gaussian_filter(np.asarray(Image.fromarray(x.astype(np.uint8)).resize((216, 180)), np.float32), 3) for x in fr])
+    _end = int((card_at - 0.2) / 0.2); _run = _worst = 0
+    for i_ in range(min(len(_bl) - 2, _end)):
+        m_ = np.abs(_bl[i_ + 2] - _bl[i_]) > 8; lab_, n_ = _nd2.label(m_)
+        big_ = float(np.bincount(lab_.ravel())[1:].max() / m_.size) if n_ else 0.0
+        _run = _run + 1 if big_ < 0.01 else 0; _worst = max(_worst, _run)
+    check("motion: meaningful change at least every 1.75 s (stills, approx.)", (_worst + 2) * 0.2 <= 1.8, dict(longest_s=round((_worst + 2) * 0.2, 2)))
     dd = np.abs(fr[3:] - fr[:-3]).mean(axis=(1, 2)) if len(fr) > 3 else np.array([99.0])
     ev = np.where(dd >= 10.0)[0] + 3
     gaps = np.diff(np.concatenate([[0], ev, [len(fr) - 1]])) * 0.2
@@ -93,7 +109,7 @@ if ND.is_dir():
     shutil.rmtree(ND, ignore_errors=True)
 
 # 5. static
-for name, ok, detail in static_gates.checks(ID): check(name, ok, detail)
+for name, ok, detail in static_gates.checks(ID, SLUG): check(name, ok, detail)
 shutil.rmtree(KD, ignore_errors=True)
 res.update(checks=checks, iteration=IT, mode="preview", wall_s=round(time.time() - T0, 1), contact_sheet=str(OUT / f"preview_sheet_it{IT}.png"), keystills=str(OUT / f"keystills_it{IT}.png"))
 (OUT / f"preview_it{IT}.json").write_text(json.dumps(res, indent=1))

@@ -342,7 +342,10 @@ pop_ok = not snaps
 #      is tracked like a TagLabel/Pill and must pop too (r6 gap 2: the pop gate only saw cyan backings).
 #  (b) callout clutter: more than CLUTTER_MAX pills/badges (cyan backings + hand-rolled badges) on the stage at once,
 #      held >= 0.6 s, fails (Sky_v6 0:35 had four callout pills; critic: 'clutter of callouts').
-CLUTTER_MAX = arg("--clutter-max", 3)
+_QG = json.loads((Path(__file__).resolve().parent.parent / "pipeline.config.json").read_text()).get("qa_gates", {}).get("clutter", {})
+CLUTTER_COUNT = arg("--clutter-count", _QG.get("count", "floating"))   # floating | all
+ATTACH_PX = arg("--attach-px", int(_QG.get("attach_px", 25)))
+CLUTTER_MAX = arg("--clutter-max", int(_QG.get("max", 3)))
 CARD = [float(x) for x in arg("--card", "").split(",") if x.strip()]
 in_card = lambda t: len(CARD) == 2 and CARD[0] - 0.2 <= t <= CARD[1] + 0.2
 def backed_badges(P):
@@ -374,20 +377,41 @@ def backed_badges(P):
     out = [b for b in out if not in_grid(b, out)]
     # Callouts are pill-shaped: short and wide (h <= 120 px at full res, w/h >= 1.6). Title blocks and icon tiles are not.
     pill = lambda b: (b[3] - b[1]) * 2 <= 120 and (b[2] - b[0]) >= 1.6 * (b[3] - b[1])
-    cnt = 0
+    # r8: a pill is a FLOATING callout unless diagram art touches it (a leader line, the part it names, a shape edge
+    # in a 2-18 px ring at half scale). Labels attached to shapes are diagram content (ANC_v7 15.5 s: NOISE/CHIP/
+    # SPEAKER tags on the parts they name). CLUTTER_COUNT=floating (default, pipeline.config.json gates.clutter.count)
+    # counts only floating callouts; "all" restores the r7 behaviour.
+    keyc = ndi.binary_dilation(mag | cyn, iterations=3)
+    def attached(b):
+        # attached = a piece of diagram art (>= 25 px connected, i.e. not a background dot) reaches within 6 px of the
+        # pill: a leader line, the part it names, a shape edge. Art = pixels far (> 45) from the ring's median colour.
+        x0, y0, x1, y1 = b
+        m = np.zeros_like(mag); m[max(0, y0 - 18):y1 + 18, max(0, x0 - 18):x1 + 18] = True
+        m[max(0, y0 - 2):y1 + 2, max(0, x0 - 2):x1 + 2] = False; m &= ~keyc
+        if m.sum() < 40: return False
+        med = np.median(P[m], axis=0)
+        art = m & (np.abs(P - med).max(axis=2) > 45)
+        lab_, _ = ndi.label(art)
+        near = np.zeros_like(mag); near[max(0, y0 - 8):y1 + 8, max(0, x0 - 8):x1 + 8] = True
+        ids = set(np.unique(lab_[near & art])) - {0}
+        return any((lab_ == k).sum() >= ATTACH_PX for k in ids)
+    cand = []
     labc, _ = ndi.label(ndi.binary_closing(cyn, iterations=2))
     for j, sl in enumerate(ndi.find_objects(labc), 1):
         if sl is None or (labc[sl] == j).sum() < 60: continue
         if sl[0].start * 2 >= 1222 or sl[0].stop * 2 < 220: continue
-        if pill([sl[1].start, sl[0].start, sl[1].stop, sl[0].stop]): cnt += 1
+        b = [sl[1].start, sl[0].start, sl[1].stop, sl[0].stop]
+        if pill(b): cand.append(b)
     # backed text bbox is the glyph box; the badge around it adds ~20 px padding per side at half scale
-    return out, cnt + sum(1 for b in out if pill([b[0] - 10, b[1] - 6, b[2] + 10, b[3] + 6]))
-btracks, blive, clutter_series = [], [], []
+    cand += [[b[0] - 10, b[1] - 6, b[2] + 10, b[3] + 6] for b in out if pill([b[0] - 10, b[1] - 6, b[2] + 10, b[3] + 6])]
+    floating = [b for b in cand if not attached(b)]
+    return out, (len(floating) if CLUTTER_COUNT == "floating" else len(cand)), len(cand)
+btracks, blive, clutter_series, clutter_all = [], [], [], []
 for i, path in enumerate(occs_all):
     P = np.asarray(Image.open(path).convert("RGB")).astype(int)
-    boxes, cnt = backed_badges(P)
+    boxes, cnt, cnt_all = backed_badges(P)
     t = i * STEP_S
-    clutter_series.append(0 if in_card(t) else cnt)
+    clutter_series.append(0 if in_card(t) else cnt); clutter_all.append(0 if in_card(t) else cnt_all)
     nxt = []
     for b in boxes:
         m = next((tr for tr in blive if box_iou(tr["b"][-1], b) > 0.3), None)
@@ -418,7 +442,7 @@ res = dict(min_required=MIN, samples=n, nth=NTH, label_instances=len(allr), min_
            held_failures=fails, ok=not fails, safe_zone_violations=sz[:20], safe_zone_ok=not sz, safe_zone_transient=len(sz_all) - len(sz),
            overlap_clearance_px=CLEARANCE, overlap_ok=not ov_fails, overlap_min_clearance=overlap_min_clearance, overlap_violations=ov_fails,
            pop_ok=pop_ok, pop_entrances=len(pops), pop_snaps=snaps[:20], pop_handrolled_tracks=len(btracks),
-           clutter_ok=clutter_ok, clutter_max_allowed=CLUTTER_MAX, clutter_peak=max(clutter_series, default=0), clutter_violations=clutter_runs[:10],
+           clutter_ok=clutter_ok, clutter_max_allowed=CLUTTER_MAX, clutter_peak=max(clutter_series, default=0), clutter_count=CLUTTER_COUNT, clutter_peak_all=max(clutter_all, default=0), clutter_violations=clutter_runs[:10],
            intro_edge_s=INTRO_S, preview=PREVIEW, raw_svg_text_probed=True)
 if not fails:
     (OUT / "contrast_fail.png").unlink(missing_ok=True)
