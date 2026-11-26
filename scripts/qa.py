@@ -218,6 +218,21 @@ if "--no-entrances" not in sys.argv:
               dict(entrances=ej["entrances"], snaps=ej["snaps"][:5], fades=ej["fades"][:5]))
     except Exception as e:
         check("motion: every element entrance scales/slides/draws on (no snaps, <= 2 opacity-only fades)", False, dict(error=str(e)))
+# 6c-r8b. planned key labels stay readable during their beat (OCR on the render; Elevator v7 tie-break lost CAR/CW + MOTOR labels)
+if "--no-labels" not in sys.argv:
+    try:
+        sys.path.insert(0, str(ROOT / "scripts")); import labels_persist as _lp
+        lp = _lp.check(ID, SLUG, MP4); res["labels_persist"] = lp; (OUT / "labels_persist.json").write_text(json.dumps(lp, indent=1))
+        check("labels: every shots.md key label is readable in its shot and stays (OCR)", lp["ok"],
+              dict(labels=lp["labels"], failing=lp["failing"][:5]))
+    except Exception as e:
+        check("labels: every shots.md key label is readable in its shot and stays (OCR)", False, dict(error=str(e)[:300]))
+    # VO sync is ADVISORY: a pixel-motion event near each beat word does not catch semantic lag (v6b and v7 both pass)
+    try:
+        import vo_sync as _vs
+        vs = _vs.check(ID, SLUG, MP4); res["vo_sync_advisory"] = {k: vs[k] for k in ("ok", "beats", "missed", "consecutive_miss", "tol_s")}
+    except Exception as e:
+        res["vo_sync_advisory"] = dict(error=str(e)[:300])
 # 6c-r7b. no decorative HUD / fake timecodes (AI LABS 'AI tells'); the real chapter deck lives in brand/Chrome.tsx, not here
 from static_gates import checks as _static_checks
 for _name, _ok, _detail in _static_checks(ID, SLUG):
