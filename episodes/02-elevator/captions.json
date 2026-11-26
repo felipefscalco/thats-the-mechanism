@@ -2,12 +2,12 @@
  {
   "text": "This",
   "start": 0.2,
-  "end": 0.3
+  "end": 0.29
  },
  {
   "text": "is",
   "start": 0.36,
-  "end": 0.45
+  "end": 0.44
  },
  {
   "text": "the",
@@ -17,37 +17,37 @@
  {
   "text": "elevator",
   "start": 0.9600000000000001,
-  "end": 1.27
+  "end": 1.22
  },
  {
   "text": "that",
   "start": 1.2799999999999998,
-  "end": 1.57
+  "end": 1.46
  },
  {
   "text": "barely",
   "start": 1.6400000000000001,
-  "end": 1.96
+  "end": 1.94
  },
  {
   "text": "lifts",
   "start": 1.96,
-  "end": 2.3
+  "end": 2.28
  },
  {
   "text": "you.",
   "start": 2.3,
-  "end": 2.63
+  "end": 2.38
  },
  {
   "text": "It",
   "start": 2.7399999999999998,
-  "end": 3.02
+  "end": 2.97
  },
  {
   "text": "almost",
   "start": 3.02,
-  "end": 3.5
+  "end": 3.47
  },
  {
   "text": "balances",
@@ -72,7 +72,7 @@
  {
   "text": "other",
   "start": 4.9399999999999995,
-  "end": 5.1
+  "end": 5.15
  },
  {
   "text": "side",
@@ -87,17 +87,17 @@
  {
   "text": "the",
   "start": 5.4799999999999995,
-  "end": 5.73
+  "end": 5.8
  },
  {
   "text": "cable",
   "start": 5.84,
-  "end": 6.08
+  "end": 6.2
  },
  {
   "text": "hangs",
   "start": 6.34,
-  "end": 6.42
+  "end": 6.58
  },
  {
   "text": "a",
@@ -155,29 +155,29 @@
   "end": 10.75
  },
  {
-  "text": "40-50%",
+  "text": "40\u201350%",
   "start": 11.0,
   "end": 11.3
  },
  {
   "text": "of",
   "start": 12.180000000000001,
-  "end": 12.260000000000002
+  "end": 12.28
  },
  {
   "text": "the",
   "start": 12.3,
-  "end": 12.49
+  "end": 12.58
  },
  {
   "text": "rated",
   "start": 12.58,
-  "end": 12.9
+  "end": 12.98
  },
  {
   "text": "load.",
   "start": 12.98,
-  "end": 13.22
+  "end": 13.52
  },
  {
   "text": "So",
@@ -302,12 +302,12 @@
  {
   "text": "the",
   "start": 21.099999999999998,
-  "end": 21.23
+  "end": 21.35
  },
  {
   "text": "car",
   "start": 21.439999999999998,
-  "end": 21.54
+  "end": 21.6
  },
  {
   "text": "is",
@@ -317,7 +317,7 @@
  {
   "text": "nearly",
   "start": 21.959999999999997,
-  "end": 22.07
+  "end": 22.08
  },
  {
   "text": "empty,",
@@ -507,7 +507,7 @@
  {
   "text": "move",
   "start": 34.74,
-  "end": 34.82
+  "end": 34.88
  },
  {
   "text": "a",
@@ -552,7 +552,7 @@
  {
   "text": "That's",
   "start": 37.86,
-  "end": 37.96
+  "end": 37.98
  },
  {
   "text": "the",
@@ -562,22 +562,22 @@
  {
   "text": "mechanism.",
   "start": 38.5,
-  "end": 38.93
+  "end": 39.02
  },
  {
   "text": "An",
   "start": 39.18,
-  "end": 39.29
+  "end": 39.39
  },
  {
   "text": "elevator",
   "start": 39.6,
-  "end": 39.85
+  "end": 39.92
  },
  {
   "text": "is",
   "start": 39.92,
-  "end": 40.0
+  "end": 40.06
  },
  {
   "text": "a",
@@ -587,17 +587,17 @@
  {
   "text": "scale,",
   "start": 40.440000000000005,
-  "end": 40.52
+  "end": 40.58
  },
  {
   "text": "not",
   "start": 40.68,
-  "end": 40.76
+  "end": 40.84
  },
  {
   "text": "a",
   "start": 40.84,
-  "end": 40.92
+  "end": 41.02
  },
  {
   "text": "crane.",

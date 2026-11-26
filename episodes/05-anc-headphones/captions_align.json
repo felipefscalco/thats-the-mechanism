@@ -1,0 +1,18 @@
+{
+ "engine": "whisper.cpp+DTW",
+ "initial_prompt": "Glossary: headphones, microphones, Engineers, destructive, interference, ventilation, mechanism",
+ "script_words": 110,
+ "whisper_words": 110,
+ "match_rate": 1.0,
+ "max_unmatched_run": 0,
+ "unmatched": [],
+ "pause_segments": 0,
+ "window_violations": [],
+ "thresholds": {
+  "min_match": 0.9,
+  "min_word_sim": 0.7,
+  "max_run": 3,
+  "window_slack_s": 0.35
+ },
+ "ok": true
+}
