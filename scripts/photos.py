@@ -156,14 +156,14 @@ def pick(slug, key, role):
     row = dict(date=time.strftime("%Y-%m-%d"), episode=slug, file=f"assets/photos/{slug}/{name}", public=f"photos/{slug}--{name}", role=role, title=title,
                author=author, credit=f"{short} / {author} / {c['license']}", source=c["source"], source_url=c["page"], license=c["license"], license_url=c.get("license_url") or c["page"], verified_via=c.get("verified_via", ""),
                width=c["w"], height=c["h"])
-    cp = PH / "CREDITS.csv"; new = not cp.exists()
-    rows = [] if new else [r for r in csv.DictReader(open(cp)) if r["file"] != row["file"]]
+    # r8: rows go through scripts/credits.py (whitelisted fields, public page URLs without query/userinfo, no local
+    # paths); a ledger write failure is logged and never stops the episode.
+    from credits import persist
+    cp = PH / "CREDITS.csv"
+    try: rows = [r for r in csv.DictReader(open(cp)) if r["file"] != row["file"]] if cp.exists() else []
+    except Exception as e: print("credits: could not read ledger", type(e).__name__); rows = []
     rows.append(row)
-    with open(cp, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(row)); w.writeheader(); w.writerows(rows)
-    ep_rows = [r for r in rows if r["episode"] == slug]
-    lines = ["Photo credits (public domain / CC0, no attribution required; credited anyway):"] + [f"- {r['credit']} - {r['source_url']}" for r in ep_rows]
-    (ROOT / "episodes" / slug / "photo_credits.md").write_text("\n".join(lines) + "\n")
+    persist(rows, cp, {slug: ROOT / "episodes" / slug / "photo_credits.md"})
     print("picked", row["file"], row["license"], row["source_url"])
 
 if __name__ == "__main__":

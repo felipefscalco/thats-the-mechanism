@@ -2,17 +2,17 @@
  {
   "text": "This",
   "start": 0.18,
-  "end": 0.31
+  "end": 0.32
  },
  {
   "text": "is",
   "start": 0.38,
-  "end": 0.46
+  "end": 0.48
  },
  {
   "text": "the",
   "start": 0.56,
-  "end": 0.69
+  "end": 0.72
  },
  {
   "text": "sunset",
@@ -27,7 +27,7 @@
  {
   "text": "of",
   "start": 1.46,
-  "end": 1.6
+  "end": 1.67
  },
  {
   "text": "someone",
@@ -47,7 +47,7 @@
  {
   "text": "sky.",
   "start": 2.88,
-  "end": 3.09
+  "end": 3.1
  },
  {
   "text": "Both",
@@ -62,37 +62,37 @@
  {
   "text": "the",
   "start": 4.18,
-  "end": 4.26
+  "end": 4.3
  },
  {
   "text": "same",
   "start": 4.42,
-  "end": 4.54
+  "end": 4.66
  },
  {
   "text": "trick,",
   "start": 4.8,
-  "end": 4.93
+  "end": 4.88
  },
  {
   "text": "seen",
   "start": 5.34,
-  "end": 5.45
+  "end": 5.44
  },
  {
   "text": "from",
   "start": 5.58,
-  "end": 5.78
+  "end": 5.68
  },
  {
   "text": "two",
   "start": 5.84,
-  "end": 6.03
+  "end": 5.92
  },
  {
   "text": "places.",
   "start": 6.3,
-  "end": 6.4
+  "end": 6.38
  },
  {
   "text": "Sunlight",
@@ -112,27 +112,27 @@
  {
   "text": "color",
   "start": 8.180000000000001,
-  "end": 8.28
+  "end": 8.3
  },
  {
   "text": "mixed",
   "start": 8.56,
-  "end": 8.64
+  "end": 8.75
  },
  {
   "text": "together.",
   "start": 9.0,
-  "end": 9.24
+  "end": 9.43
  },
  {
   "text": "Air",
   "start": 9.72,
-  "end": 9.8
+  "end": 9.86
  },
  {
   "text": "molecules",
   "start": 10.24,
-  "end": 10.32
+  "end": 10.42
  },
  {
   "text": "are",
@@ -142,7 +142,7 @@
  {
   "text": "about",
   "start": 10.780000000000001,
-  "end": 10.860000000000001
+  "end": 10.91
  },
  {
   "text": "a",
@@ -152,7 +152,7 @@
  {
   "text": "thousand",
   "start": 11.340000000000002,
-  "end": 11.46
+  "end": 11.420000000000002
  },
  {
   "text": "times",
@@ -162,27 +162,27 @@
  {
   "text": "smaller",
   "start": 12.24,
-  "end": 12.38
+  "end": 12.46
  },
  {
   "text": "than",
   "start": 12.520000000000001,
-  "end": 12.600000000000001
+  "end": 12.64
  },
  {
   "text": "a",
   "start": 12.66,
-  "end": 12.84
+  "end": 12.74
  },
  {
   "text": "light",
   "start": 12.860000000000001,
-  "end": 13.3
+  "end": 12.940000000000001
  },
  {
   "text": "wave,",
   "start": 13.32,
-  "end": 13.67
+  "end": 13.5
  },
  {
   "text": "and",
@@ -202,17 +202,17 @@
  {
   "text": "scatter",
   "start": 15.040000000000001,
-  "end": 15.28
+  "end": 15.120000000000001
  },
  {
   "text": "short",
   "start": 15.48,
-  "end": 15.69
+  "end": 15.56
  },
  {
   "text": "waves",
   "start": 15.92,
-  "end": 16.1
+  "end": 16.0
  },
  {
   "text": "far",
@@ -222,7 +222,7 @@
  {
   "text": "more",
   "start": 16.52,
-  "end": 16.61
+  "end": 16.599999999999998
  },
  {
   "text": "than",
@@ -232,12 +232,12 @@
  {
   "text": "long",
   "start": 17.02,
-  "end": 17.3
+  "end": 17.099999999999998
  },
  {
   "text": "ones.",
   "start": 17.419999999999998,
-  "end": 17.61
+  "end": 17.499999999999996
  },
  {
   "text": "Blue",
@@ -252,42 +252,42 @@
  {
   "text": "bounced",
   "start": 18.939999999999998,
-  "end": 19.07
+  "end": 19.019999999999996
  },
  {
   "text": "around",
   "start": 19.24,
-  "end": 19.53
+  "end": 19.319999999999997
  },
  {
   "text": "about",
   "start": 19.54,
-  "end": 19.91
+  "end": 19.619999999999997
  },
  {
   "text": "four",
   "start": 19.959999999999997,
-  "end": 20.21
+  "end": 20.039999999999996
  },
  {
   "text": "times",
   "start": 20.38,
-  "end": 20.59
+  "end": 20.459999999999997
  },
  {
   "text": "more",
   "start": 20.66,
-  "end": 20.87
+  "end": 20.86
  },
  {
   "text": "than",
   "start": 20.9,
-  "end": 21.03
+  "end": 21.19
  },
  {
   "text": "red.",
   "start": 21.2,
-  "end": 21.42
+  "end": 21.5
  },
  {
   "text": "At",
@@ -317,22 +317,22 @@
  {
   "text": "scattered",
   "start": 23.56,
-  "end": 23.72
+  "end": 23.639999999999997
  },
  {
   "text": "blue",
   "start": 23.88,
-  "end": 24.01
+  "end": 23.959999999999997
  },
  {
   "text": "arriving",
   "start": 24.34,
-  "end": 24.48
+  "end": 24.419999999999998
  },
  {
   "text": "from",
   "start": 24.599999999999998,
-  "end": 24.7
+  "end": 24.679999999999996
  },
  {
   "text": "every",
@@ -342,22 +342,22 @@
  {
   "text": "direction.",
   "start": 25.38,
-  "end": 25.65
+  "end": 25.459999999999997
  },
  {
   "text": "That's",
   "start": 26.06,
-  "end": 26.21
+  "end": 26.139999999999997
  },
  {
   "text": "the",
   "start": 26.3,
-  "end": 26.64
+  "end": 26.38
  },
  {
   "text": "sky.",
   "start": 26.7,
-  "end": 26.89
+  "end": 26.779999999999998
  },
  {
   "text": "At",
@@ -366,8 +366,8 @@
  },
  {
   "text": "sunset,",
-  "start": 27.84,
-  "end": 27.919999999999998
+  "start": 27.86,
+  "end": 27.939999999999998
  },
  {
   "text": "the",
@@ -382,47 +382,47 @@
  {
   "text": "reaching",
   "start": 28.88,
-  "end": 29.09
+  "end": 28.959999999999997
  },
  {
   "text": "you",
   "start": 29.14,
-  "end": 29.31
+  "end": 29.22
  },
  {
   "text": "crosses",
   "start": 29.48,
-  "end": 29.83
+  "end": 29.65
  },
  {
   "text": "dozens",
   "start": 29.88,
-  "end": 30.119999999999997
+  "end": 30.03
  },
  {
   "text": "of",
-  "start": 30.119999999999997,
-  "end": 30.29
+  "start": 30.099999999999998,
+  "end": 30.3
  },
  {
   "text": "times",
   "start": 30.419999999999998,
-  "end": 30.72
+  "end": 30.68
  },
  {
   "text": "more",
   "start": 30.72,
-  "end": 31.08
+  "end": 30.92
  },
  {
   "text": "air.",
-  "start": 31.119999999999997,
-  "end": 31.3
+  "start": 31.099999999999998,
+  "end": 31.2
  },
  {
   "text": "Along",
-  "start": 31.959999999999997,
-  "end": 32.04
+  "start": 31.98,
+  "end": 32.06
  },
  {
   "text": "the",
@@ -431,18 +431,18 @@
  },
  {
   "text": "way,",
-  "start": 32.36,
-  "end": 32.44
+  "start": 32.38,
+  "end": 32.46
  },
  {
   "text": "the",
-  "start": 32.580000000000005,
-  "end": 32.660000000000004
+  "start": 32.6,
+  "end": 32.68
  },
  {
   "text": "blue",
   "start": 32.82,
-  "end": 32.92
+  "end": 32.9
  },
  {
   "text": "is",
@@ -452,7 +452,7 @@
  {
   "text": "scattered",
   "start": 33.38,
-  "end": 33.6
+  "end": 33.58
  },
  {
   "text": "out",
@@ -472,7 +472,7 @@
  {
   "text": "beam,",
   "start": 34.1,
-  "end": 34.5
+  "end": 34.38
  },
  {
   "text": "off",
@@ -487,37 +487,37 @@
  {
   "text": "color",
   "start": 35.14,
-  "end": 35.23
+  "end": 35.22
  },
  {
   "text": "someone",
   "start": 35.5,
-  "end": 35.7
+  "end": 35.66
  },
  {
   "text": "else's",
   "start": 35.7,
-  "end": 36.01
+  "end": 35.93
  },
  {
   "text": "afternoon.",
   "start": 36.42,
-  "end": 36.81
+  "end": 36.5
  },
  {
   "text": "What",
-  "start": 37.300000000000004,
-  "end": 37.38
+  "start": 37.32,
+  "end": 37.4
  },
  {
   "text": "survives",
   "start": 37.74,
-  "end": 37.99
+  "end": 37.94
  },
  {
   "text": "to",
   "start": 38.04,
-  "end": 38.14
+  "end": 38.12
  },
  {
   "text": "reach",
@@ -537,22 +537,22 @@
  {
   "text": "is",
   "start": 39.0,
-  "end": 39.3
+  "end": 39.25
  },
  {
   "text": "orange",
-  "start": 39.440000000000005,
-  "end": 39.71
+  "start": 39.42,
+  "end": 39.72
  },
  {
   "text": "and",
   "start": 39.78,
-  "end": 39.99
+  "end": 39.93
  },
  {
   "text": "red.",
-  "start": 40.06,
-  "end": 40.15
+  "start": 40.080000000000005,
+  "end": 40.160000000000004
  },
  {
   "text": "That's",
@@ -561,23 +561,23 @@
  },
  {
   "text": "the",
-  "start": 40.96,
-  "end": 41.12
+  "start": 40.940000000000005,
+  "end": 41.13
  },
  {
   "text": "mechanism.",
   "start": 41.38,
-  "end": 41.72
+  "end": 41.77
  },
  {
   "text": "Your",
   "start": 42.160000000000004,
-  "end": 42.24
+  "end": 42.32
  },
  {
   "text": "sunset",
-  "start": 42.620000000000005,
-  "end": 42.7
+  "start": 42.64,
+  "end": 42.8
  },
  {
   "text": "is",
@@ -592,27 +592,27 @@
  {
   "text": "leftovers",
   "start": 43.38,
-  "end": 43.46
+  "end": 43.51
  },
  {
   "text": "of",
   "start": 43.900000000000006,
-  "end": 43.980000000000004
+  "end": 44.08
  },
  {
   "text": "someone",
   "start": 44.18,
-  "end": 44.38
+  "end": 44.400000000000006
  },
  {
   "text": "else's",
-  "start": 44.38,
-  "end": 44.74
+  "start": 44.400000000000006,
+  "end": 44.84
  },
  {
   "text": "blue",
   "start": 44.84,
-  "end": 45.03
+  "end": 45.300000000000004
  },
  {
   "text": "sky.",

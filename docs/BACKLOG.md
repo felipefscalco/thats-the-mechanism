@@ -52,3 +52,4 @@ Ideas and suggestions from reviews that are not bugs. Reviewers append; whoever 
 - [ ] (r6) Pre-existing eslint error: brand/EpisodeShell.tsx:64 `@remotion/from-0` (remove `from={0}`); `npm run lint` fails until fixed.
 - [ ] (r6 critic) Microwave: a "ding" on the timer reaching 0:00 (needs a CC0/own-synth bell in sfx/CREDITS.csv), physical foley (cavity hum, wave-bounce thump), and a real CC0/PD macro photo of door mesh as a ProofCard.
 - [ ] (r6 critic) Microwave: the side-on cutaway repeats in 3 chapters; consider a different framing for "Same door" (split lens: wave view vs human view).
+- [ ] (r9) Microwave (06) under the r9 static gates: hook curiosity-gap signal in the first sentence; on-screen keywords for "2.45 GHz" and "bounces off"; mix tail so the payoff holds >= 1.5 s (now 0.93 s); one hero@phrase beat in shots.md (candidate: the wave bouncing off the screen). Built and shipped under r6 gates.

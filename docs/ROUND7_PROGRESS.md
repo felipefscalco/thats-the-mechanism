@@ -1,0 +1,18 @@
+# Round 7 progress (resume file)
+Workdir: /workspace/ttm-r7 (git clone of ttm-repo, branch r7, origin = GitHub). Deps symlinked from ttm-r6 (.venv-tts, remotion/node_modules, models, tools/whisper.cpp); narration wavs copied.
+Plan: llm adapter (scripts/llm.py) -> fixer guard -> new gates in contrast.py/preview.py -> build_loop.py (plan/keystills/preview/fix/ship) -> run new gates on QR_v6/Elevator_v6b/ANC_v7/Sky_v6 -> Sky r7 -> docs -> commit/push.
+
+## Log (BRT)
+- 03:22 setup done.
+- 03:2x llm.py (claude+agy smoke OK, codex/cursor-agent dry-run), fixer_guard.py, tests/test_r7_pipeline.py PASS, EpisodeShell raw-SVG-text probe CSS.
+- 03:2x gates: framing.py (a), contrast.py clutter(b)/intro-edge(d)/hand-rolled pop(e)/preview mode, raw SVG text probe (c), static_gates.py HUD lint, qa.py wired; preview.py + remotion/stills.mjs written (untested). Background: _scratch/gates_r6.sh running new gates on QR_v6/Elevator_v6b/ANC_v7/Sky_v6 -> qa/<Id>/r7gates_<suf>/.
+- 03:3x critic.py --backend role (any provider; frame sheets for non-video CLIs), ship_check.sh via roles + ship_decide.py tie-breaker, lessons.py clusterer role + r7 gate mappings (copied r6 qa jsons into r7 qa/ so lessons has data). Next: build_loop.py + planner VIDEO.md + config + run gates on Sky.
+- 03:3x pipeline.config.json llm.roles; prompts/{planner,builder,fixer,selfcritique}.md; scripts/build_loop.py (plan/build/preview/route/critique/ship/judge, resumable state). Gates rerun (grid/pill-filtered clutter) detached: _scratch/gatelogs/.
+- 03:38 Local commits on branch r7: 74b8cd5 (adapter/pipeline), 77bd645 (gates). Docs (AGENTS/README/ACCEPTANCE) edited, uncommitted. Sky VIDEO.md written by planner (claude sonnet, 94 s, $0.27); loop state qa/Sky/v7/loop_state.json step=build. WAIT for _scratch/gatelogs/all.log to list Sky before starting build (Sky_v6 probe needs v6 code). Then: setsid .venv-tts/bin/python scripts/build_loop.py Sky 03-sky v7 --prev /workspace/ttm-r7/renders/Sky_v5.mp4 > _scratch/loop_sky.log
+- QR_v6 new gates: only new FAIL = safe zone (raw SVG repair-byte cell at x892-936,y950, 10.6-11.6 s, platform column). Clutter peak 2, framing boxed 0.39 ok, pop ok.
+- 03:48 r7 gates on r6 renders done (QR/Elevator/ANC/Sky, logs _scratch/gatelogs). Sky build loop STARTED: log _scratch/loop_sky.log, state qa/Sky/v7/loop_state.json (resumable: rerun same command). Sky_v6 source backup _scratch/Sky_v6.tsx. contrast.py: text attaches to a backing only if overlapping (uncommitted).
+- 04:10 RESUMED. Bug: builder scope guard deleted untracked .remotion/chrome-headless-shell (Remotion browser cache) -> fixed: .remotion/ in .gitignore + llm.ALWAYS_ALLOWED (caches, metrics, qa, renders). Running loop (pid 936629) still has old llm.py loaded; .gitignore protects .remotion now. Remotion re-downloads the browser.
+- 04:18 Ship render failed on env (qa.py shebang -> system python lacks soundfile; tools/fn-venv not linked). Fixed iterate.sh (venv python), linked fn-venv, build_loop aborts on infra failures instead of calling builder. Loop resumed at step=ship (log _scratch/loop_sky2.log). Preview it1/it2 PASS all 14 preview gates (130 s each). Committed d1835d3, 61fe8cb, 586e301.
+- 04:34 Sky_v7 ship render: 20/20 gates PASS (ship_it 2 after a builder SFX-level fix). Judge (ship_check.sh) running -> qa/Sky/v7/ship.
+- 04:39 Sky_v7 vs Sky_v5 pairwise: SHIP both orders (+2.06 s3 / +1.89 s3). Calibrated pending. Elevator gates rerun with overlap-attach fix -> _scratch/gatelogs/gates2_Elevator.log
+- 04:53 Loop done. Sky_v7: 20/20 gates, pairwise SHIP vs v5 both orders (+2.06/+1.89 s3). Calibrated critic_deep 5.29 ONE MORE PASS (v6 was 5.39). lessons.py regenerated STYLE_RULES. Wrote docs/ROUND7.md. Committed loop fixes + Sky v7.

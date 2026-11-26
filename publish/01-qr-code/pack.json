@@ -1,0 +1,147 @@
+{
+ "episode": "01-qr-code",
+ "composition": "QR",
+ "render": "renders/QR_v7.mp4",
+ "video_sha256": "3b84f044e6fc40e30bd7a9e5c7ca288a91a609eac093eadb770efd5c96ef2d94",
+ "created": "2026-11-26T18:00:03+0200",
+ "platforms": {
+  "tiktok": {
+   "title": "How a QR Code Repairs Itself With Reed-Solomon Error Correction",
+   "caption": "A QR code adds extra bytes calculated from your link, using the same Reed-Solomon math that kept scratched CDs playing. At the highest error-correction level, about 30% of the code's bytes can be rebuilt, so a logo or a scratch can be survived. The three large corner squares are different: they aren't data, they're how your camera finds the code, so covering one breaks it. Have you ever scanned a damaged QR code that still worked?\n\nImages: QR code for mobile English Wikipedia.svg: brdall (CC0)\n\n#ThatsTheMechanism #science #qrcode #reedsolomon #errorcorrection",
+   "hashtags": [
+    "#ThatsTheMechanism",
+    "#science",
+    "#qrcode",
+    "#reedsolomon",
+    "#errorcorrection"
+   ],
+   "lengths": {
+    "title": 63,
+    "caption": 565,
+    "hashtags": 5
+   },
+   "limits": {
+    "title": 100,
+    "caption": 2200,
+    "hashtags": 5
+   },
+   "ai_generated_content_label": true,
+   "request_id": "f1aaafc71702b23d9f49"
+  },
+  "youtube_shorts": {
+   "title": "How a QR Code Repairs Itself With Reed-Solomon Error Correction",
+   "caption": "A QR code adds extra bytes calculated from your link, using the same Reed-Solomon math that kept scratched CDs playing. At the highest error-correction level, about 30% of the code's bytes can be rebuilt, so a logo or a scratch can be survived. The three large corner squares are different: they aren't data, they're how your camera finds the code, so covering one breaks it. Have you ever scanned a damaged QR code that still worked?\n\nImages: QR code for mobile English Wikipedia.svg: brdall (CC0)\n\n#Shorts #ThatsTheMechanism #science",
+   "hashtags": [
+    "#Shorts",
+    "#ThatsTheMechanism",
+    "#science"
+   ],
+   "lengths": {
+    "title": 63,
+    "caption": 535,
+    "hashtags": 3
+   },
+   "limits": {
+    "title": 100,
+    "caption": 5000,
+    "hashtags": 3
+   },
+   "synthetic_media": true,
+   "made_for_kids": false,
+   "category": "Education",
+   "visibility": "private_until_approved",
+   "request_id": "4db7f9bcf8a511f8c712"
+  },
+  "instagram_reels": {
+   "title": "How a QR Code Repairs Itself With Reed-Solomon Error Correction",
+   "caption": "A QR code adds extra bytes calculated from your link, using the same Reed-Solomon math that kept scratched CDs playing. At the highest error-correction level, about 30% of the code's bytes can be rebuilt, so a logo or a scratch can be survived. The three large corner squares are different: they aren't data, they're how your camera finds the code, so covering one breaks it. Have you ever scanned a damaged QR code that still worked?\n\nImages: QR code for mobile English Wikipedia.svg: brdall (CC0)\n\n#ThatsTheMechanism #science #qrcode #reedsolomon #errorcorrection #math #explainer #HowItWorks",
+   "hashtags": [
+    "#ThatsTheMechanism",
+    "#science",
+    "#qrcode",
+    "#reedsolomon",
+    "#errorcorrection",
+    "#math",
+    "#explainer",
+    "#HowItWorks"
+   ],
+   "lengths": {
+    "title": 63,
+    "caption": 594,
+    "hashtags": 8
+   },
+   "limits": {
+    "title": 125,
+    "caption": 2200,
+    "hashtags": 8
+   },
+   "ai_info_label": true,
+   "request_id": "d0459506886c75878813"
+  }
+ },
+ "credits": {
+  "images": [
+   {
+    "title": "QR Code Damaged",
+    "author": "QR code for mobile English Wikipedia.svg: brdall",
+    "license": "CC0",
+    "source_url": "https://commons.wikimedia.org/wiki/File:QR_Code_Damaged.jpg",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+   }
+  ],
+  "sources": [
+   {
+    "title": "citing DENSO WAVE's L/M/Q/H restoration rates",
+    "url": "https://www.blissqr.com/posts/qr-code-error-correction/"
+   },
+   {
+    "title": "https://mostlyqr.com/blog/qr-code-logo-size",
+    "url": "https://mostlyqr.com/blog/qr-code-logo-size"
+   },
+   {
+    "title": "DENSO WAVE, inventor",
+    "url": "https://www.qrcode.com/en/about/error_correction.html"
+   },
+   {
+    "title": "H: 15.5% of area read in 80%+ of captures",
+    "url": "https://qrdx.dev/blog/qr-code-scan-study"
+   },
+   {
+    "title": "~20% safe after real-world margin",
+    "url": "https://useqr.app/docs/spec/how-logos-work-without-breaking-a-code"
+   },
+   {
+    "title": "https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction",
+    "url": "https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction"
+   },
+   {
+    "title": "https://en.wikipedia.org/wiki/Cross-interleaved_Reed%E2%80%93Solomon_coding",
+    "url": "https://en.wikipedia.org/wiki/Cross-interleaved_Reed%E2%80%93Solomon_coding"
+   }
+  ]
+ },
+ "draft": {
+  "title": "How a QR Code Repairs Itself With Reed-Solomon Error Correction",
+  "caption": "A QR code adds extra bytes calculated from your link, using the same Reed-Solomon math that kept scratched CDs playing. At the highest error-correction level, about 30% of the code's bytes can be rebuilt, so a logo or a scratch can be survived. The three large corner squares are different: they aren't data, they're how your camera finds the code, so covering one breaks it. Have you ever scanned a damaged QR code that still worked?",
+  "tags": [
+   "science",
+   "qrcode",
+   "reedsolomon",
+   "errorcorrection",
+   "math",
+   "explainer"
+  ]
+ },
+ "llm": {
+  "provider": "claude",
+  "cost_usd": 0.0048939
+ },
+ "approval": {
+  "required": true,
+  "file": "publish/01-qr-code/APPROVED",
+  "status": "pending"
+ },
+ "upload": "not implemented (r8): stub refuses",
+ "pack_sha": "08d2ec5a8cadb5c5",
+ "violations": []
+}

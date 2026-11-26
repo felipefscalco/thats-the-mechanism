@@ -1,7 +1,7 @@
 import { getInputProps } from "remotion";
 import React from "react";
-import { AbsoluteFill, Img, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { PROBE } from "./Kit";
+import { AbsoluteFill, Freeze, Img, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { PROBE, PROBE_KEY, PROBE_TEXT } from "./Kit";
 import { Audio } from "@remotion/media";
 import { Pillar } from "./tokens";
 import { Background, BrandChip, Captions, Chapter, Deck } from "./Chrome";
@@ -16,6 +16,13 @@ import { createTikTokStyleCaptions } from "@remotion/captions";
 export const STEM = (getInputProps() as { stem?: string }).stem;
 
 export const LOOP_FRAMES = 14; // final 0.47 s: whip back into the hook frozen at frame 0
+/** r9 payoff hold (gate: qa.py "end card ... payoff settled >= 1.5 s before loop"; Sky v8 settled only 0.4 s): the stage
+ *  is frozen for the last PAYOFF_HOLD_S before the loop whip, so the payoff is always complete and still. The audio tail
+ *  that makes room for it comes from scripts/mix_one.sh (last word + hold + whip). Never freezes while a word is spoken. */
+export const PAYOFF_HOLD_S = 1.5;
+/** r7 gate (contrast.py): on the probe passes, raw SVG <text> drawn by an episode (not via <Label>) is also painted in the
+ *  key magenta, so WCAG contrast, safe-zone/edge, overlap and clutter gates see it. Scoped to the stage (chrome excluded). */
+const PROBE_RAW_TEXT_CSS = `.ttm-stage svg text, .ttm-stage svg tspan { fill: ${PROBE_KEY} !important; stroke: none !important; }`;
 
 /**
  * Standard wrapper for every episode. Provides: background, brand chip + intro sting, captions,
@@ -31,6 +38,8 @@ export const EpisodeShell: React.FC<{
   const f = useCurrentFrame();
   const { durationInFrames: D, fps } = useVideoConfig();
   const loopFrom = D - LOOP_FRAMES;
+  const lastWordEnd = words.length ? Math.ceil(words[words.length - 1].end * fps) + 3 : 0;
+  const holdFrom = Math.max(lastWordEnd, loopFrom - T_FRAMES - Math.round(PAYOFF_HOLD_S * fps));
   const manual = [cue(2, "click", 0.7), ...outroCues(cardAt, cardUntil), cue(loopFrom - T_FRAMES / 2, "whoosh", 0.7), ...cues];
   // micro-ticks: a very quiet click on every caption page that has no other cue within 9 frames (texture, not clutter)
   const pages = createTikTokStyleCaptions({ captions: words.map((w, i) => ({ text: (i === 0 ? "" : " ") + w.text, startMs: w.start * 1000, endMs: w.end * 1000, timestampMs: null, confidence: null })), combineTokensWithinMilliseconds: 850 }).pages;
@@ -39,10 +48,11 @@ export const EpisodeShell: React.FC<{
   return (
     <PillarCtx.Provider value={pillar}><AbsoluteFill>
       <Background pillar={pillar} backdrop={backdrop} backdropDim={backdropDim} />
-      <AtFrame f={f}>
-        <AbsoluteFill>{children}</AbsoluteFill>
-      </AtFrame>
-      {f >= loopFrom - T_FRAMES && <LoopBack from={loopFrom} hook={hook} />}
+      {PROBE_TEXT && <style>{PROBE_RAW_TEXT_CSS}</style>}
+      {f >= holdFrom
+        ? <Freeze frame={holdFrom}><AtFrame f={holdFrom}><AbsoluteFill className="ttm-stage">{children}</AbsoluteFill></AtFrame></Freeze>
+        : <AtFrame f={f}><AbsoluteFill className="ttm-stage">{children}</AbsoluteFill></AtFrame>}
+      {f >= loopFrom - T_FRAMES && <AbsoluteFill className="ttm-stage"><LoopBack from={loopFrom} hook={hook} /></AbsoluteFill>}
       <MechanismCard at={cardAt} until={cardUntil} pillar={pillar} />
       <Grain f={f} D={D} />
       <BrandChip pillar={pillar} ep={ep} source={source} />

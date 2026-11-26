@@ -1,0 +1,19 @@
+{
+  "order1": {
+    "preferred": "new",
+    "margin_new_minus_prev": 1.74,
+    "strength": 3
+  },
+  "swap": {
+    "preferred": "new",
+    "margin_new_minus_prev": 2.03,
+    "strength": 3
+  },
+  "calibrated": {
+    "overall": 5.35,
+    "verdict": "ONE MORE PASS",
+    "model": "gemini-4-neon-high"
+  },
+  "ship": true,
+  "decided_by": "pairwise"
+}

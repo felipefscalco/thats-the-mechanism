@@ -1,0 +1,40 @@
+You are the PLANNER for the "That's the Mechanism" Shorts pipeline (repository: /workspace/ttm-r7). Episode `03-sky`, composition `Sky`.
+You write the frozen production plan. You do not write code. Another agent (the builder) will receive ONLY your plan.
+
+Read: AGENTS.md, docs/STYLE_BRIEF.md, docs/ACCEPTANCE.md, docs/active_rules_prompt.txt, episodes/03-sky/script.txt,
+episodes/03-sky/shots.md, episodes/03-sky/facts.json, and the current composition remotion/src/episodes/Sky.tsx.
+Known problems in the previous version (Sky_v6, NO-SHIP vs Sky_v5: the critic saw no difference in either order). Fix them structurally, not cosmetically:
+- [blocker] 00:38-00:40: During the climax payoff ('What survives to reach your eyes is orange and red'), the burned-in captions ('your eyes is' at 00:38 and 'orange and red. That's' at 00:39) and the 'ORANGE + RED SURVIVE' pill dim to ~25-35% opacity dark grey on dark background, rendering the punchline nearly illegible on mobile while the camera zoom simultaneously slices half the Sun off the right frame edge.
+- [blocker] 00:00 & 00:46: Frame 00:00 opens mid-zoom with the SUNSET card overflowing both horizontal edges, cropping the 'S' so the label reads 'UNSET'; at 00:46 the loop-back whip drags a blurred card and blurred title unevenly over the callback split-screen straight into that broken cropped frame, while a bulky dark title box above the stage gives 00:00-00:06 a slide-header feel.
+- [major] 00:15-00:17: Twelve bright blue scatter lines shoot straight across the lavender label 'N2 / O2 MOLECULE', colliding directly with the text; simultaneously, the short blue sine wave floats untouched well below the molecule, breaking sound-off visual causality because the wave never actually strikes the particle.
+- [major] 00:35-00:40: The episode's hero payoff ('your sunset is the leftovers of someone else's blue sky') plays out as three static bent blue sticks under a thin white line with a tiny orange tip—lacking an unmistakable kinetic wow moment that makes the mechanism viscerally click.
+- [major] 00:18-00:21: Six separate beats hold visually static for 2.2-3.0 s (00:01-00:03, 00:08-00:09, 00:15-00:17, 00:19-00:21, 00:24-00:26, 00:32-00:34, 00:43-00:45), badges like 'SAME TRICK' (00:04) and 'DOZENS x MORE AIR' (00:30) fade/pop linearly with zero anticipation or overshoot, and the Rayleigh bar chart (00:18-00:21) reads like a frozen Keynote slide.
+- [major] 00:07-00:40: An unchanging dark purplish cityscape silhouette with glowing orange windows and two giant faint gears persists behind every scene—including the physics prism, air molecule, and Planet Earth in outer space—creating an uncustomized template feel and muddying figure-ground separation.
+- [major] 00:32-00:34: The 'REAL PHOTO SEEN FROM THE ISS' card drops over the orbital diagram leaving the yellow Sun circle sticking out awkwardly behind the right card border, its attribution text ('PHOTO: NASA, ISS028-E-007274 (2011) · PUBLIC DOMAIN') is undersized (~20-22 px on 1080w, squint-level on a phone), and the photo holds completely static for ~2.5 s.
+- [major] 00:00-00:46: Nearly every cut reuses the same generic air-whoosh (00:00, 00:07, 00:10, 00:18, 00:22, 00:27, 00:32, 00:35, 00:41, 00:46) paired with small synthetic glassy UI pings and no bespoke physical foley, followed by ~1 s of dead silence at 00:45 before the tail whoosh.
+- [major] 00:41-00:42: The 'THAT'S THE MECHANISM.' end card holds for only ~1.0 s (00:41) and cuts back to the split-screen callback before the spoken catchphrase finishes on the caption track, leaving 'the mechanism. Your' stranded on 00:42.
+- [minor] 00:22-00:26: In the Noon orbital beat, unboxed white text 'YOU, AT NOON' floats across Earth's bright green/teal coastline and grazes the bottom blue scatter ray, while the blue fan shoots outward toward the Sun and space instead of filling the atmospheric dome above the observer.
+- [pairwise] Simultaneous callout pill clustering around the Earth diagram at 0:35 ('DOZENS × MORE AIR', 'LONG PATH THROUGH AIR', 'SOMEONE ELSE\\'S AFTERNOON', 'ORANGE + RED SURVIVE') creates localized visual clutter.
+- [pairwise] Radial scatter lines emitted from the diatomic molecule at 0:12 intersect directly with the bounds of the '~1000× SMALLER' text callout badge.
+- [pairwise] Displaying the formal Rayleigh scattering equation (proportional to 1/lambda^4) alongside comparative bar charts at 0:18 introduces high academic density during a very brief 2-second beat.
+- [pairwise] The city skyline silhouette from the opening hook persists in the background through abstract molecular and chart sequences (0:08-0:19), introducing subtle background noise behind technical diagrams.
+- [pairwise] Visual clutter from overlapping callout badges (observer position, path length, air multiplier, and secondary observer) between 00:34 and 00:38.
+- [pairwise] The ISS photo proof card at 00:31 completely overlays the Earth ray diagram, temporarily breaking the visual continuity of the light path.
+- [pairwise] The scale comparison badge at 00:11 is tightly sandwiched between high-frequency and low-frequency wave paths, causing slight typographic crowding.
+- [pairwise] The final camera punch-in at 00:45 into the sunset card is extremely rapid with minimal hold time before the loop reset.
+- [r7 gate, framing.py] Whole-stage card held 18.4-20.2 s (the BLUE vs RED ratio beat is a floating dark card = slide look) and at 42.4-46.2 s (callback split panels).
+Goal for this version: be clearly better than Sky_v5 to an independent critic: one continuous sky/atmosphere world instead of cards and panels, a hook that is the subject at frame 0 with nothing clipped, max 3 callouts at once, and a legible, bright payoff at 0:38-0:40.
+
+Return the complete Markdown text of `episodes/03-sky/VIDEO.md` with exactly these sections:
+1. `# VIDEO — Sky` and a one-paragraph goal (what the viewer must understand and feel; the one special moment).
+2. `## Frozen script` — the narration verbatim from script.txt (already voiced; the builder must not change a word).
+3. `## Shots` — a table: #, caption anchor phrase (exact words from the script), duration estimate, ONE continuous-world
+   visual idea, camera move (push / whip / whipUp / cut+punch / glide / pull), on-screen text (<= 2 text levels, <= 6 words each),
+   max simultaneous callouts (never more than 3).
+4. `## Key stills` — describe three frames precisely: HOOK (frame 0, must already be the subject, bright, no title card),
+   MID (the core mechanism beat), END (the loop frame, identical to frame 0).
+5. `## Must fix` — the concrete problems from the previous version (from the critic and QA findings above), each with the fix.
+6. `## Gates` — the automated checks the build must pass (from docs/ACCEPTANCE.md, A1-A18), in one line each.
+7. `## Do not` — slide-deck cards enclosing the stage, boxed panels for most of the video, more than 3 pills at once,
+   decorative HUD / fake timecodes, raw SVG text under 4.5:1 contrast, cross-fades, new facts not in facts.json.
+Be specific and buildable. No preamble outside the Markdown.

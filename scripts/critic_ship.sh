@@ -9,7 +9,7 @@
 #   scripts/critic_ship.sh --a-dir /path/to/v4-renders --a-suf v4 --b-suf v5 \
 #       --it QR=3,Elevator=3,Sky=4 --verify-name critic_v5_lite QR Elevator Sky
 #
-# Env: MODELS (default gemini-3-flash-preview,gemini-3.8-flash)
+# Env: BACKEND (default gemini-api; or role / agy / claude ...), MODELS (default gemini-3-flash-preview,gemini-3.8-flash)
 #      PYTHON (default python3)
 # Free-tier budget is 20 requests/model/day (see docs/LESSONS.md L-22).
 set -euo pipefail
@@ -58,7 +58,7 @@ for E in "$@"; do
   mkdir -p "$OUT"
   [[ -f "$A" && -f "$B" ]] || { echo "missing $A or $B" >&2; exit 1; }
 
-  "$PYTHON" scripts/critic.py "$E" --compare "$A" --mp4 "$B" --out-dir "$OUT" \
+  "$PYTHON" scripts/critic.py "$E" --backend "${BACKEND:-gemini-api}" --compare "$A" --mp4 "$B" --out-dir "$OUT" \
     --name "cmp_A-${A_SUF}_B-${B_SUF}" --label "A=${A_SUF} B=${B_SUF}" --models "$MODELS"
 
   IT=$(it_for "$E")
@@ -69,10 +69,10 @@ for E in "$@"; do
   fi
   CAL_ARGS=(--mp4 "$B" --out-dir "$OUT" --name "critic_${B_SUF}" --label "$B_SUF" --models "$MODELS")
   [[ -n "${REPORT:-}" && -f "${REPORT:-}" ]] && CAL_ARGS+=(--qa-report "$REPORT")
-  "$PYTHON" scripts/critic.py "$E" "${CAL_ARGS[@]}"
+  "$PYTHON" scripts/critic.py "$E" --backend "${BACKEND:-gemini-api}" "${CAL_ARGS[@]}"
 
   if [[ -n "$VERIFY_NAME" && -f "$OUT/${VERIFY_NAME}.json" ]]; then
-    "$PYTHON" scripts/critic.py "$E" --mp4 "$B" --out-dir "$OUT" \
+    "$PYTHON" scripts/critic.py "$E" --backend "${BACKEND:-gemini-api}" --mp4 "$B" --out-dir "$OUT" \
       --name "critic_${B_SUF}_verify" --label "${B_SUF}-verify" \
       --verify "$OUT/${VERIFY_NAME}.json" --models "$MODELS"
   fi

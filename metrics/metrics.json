@@ -1,25 +1,25 @@
 {
-  "generated": "2026-11-26T12:39:31-03:00",
+  "generated": "2026-11-26T17:53:38+02:00",
   "cost_usd_total": 0.0,
   "llm_tokens": "not available to the pipeline (authoring bot's token usage is not exposed)",
   "episodes": {
     "01-qr-code": {
       "stages": {
         "qa": {
-          "runs": 19,
-          "wall_s_total": 2139.38,
-          "wall_s_last": 259.29,
-          "cpu_s_total": 2757.15,
-          "peak_rss_mb": 4460,
+          "runs": 21,
+          "wall_s_total": 2862.88,
+          "wall_s_last": 368.6,
+          "cpu_s_total": 4528.53,
+          "peak_rss_mb": 5207,
           "out_mb_last": null
         },
         "render": {
-          "runs": 18,
-          "wall_s_total": 1005.23,
-          "wall_s_last": 96.4,
-          "cpu_s_total": 1698.71,
+          "runs": 20,
+          "wall_s_total": 1147.64,
+          "wall_s_last": 76.27,
+          "cpu_s_total": 1928.57,
           "peak_rss_mb": 4597,
-          "out_mb_last": 19.21
+          "out_mb_last": 23.01
         },
         "captions": {
           "runs": 4,
@@ -46,12 +46,12 @@
           "out_mb_last": 2.41
         },
         "master": {
-          "runs": 11,
-          "wall_s_total": 43.49,
-          "wall_s_last": 4.35,
-          "cpu_s_total": 52.2,
-          "peak_rss_mb": 201,
-          "out_mb_last": 19.21
+          "runs": 13,
+          "wall_s_total": 52.35,
+          "wall_s_last": 4.56,
+          "cpu_s_total": 62.78,
+          "peak_rss_mb": 202,
+          "out_mb_last": 23.01
         },
         "loudnorm": {
           "runs": 2,
@@ -62,8 +62,8 @@
           "out_mb_last": 4.81
         }
       },
-      "qa_iterations": 7,
-      "render_iterations": 7,
+      "qa_iterations": 102,
+      "render_iterations": 102,
       "cost_usd": 0.0,
       "notes": {
         "script": "authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available",
@@ -74,20 +74,20 @@
     "02-elevator": {
       "stages": {
         "qa": {
-          "runs": 19,
-          "wall_s_total": 2542.03,
-          "wall_s_last": 143.37,
-          "cpu_s_total": 2929.56,
-          "peak_rss_mb": 4111,
+          "runs": 22,
+          "wall_s_total": 3051.88,
+          "wall_s_last": 226.7,
+          "cpu_s_total": 3780.68,
+          "peak_rss_mb": 4731,
           "out_mb_last": null
         },
         "render": {
-          "runs": 18,
-          "wall_s_total": 1023.5,
-          "wall_s_last": 58.41,
-          "cpu_s_total": 1390.61,
+          "runs": 22,
+          "wall_s_total": 1284.66,
+          "wall_s_last": 70.62,
+          "cpu_s_total": 1749.5,
           "peak_rss_mb": 4576,
-          "out_mb_last": 16.24
+          "out_mb_last": 16.21
         },
         "captions": {
           "runs": 3,
@@ -114,12 +114,12 @@
           "out_mb_last": 1.93
         },
         "master": {
-          "runs": 13,
-          "wall_s_total": 46.68,
-          "wall_s_last": 2.79,
-          "cpu_s_total": 49.04,
+          "runs": 16,
+          "wall_s_total": 56.32,
+          "wall_s_last": 3.06,
+          "cpu_s_total": 60.02,
           "peak_rss_mb": 204,
-          "out_mb_last": 16.24
+          "out_mb_last": 16.21
         },
         "r4_contrast_check": {
           "runs": 1,
@@ -138,8 +138,8 @@
           "out_mb_last": 3.85
         }
       },
-      "qa_iterations": 5,
-      "render_iterations": 5,
+      "qa_iterations": 102,
+      "render_iterations": 102,
       "cost_usd": 0.0,
       "notes": {
         "script": "authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available",
@@ -150,20 +150,20 @@
     "03-sky": {
       "stages": {
         "qa": {
-          "runs": 20,
-          "wall_s_total": 2503.86,
-          "wall_s_last": 190.21,
-          "cpu_s_total": 3469.88,
-          "peak_rss_mb": 4425,
+          "runs": 26,
+          "wall_s_total": 3367.42,
+          "wall_s_last": 235.52,
+          "cpu_s_total": 5284.1,
+          "peak_rss_mb": 4865,
           "out_mb_last": null
         },
         "render": {
-          "runs": 19,
-          "wall_s_total": 1958.0,
-          "wall_s_last": 98.15,
-          "cpu_s_total": 1573.67,
+          "runs": 24,
+          "wall_s_total": 2795.2,
+          "wall_s_last": 72.36,
+          "cpu_s_total": 2145.82,
           "peak_rss_mb": 4893,
-          "out_mb_last": 15.46
+          "out_mb_last": 21.29
         },
         "captions": {
           "runs": 3,
@@ -190,12 +190,12 @@
           "out_mb_last": 2.11
         },
         "master": {
-          "runs": 14,
-          "wall_s_total": 52.17,
-          "wall_s_last": 3.05,
-          "cpu_s_total": 58.09,
+          "runs": 19,
+          "wall_s_total": 68.88,
+          "wall_s_last": 3.03,
+          "cpu_s_total": 78.59,
           "peak_rss_mb": 204,
-          "out_mb_last": 15.46
+          "out_mb_last": 21.29
         },
         "loudnorm": {
           "runs": 1,
@@ -206,8 +206,8 @@
           "out_mb_last": 4.23
         }
       },
-      "qa_iterations": 5,
-      "render_iterations": 5,
+      "qa_iterations": 102,
+      "render_iterations": 102,
       "cost_usd": 0.0,
       "notes": {
         "script": "authored by Grok Bot in round 1 (LLM drafting + web fact-check); wall time not instrumented; LLM token counts not available",
@@ -389,61 +389,6 @@
       },
       "qa_iterations": 3,
       "render_iterations": 0,
-      "cost_usd": 0.0
-    },
-    "05-microwave-door": {
-      "stages": {
-        "captions": {
-          "runs": 1,
-          "wall_s_total": 7.64,
-          "wall_s_last": 7.64,
-          "cpu_s_total": 1.64,
-          "peak_rss_mb": 928,
-          "out_mb_last": 0.01
-        },
-        "mix": {
-          "runs": 1,
-          "wall_s_total": 1.64,
-          "wall_s_last": 1.64,
-          "cpu_s_total": 0.97,
-          "peak_rss_mb": 18,
-          "out_mb_last": 8.23
-        },
-        "render": {
-          "runs": 4,
-          "wall_s_total": 1014.77,
-          "wall_s_last": 247.85,
-          "cpu_s_total": 493.42,
-          "peak_rss_mb": 4331,
-          "out_mb_last": 15.68
-        },
-        "qa": {
-          "runs": 4,
-          "wall_s_total": 1833.08,
-          "wall_s_last": 457.71,
-          "cpu_s_total": 2513.36,
-          "peak_rss_mb": 4679,
-          "out_mb_last": null
-        },
-        "master": {
-          "runs": 3,
-          "wall_s_total": 8.1,
-          "wall_s_last": 2.71,
-          "cpu_s_total": 8.63,
-          "peak_rss_mb": 160,
-          "out_mb_last": 15.68
-        },
-        "critic": {
-          "runs": 1,
-          "wall_s_total": 277.2,
-          "wall_s_last": 277.2,
-          "cpu_s_total": 0.0,
-          "peak_rss_mb": 0,
-          "out_mb_last": null
-        }
-      },
-      "qa_iterations": 4,
-      "render_iterations": 4,
       "cost_usd": 0.0
     },
     "Elevator:v3_cal": {
@@ -1005,12 +950,12 @@
     "Elevator:ship": {
       "stages": {
         "critic": {
-          "runs": 3,
-          "wall_s_total": 891.86,
-          "wall_s_last": 131.68,
+          "runs": 4,
+          "wall_s_total": 1049.57,
+          "wall_s_last": 157.71,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0084
+          "out_mb_last": 0.0072
         }
       },
       "qa_iterations": 0,
@@ -1020,12 +965,12 @@
     "Elevator:ship_swap": {
       "stages": {
         "critic": {
-          "runs": 3,
-          "wall_s_total": 883.95,
-          "wall_s_last": 168.1,
+          "runs": 4,
+          "wall_s_total": 1041.49,
+          "wall_s_last": 157.54,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0079
+          "out_mb_last": 0.0075
         }
       },
       "qa_iterations": 0,
@@ -1035,12 +980,12 @@
     "Elevator:ship_cal": {
       "stages": {
         "critic": {
-          "runs": 3,
-          "wall_s_total": 969.07,
-          "wall_s_last": 539.87,
+          "runs": 4,
+          "wall_s_total": 1752.72,
+          "wall_s_last": 783.65,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0155
+          "out_mb_last": 0.0164
         }
       },
       "qa_iterations": 0,
@@ -1050,12 +995,12 @@
     "QR:ship_swap": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 126.58,
-          "wall_s_last": 126.58,
+          "runs": 2,
+          "wall_s_total": 264.55,
+          "wall_s_last": 137.97,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0072
+          "out_mb_last": 0.0083
         }
       },
       "qa_iterations": 0,
@@ -1065,12 +1010,12 @@
     "QR:ship": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 147.46,
-          "wall_s_last": 147.46,
+          "runs": 2,
+          "wall_s_total": 272.76,
+          "wall_s_last": 125.3,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0082
+          "out_mb_last": 0.0084
         }
       },
       "qa_iterations": 0,
@@ -1080,12 +1025,12 @@
     "QR:ship_cal": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 214.06,
-          "wall_s_last": 214.06,
+          "runs": 2,
+          "wall_s_total": 460.05,
+          "wall_s_last": 245.99,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0173
+          "out_mb_last": 0.0182
         }
       },
       "qa_iterations": 0,
@@ -1095,12 +1040,12 @@
     "Sky:ship": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 114.22,
-          "wall_s_last": 114.22,
+          "runs": 3,
+          "wall_s_total": 300.56,
+          "wall_s_last": 94.61,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0074
+          "out_mb_last": 0.0076
         }
       },
       "qa_iterations": 0,
@@ -1110,12 +1055,12 @@
     "Sky:ship_swap": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 115.37,
-          "wall_s_last": 115.37,
+          "runs": 3,
+          "wall_s_total": 405.77,
+          "wall_s_last": 165.4,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0072
+          "out_mb_last": 0.0078
         }
       },
       "qa_iterations": 0,
@@ -1125,12 +1070,12 @@
     "Sky:ship_cal": {
       "stages": {
         "critic": {
-          "runs": 1,
-          "wall_s_total": 200.89,
-          "wall_s_last": 200.89,
+          "runs": 3,
+          "wall_s_total": 1083.98,
+          "wall_s_last": 256.98,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0175
+          "out_mb_last": 0.0172
         }
       },
       "qa_iterations": 0,
@@ -1197,76 +1142,15 @@
       "render_iterations": 0,
       "cost_usd": 0.0
     },
-    "06-microwave-door": {
-      "stages": {
-        "render": {
-          "runs": 5,
-          "wall_s_total": 2009.41,
-          "wall_s_last": 291.52,
-          "cpu_s_total": 520.85,
-          "peak_rss_mb": 4257,
-          "out_mb_last": 15.54
-        },
-        "master": {
-          "runs": 5,
-          "wall_s_total": 13.91,
-          "wall_s_last": 2.68,
-          "cpu_s_total": 15.06,
-          "peak_rss_mb": 160,
-          "out_mb_last": 15.54
-        },
-        "qa": {
-          "runs": 5,
-          "wall_s_total": 2652.93,
-          "wall_s_last": 679.9,
-          "cpu_s_total": 10423.83,
-          "peak_rss_mb": 4396,
-          "out_mb_last": null
-        }
-      },
-      "qa_iterations": 8,
-      "render_iterations": 8,
-      "cost_usd": 0.0
-    },
-    "Microwave:ship": {
+    "Elevator:ship_tiebreak": {
       "stages": {
         "critic": {
           "runs": 1,
-          "wall_s_total": 280.59,
-          "wall_s_last": 280.59,
+          "wall_s_total": 876.03,
+          "wall_s_last": 876.03,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0071
-        }
-      },
-      "qa_iterations": 0,
-      "render_iterations": 0,
-      "cost_usd": 0.0
-    },
-    "Microwave:ship_swap": {
-      "stages": {
-        "critic": {
-          "runs": 1,
-          "wall_s_total": 301.62,
-          "wall_s_last": 301.62,
-          "cpu_s_total": 0.0,
-          "peak_rss_mb": 0,
-          "out_mb_last": 0.0081
-        }
-      },
-      "qa_iterations": 0,
-      "render_iterations": 0,
-      "cost_usd": 0.0
-    },
-    "Microwave:ship_cal": {
-      "stages": {
-        "critic": {
-          "runs": 1,
-          "wall_s_total": 280.1,
-          "wall_s_last": 280.1,
-          "cpu_s_total": 0.0,
-          "peak_rss_mb": 0,
-          "out_mb_last": 0.0155
+          "out_mb_last": 0.013
         }
       },
       "qa_iterations": 0,

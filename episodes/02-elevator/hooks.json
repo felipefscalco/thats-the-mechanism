@@ -1,0 +1,125 @@
+{
+ "slug": "02-elevator",
+ "patterns_covered": [
+  "contrarian",
+  "curiosity_gap",
+  "pattern_interrupt",
+  "specific_question"
+ ],
+ "candidates": [
+  {
+   "pattern": "curiosity_gap",
+   "line": "This is the elevator that barely lifts you. It almost balances you.",
+   "on_screen": "It barely lifts you",
+   "frame1_visual": "A single elevator car already gliding up a glass shaft, a heavy gray block sliding down the opposite side of the cable.",
+   "promise": "elevator balances you with a counterweight",
+   "payoff_quote": "It's built to match the empty car, plus about forty to fifty percent of the rated load",
+   "rules": {
+    "ok": true,
+    "failures": [],
+    "curiosity": {
+     "ok": true,
+     "signals": [
+      "tension word",
+      "paradox title ('the X that Y')"
+     ],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   }
+  },
+  {
+   "pattern": "pattern_interrupt",
+   "line": "Release the brake on an empty elevator, and it rises. Why?",
+   "on_screen": "Brake released. Car rises.",
+   "frame1_visual": "An empty elevator car already drifting upward on its cable while a brake lever visibly flips open, the counterweight sinking beside it.",
+   "promise": "empty car rises when brake is released",
+   "payoff_quote": "Release the brake on an empty car, and it wouldn't fall. It would rise",
+   "on_screen_note": "",
+   "rules": {
+    "ok": false,
+    "failures": [
+     "no curiosity-gap signal in the first sentence"
+    ],
+    "curiosity": {
+     "ok": false,
+     "signals": [],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   }
+  },
+  {
+   "pattern": "specific_question",
+   "line": "What is hanging on the other side of an elevator cable?",
+   "on_screen": "The other side of the cable",
+   "frame1_visual": "A moving cable over a pulley, the car rising on the left while a mystery block descends on the right, half hidden in shadow.",
+   "promise": "counterweight on the other side of the cable",
+   "payoff_quote": "On the other side of the cable hangs a counterweight",
+   "on_screen_note": "",
+   "rules": {
+    "ok": true,
+    "failures": [],
+    "curiosity": {
+     "ok": true,
+     "signals": [
+      "question",
+      "tension word"
+     ],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   }
+  },
+  {
+   "pattern": "contrarian",
+   "line": "An elevator motor doesn't haul the full weight of the car. So what does it fight?",
+   "on_screen": "Not the full weight",
+   "frame1_visual": "A packed elevator car already ascending, a motor on top with a small glowing load gauge showing only a sliver filled.",
+   "promise": "motor only fights the difference",
+   "payoff_quote": "So the motor never hauls the full weight. It only fights the difference",
+   "on_screen_note": "",
+   "rules": {
+    "ok": true,
+    "failures": [],
+    "curiosity": {
+     "ok": true,
+     "signals": [
+      "tension word"
+     ],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   }
+  },
+  {
+   "pattern": "curiosity_gap",
+   "line": "A modest motor moves a full office of people all day. The trick is hanging beside them.",
+   "on_screen": "Small motor, full office",
+   "frame1_visual": "A small motor spinning steadily at the top of a shaft while a car full of silhouetted office workers rises smoothly.",
+   "promise": "modest motor moves a full car because of the counterweight",
+   "payoff_quote": "a modest motor can move a full office of people, all day long",
+   "on_screen_note": "",
+   "rules": {
+    "ok": false,
+    "failures": [
+     "spoken hook 17 words > 16",
+     "no curiosity-gap signal in the first sentence"
+    ],
+    "curiosity": {
+     "ok": false,
+     "signals": [],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   }
+  }
+ ],
+ "chosen": 0,
+ "current_opening": "This is the elevator that barely lifts you.",
+ "providers": {
+  "hooks": "claude",
+  "hook_judge": "claude"
+ },
+ "cost_usd": 0.0452
+}

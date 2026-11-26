@@ -1,0 +1,174 @@
+{
+ "slug": "03-sky",
+ "patterns_covered": [
+  "contrarian",
+  "curiosity_gap",
+  "pattern_interrupt",
+  "specific_question"
+ ],
+ "candidates": [
+  {
+   "pattern": "curiosity_gap",
+   "line": "Every sunset is missing its blue. Somewhere else, someone is looking at it.",
+   "on_screen": "Sunset's blue: gone",
+   "frame1_visual": "Sun on a bright horizon, already shedding blue sparks that drift away from the orange beam.",
+   "promise": "where the sunset's blue goes",
+   "payoff_quote": "off to color someone else's afternoon",
+   "rules": {
+    "ok": false,
+    "failures": [
+     "no curiosity-gap signal in the first sentence"
+    ],
+    "curiosity": {
+     "ok": false,
+     "signals": [],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   },
+   "judge": {
+    "index": 0,
+    "curiosity_gap": 4,
+    "specificity": 3,
+    "visual_hook": 4,
+    "payoff": 4,
+    "honesty": 3,
+    "gap_in_first_sentence": true,
+    "note": "\"Missing its blue\" frames scattering as loss, and \"someone is looking at it\" is vague filler the script only partly pays.",
+    "weighted": 3.75
+   }
+  },
+  {
+   "pattern": "pattern_interrupt",
+   "line": "Why is the sun shedding blue sparks?",
+   "on_screen": "Blue leaking from the sun",
+   "frame1_visual": "Sun disc on the horizon with blue particles visibly streaming off it, already moving.",
+   "promise": "blue scattered out of the beam",
+   "payoff_quote": "the blue is scattered out of the beam",
+   "rules": {
+    "ok": true,
+    "failures": [],
+    "curiosity": {
+     "ok": true,
+     "signals": [
+      "question",
+      "tension word"
+     ],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   },
+   "judge": {
+    "index": 1,
+    "curiosity_gap": 4,
+    "specificity": 4,
+    "visual_hook": 4,
+    "payoff": 2,
+    "honesty": 2,
+    "gap_in_first_sentence": true,
+    "note": "Frame 1 shows the sun emitting blue sparks, which is physically wrong, and the script never says the sun sheds anything; it is about the sunset.",
+    "weighted": 3.3
+   }
+  },
+  {
+   "pattern": "specific_question",
+   "line": "Where does a sunset's missing blue end up?",
+   "on_screen": "Missing: one blue",
+   "frame1_visual": "Orange sunset beam with a stream of blue particles peeling off and curving away past the horizon.",
+   "promise": "where the blue goes",
+   "payoff_quote": "off to color someone else's afternoon",
+   "rules": {
+    "ok": true,
+    "failures": [],
+    "curiosity": {
+     "ok": true,
+     "signals": [
+      "question"
+     ],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   },
+   "judge": {
+    "index": 2,
+    "curiosity_gap": 4,
+    "specificity": 4,
+    "visual_hook": 4,
+    "payoff": 5,
+    "honesty": 4,
+    "gap_in_first_sentence": true,
+    "note": "Strong question that the script answers directly, but \"missing blue\" carries the same loss framing and the answer, \"someone else's afternoon\", is loose.",
+    "weighted": 4.25
+   }
+  },
+  {
+   "pattern": "contrarian",
+   "line": "A sunset isn't a separate effect from the blue sky.",
+   "on_screen": "Two skies, one cause",
+   "frame1_visual": "Sun on the horizon with orange glow on one side and the deep-blue gradient above, blue sparks moving through both.",
+   "promise": "sunset and blue sky are the same trick",
+   "payoff_quote": "Both are the same trick, seen from two places.",
+   "rules": {
+    "ok": true,
+    "failures": [],
+    "curiosity": {
+     "ok": true,
+     "signals": [
+      "tension word"
+     ],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   },
+   "judge": {
+    "index": 3,
+    "curiosity_gap": 2,
+    "specificity": 2,
+    "visual_hook": 3,
+    "payoff": 3,
+    "honesty": 5,
+    "gap_in_first_sentence": false,
+    "note": "It states the conclusion instead of opening a question, and it duplicates the script's own \"Both are the same trick\" line.",
+    "weighted": 2.75
+   }
+  },
+  {
+   "pattern": "curiosity_gap",
+   "line": "By sunset, the light reaching you has already lost something.",
+   "on_screen": "What did it lose?",
+   "frame1_visual": "A bright beam crossing a long stretch of air, blue sparks falling out of it as it moves toward the viewer.",
+   "promise": "what survives of the light",
+   "payoff_quote": "What survives to reach your eyes is orange and red.",
+   "rules": {
+    "ok": false,
+    "failures": [
+     "no curiosity-gap signal in the first sentence"
+    ],
+    "curiosity": {
+     "ok": false,
+     "signals": [],
+     "explains_too_early": false
+    },
+    "payoff_match": 1.0
+   },
+   "judge": {
+    "index": 4,
+    "curiosity_gap": 4,
+    "specificity": 3,
+    "visual_hook": 4,
+    "payoff": 4,
+    "honesty": 4,
+    "gap_in_first_sentence": true,
+    "note": "\"Lost something\" is vague; the payoff names the survivors (orange and red) rather than the named loss, so the promise is only partly concrete.",
+    "weighted": 3.85
+   }
+  }
+ ],
+ "chosen": 2,
+ "current_opening": "This is the sunset made of someone else's blue sky.",
+ "providers": {
+  "hooks": "claude",
+  "hook_judge": "claude"
+ },
+ "cost_usd": 0.1132
+}

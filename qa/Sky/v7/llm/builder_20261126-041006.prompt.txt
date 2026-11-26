@@ -1,0 +1,25 @@
+You are the BUILDER for the "That's the Mechanism" Shorts pipeline (repository: /workspace/ttm-r7). Episode `03-sky`, composition `Sky`.
+Your ONLY specification is the frozen plan `episodes/03-sky/VIDEO.md` (read it first; do not edit it). Also read AGENTS.md
+(enforcement hierarchy: gate > component > prose) and docs/active_rules_prompt.txt.
+You may edit ONLY: remotion/src/episodes/Sky.tsx (and new files under episodes/03-sky/ if needed). Edits elsewhere are reverted automatically.
+You are not the judge: an independent critic decides shipping. Do not change gates, scripts, docs, the script text or the audio.
+Never print or read anything under ~/.secrets. Do not commit, push or publish.
+
+Use brand primitives instead of hand placement: Lane / LabeledBox (36 px icon/label clearance), TagLabel / Pill (built-in pop),
+Label (>= 30 px), LoopEnd (last frame == frame 0). Hand-drawn SVG <text> is scanned for contrast too.
+
+Work preview-first (NO full renders, they are expensive and run once at the end):
+  (cd remotion && npx tsc --noEmit -p .)                         # after every edit
+  node remotion/stills.mjs Sky qa/Sky/v7/keys 0,mid,-1      # key stills: look at them (hook / mid / end) before polishing the rest
+  SUF=v7 .venv-tts/bin/python scripts/preview.py Sky 03-sky <N> # preview gates on stills (~minutes); every line must print PASS
+Stop when preview.py passes or after 2 preview runs, and reply with a short summary of what you changed.
+
+=== Task ===
+Rebuild the Sky composition to the frozen plan episodes/03-sky/VIDEO.md. The previous version (Sky_v6) tied with Sky_v5 for an
+independent critic, so cosmetic edits are not enough: implement the plan's continuous sky world (no floating cards / split panels for
+the mechanism beats), the clean frame-0 hook (nothing clipped, subject bright at frame 0), max 3 callouts at once, and the bright,
+legible payoff at the 'orange and red' beat. Keep the existing audio, captions, word timings and the photo proof (ProofCard).
+On the r7 gates Sky_v6 failed: intro edge clip at 0.4 s (SUNSET label at x=0), a hand-rolled badge snapping in at 20.3 s,
+4 callouts at once at 35.2-40.5 s, and whole-stage cards at 18.4-20.2 s and 42.4-46.2 s. All must pass in preview.py.
+Start with the three key stills (hook / mid / end) and check them before building the rest.
+

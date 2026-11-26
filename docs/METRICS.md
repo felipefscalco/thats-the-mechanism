@@ -4,27 +4,27 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 
 | episode | stage | runs | last wall (s) | total wall (s) | CPU (s) | peak RAM (MB) | output (MB) | cost |
 |---|---|---|---|---|---|---|---|---|
-| 01-qr-code | qa | 19 | 259.29 | 2139.38 | 2757.15 | 4460 | – | $0 |
-| 01-qr-code | render | 18 | 96.4 | 1005.23 | 1698.71 | 4597 | 19.21 | $0 |
+| 01-qr-code | qa | 21 | 368.6 | 2862.88 | 4528.53 | 5207 | – | $0 |
+| 01-qr-code | render | 20 | 76.27 | 1147.64 | 1928.57 | 4597 | 23.01 | $0 |
 | 01-qr-code | captions | 4 | 10.59 | 35.2 | 175.57 | 972 | 0.01 | $0 |
 | 01-qr-code | mix | 3 | 1.78 | 4.83 | 5.26 | 57 | 9.85 | $0 |
 | 01-qr-code | tts | 3 | 10.7 | 29.96 | 186.32 | 787 | 2.41 | $0 |
-| 01-qr-code | master | 11 | 4.35 | 43.49 | 52.2 | 201 | 19.21 | $0 |
+| 01-qr-code | master | 13 | 4.56 | 52.35 | 62.78 | 202 | 23.01 | $0 |
 | 01-qr-code | loudnorm | 2 | 1.29 | 2.31 | 1.93 | 79 | 4.81 | $0 |
-| 02-elevator | qa | 19 | 143.37 | 2542.03 | 2929.56 | 4111 | – | $0 |
-| 02-elevator | render | 18 | 58.41 | 1023.5 | 1390.61 | 4576 | 16.24 | $0 |
+| 02-elevator | qa | 22 | 226.7 | 3051.88 | 3780.68 | 4731 | – | $0 |
+| 02-elevator | render | 22 | 70.62 | 1284.66 | 1749.5 | 4576 | 16.21 | $0 |
 | 02-elevator | captions | 3 | 8.42 | 21.81 | 113.62 | 954 | 0.01 | $0 |
 | 02-elevator | mix | 3 | 1.53 | 4.05 | 4.22 | 54 | 7.92 | $0 |
 | 02-elevator | tts | 2 | 8.24 | 15.34 | 94.94 | 702 | 1.93 | $0 |
-| 02-elevator | master | 13 | 2.79 | 46.68 | 49.04 | 204 | 16.24 | $0 |
+| 02-elevator | master | 16 | 3.06 | 56.32 | 60.02 | 204 | 16.21 | $0 |
 | 02-elevator | r4_contrast_check | 1 | 25.06 | 25.06 | 71.4 | 2537 | – | $0 |
 | 02-elevator | loudnorm | 1 | 0.76 | 0.76 | 0.72 | 79 | 3.85 | $0 |
-| 03-sky | qa | 20 | 190.21 | 2503.86 | 3469.88 | 4425 | – | $0 |
-| 03-sky | render | 19 | 98.15 | 1958.0 | 1573.67 | 4893 | 15.46 | $0 |
+| 03-sky | qa | 26 | 235.52 | 3367.42 | 5284.1 | 4865 | – | $0 |
+| 03-sky | render | 24 | 72.36 | 2795.2 | 2145.82 | 4893 | 21.29 | $0 |
 | 03-sky | captions | 3 | 9.45 | 22.07 | 115.65 | 946 | 0.01 | $0 |
 | 03-sky | mix | 2 | 1.54 | 2.8 | 3.03 | 54 | 8.64 | $0 |
 | 03-sky | tts | 2 | 8.53 | 15.9 | 99.98 | 792 | 2.11 | $0 |
-| 03-sky | master | 14 | 3.05 | 52.17 | 58.09 | 204 | 15.46 | $0 |
+| 03-sky | master | 19 | 3.03 | 68.88 | 78.59 | 204 | 21.29 | $0 |
 | 03-sky | loudnorm | 1 | 1.02 | 1.02 | 0.82 | 79 | 4.23 | $0 |
 | 04-ice-demo | tts | 1 | 4.83 | 4.83 | 29.81 | 670 | 1.38 | $0 |
 | 04-ice-demo | loudnorm | 1 | 0.76 | 0.76 | 0.56 | 79 | 2.75 | $0 |
@@ -61,9 +61,10 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Elevator:agy_v4_vs_v5 | critic | 1 | 134.82 | 134.82 | 0.0 | 0 | 0.0048 | $0 |
 | Elevator:agy_v5_vs_v4_swap | critic | 1 | 162.37 | 162.37 | 0.0 | 0 | 0.006 | $0 |
 | Elevator:baseline_v3 | critic | 1 | 63.4 | 63.4 | 0.0 | 0 | 0.0017 | $0 |
-| Elevator:ship | critic | 3 | 131.68 | 891.86 | 0.0 | 0 | 0.0084 | $0 |
-| Elevator:ship_cal | critic | 3 | 539.87 | 969.07 | 0.0 | 0 | 0.0155 | $0 |
-| Elevator:ship_swap | critic | 3 | 168.1 | 883.95 | 0.0 | 0 | 0.0079 | $0 |
+| Elevator:ship | critic | 4 | 157.71 | 1049.57 | 0.0 | 0 | 0.0072 | $0 |
+| Elevator:ship_cal | critic | 4 | 783.65 | 1752.72 | 0.0 | 0 | 0.0164 | $0 |
+| Elevator:ship_swap | critic | 4 | 157.54 | 1041.49 | 0.0 | 0 | 0.0075 | $0 |
+| Elevator:ship_tiebreak | critic | 1 | 876.03 | 876.03 | 0.0 | 0 | 0.013 | $0 |
 | Elevator:v3_cal | critic | 1 | 232.22 | 232.22 | 0.0 | 0 | 0.0032 | $0 |
 | Elevator:v3_cal2 | critic | 1 | 44.31 | 44.31 | 0.0 | 0 | 0.0039 | $0 |
 | Elevator:v3_legacy38 | critic | 1 | 215.45 | 215.45 | 0.0 | 0 | 0.0021 | $0 |
@@ -81,9 +82,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | QR:A=v4 B=v5 | critic | 1 | 19.74 | 19.74 | 0.0 | 0 | 0.0023 | $0 |
 | QR:A=v4 B=v5 5fps | critic | 1 | 28.69 | 28.69 | 0.0 | 0 | 0.0026 | $0 |
 | QR:agy_v4_vs_v5 | critic | 1 | 117.03 | 117.03 | 0.0 | 0 | 0.0043 | $0 |
-| QR:ship | critic | 1 | 147.46 | 147.46 | 0.0 | 0 | 0.0082 | $0 |
-| QR:ship_cal | critic | 1 | 214.06 | 214.06 | 0.0 | 0 | 0.0173 | $0 |
-| QR:ship_swap | critic | 1 | 126.58 | 126.58 | 0.0 | 0 | 0.0072 | $0 |
+| QR:ship | critic | 2 | 125.3 | 272.76 | 0.0 | 0 | 0.0084 | $0 |
+| QR:ship_cal | critic | 2 | 245.99 | 460.05 | 0.0 | 0 | 0.0182 | $0 |
+| QR:ship_swap | critic | 2 | 137.97 | 264.55 | 0.0 | 0 | 0.0083 | $0 |
 | QR:v4 | critic | 1 | 14.85 | 14.85 | 0.0 | 0 | 0.0043 | $0 |
 | QR:v4_cal | critic | 1 | 88.02 | 88.02 | 0.0 | 0 | 0.0038 | $0 |
 | QR:v5 | critic | 1 | 13.68 | 13.68 | 0.0 | 0 | 0.0035 | $0 |
@@ -94,10 +95,10 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Sky | qa | 1 | 124.85 | 124.85 | 199.52 | 4444 | – | $0 |
 | Sky:A=v4 B=v5 | critic | 1 | 21.97 | 21.97 | 0.0 | 0 | 0.0026 | $0 |
 | Sky:agy_v4_vs_v5 | critic | 1 | 62.53 | 62.53 | 0.0 | 0 | 0.0046 | $0 |
-| Sky:ship | critic | 1 | 114.22 | 114.22 | 0.0 | 0 | 0.0074 | $0 |
-| Sky:ship_cal | critic | 1 | 200.89 | 200.89 | 0.0 | 0 | 0.0175 | $0 |
+| Sky:ship | critic | 3 | 94.61 | 300.56 | 0.0 | 0 | 0.0076 | $0 |
+| Sky:ship_cal | critic | 3 | 256.98 | 1083.98 | 0.0 | 0 | 0.0172 | $0 |
 | Sky:ship_retry | critic | 1 | 143.87 | 143.87 | 0.0 | 0 | 0.0078 | $0 |
-| Sky:ship_swap | critic | 1 | 115.37 | 115.37 | 0.0 | 0 | 0.0072 | $0 |
+| Sky:ship_swap | critic | 3 | 165.4 | 405.77 | 0.0 | 0 | 0.0078 | $0 |
 | Sky:v4 | critic | 2 | 13.09 | 40.46 | 0.0 | 0 | 0.0035 | $0 |
 | Sky:v5 | critic | 1 | 14.41 | 14.41 | 0.0 | 0 | 0.0042 | $0 |
 | Sky:v5-legacy | critic | 2 | 11.62 | 24.57 | 0.0 | 0 | 0.0014 | $0 |
@@ -108,9 +109,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 
 | episode | render iterations | QA iterations |
 |---|---|---|
-| 01-qr-code | 7 | 7 |
-| 02-elevator | 5 | 5 |
-| 03-sky | 5 | 5 |
+| 01-qr-code | 102 | 102 |
+| 02-elevator | 102 | 102 |
+| 03-sky | 102 | 102 |
 | 04-ice-demo | 2 | 2 |
 | 05-anc-headphones | 3 | 3 |
 | 05-microwave-door | 4 | 4 |
@@ -134,6 +135,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Elevator:ship | 0 | 0 |
 | Elevator:ship_cal | 0 | 0 |
 | Elevator:ship_swap | 0 | 0 |
+| Elevator:ship_tiebreak | 0 | 0 |
 | Elevator:v3_cal | 0 | 0 |
 | Elevator:v3_cal2 | 0 | 0 |
 | Elevator:v3_legacy38 | 0 | 0 |
@@ -173,9 +175,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 
 | episode | total machine wall time (s) | total CPU (s) | peak RAM (MB) | cost |
 |---|---|---|---|---|
-| 01-qr-code | 3260.4 | 4877.1 | 4597 | $0 |
-| 02-elevator | 3679.2 | 4654.1 | 4576 | $0 |
-| 03-sky | 4555.8 | 5321.1 | 4893 | $0 |
+| 01-qr-code | 4135.2 | 6889.0 | 5207 | $0 |
+| 02-elevator | 4459.9 | 5875.1 | 4731 | $0 |
+| 03-sky | 6273.3 | 7728.0 | 4893 | $0 |
 | 04-ice-demo | 99.9 | 221.6 | 3332 | $0 |
 | 05-anc-headphones | 1579.5 | 1613.2 | 4305 | $0 |
 | 05-microwave-door | 3142.4 | 3018.0 | 4679 | $0 |
@@ -196,9 +198,10 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Elevator:agy_v4_vs_v5 | 134.8 | 0.0 | 0 | $0 |
 | Elevator:agy_v5_vs_v4_swap | 162.4 | 0.0 | 0 | $0 |
 | Elevator:baseline_v3 | 63.4 | 0.0 | 0 | $0 |
-| Elevator:ship | 891.9 | 0.0 | 0 | $0 |
-| Elevator:ship_cal | 969.1 | 0.0 | 0 | $0 |
-| Elevator:ship_swap | 884.0 | 0.0 | 0 | $0 |
+| Elevator:ship | 1049.6 | 0.0 | 0 | $0 |
+| Elevator:ship_cal | 1752.7 | 0.0 | 0 | $0 |
+| Elevator:ship_swap | 1041.5 | 0.0 | 0 | $0 |
+| Elevator:ship_tiebreak | 876.0 | 0.0 | 0 | $0 |
 | Elevator:v3_cal | 232.2 | 0.0 | 0 | $0 |
 | Elevator:v3_cal2 | 44.3 | 0.0 | 0 | $0 |
 | Elevator:v3_legacy38 | 215.4 | 0.0 | 0 | $0 |
@@ -215,9 +218,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | QR:A=v4 B=v5 | 19.7 | 0.0 | 0 | $0 |
 | QR:A=v4 B=v5 5fps | 28.7 | 0.0 | 0 | $0 |
 | QR:agy_v4_vs_v5 | 117.0 | 0.0 | 0 | $0 |
-| QR:ship | 147.5 | 0.0 | 0 | $0 |
-| QR:ship_cal | 214.1 | 0.0 | 0 | $0 |
-| QR:ship_swap | 126.6 | 0.0 | 0 | $0 |
+| QR:ship | 272.8 | 0.0 | 0 | $0 |
+| QR:ship_cal | 460.1 | 0.0 | 0 | $0 |
+| QR:ship_swap | 264.6 | 0.0 | 0 | $0 |
 | QR:v4 | 14.8 | 0.0 | 0 | $0 |
 | QR:v4_cal | 88.0 | 0.0 | 0 | $0 |
 | QR:v5 | 13.7 | 0.0 | 0 | $0 |
@@ -227,10 +230,10 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Sky | 142.6 | 199.5 | 4444 | $0 |
 | Sky:A=v4 B=v5 | 22.0 | 0.0 | 0 | $0 |
 | Sky:agy_v4_vs_v5 | 62.5 | 0.0 | 0 | $0 |
-| Sky:ship | 114.2 | 0.0 | 0 | $0 |
-| Sky:ship_cal | 200.9 | 0.0 | 0 | $0 |
+| Sky:ship | 300.6 | 0.0 | 0 | $0 |
+| Sky:ship_cal | 1084.0 | 0.0 | 0 | $0 |
 | Sky:ship_retry | 143.9 | 0.0 | 0 | $0 |
-| Sky:ship_swap | 115.4 | 0.0 | 0 | $0 |
+| Sky:ship_swap | 405.8 | 0.0 | 0 | $0 |
 | Sky:v4 | 40.5 | 0.0 | 0 | $0 |
 | Sky:v5 | 14.4 | 0.0 | 0 | $0 |
 | Sky:v5-legacy | 24.6 | 0.0 | 0 | $0 |

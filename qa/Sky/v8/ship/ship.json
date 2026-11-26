@@ -1,0 +1,19 @@
+{
+  "order1": {
+    "preferred": "new",
+    "margin_new_minus_prev": 1.43,
+    "strength": 2
+  },
+  "swap": {
+    "preferred": "new",
+    "margin_new_minus_prev": 1.04,
+    "strength": 2
+  },
+  "calibrated": {
+    "overall": null,
+    "verdict": null,
+    "model": null
+  },
+  "ship": true,
+  "decided_by": "pairwise"
+}

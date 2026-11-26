@@ -79,3 +79,11 @@ tools/papercut-sfx/node_modules/
 tools/*-venv/
 tools/qwen-*/
 tools/d2/
+.venv-tts
+tools/whisper.cpp
+remotion/node_modules
+.remotion/
+tools/fn-venv
+/queue/state/
+publish/**/video.mp4
+publish/**/APPROVED

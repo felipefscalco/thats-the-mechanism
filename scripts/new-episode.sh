@@ -39,6 +39,10 @@ Beats are `kind@phrase`; camera kinds push/pull/glide/punch/settle; others are a
 TXT
 echo '{"topic": "", "claims": []}' > "$E/sources.json"; echo '[]' > "$E/display.json"
 sed -e "s/__SLUG__/$S/g; s/__NAME__/$ID/g; s/__COMP__/$ID/g; s/__PILLAR__/$PIL/g; s/__EP__/$N/g; s/__SOURCE__/$SRC/g; s/__HOOK__/$HOOK/g" "$P/templates/Episode.tsx.tmpl" > "$TSX"
+# r8: placeholder captions so the shared Remotion bundle keeps compiling (every other episode's probes/renders) until
+# the audio stage writes the real ones; the queue scaffolds episodes long before they have audio.
+CJ="$P/remotion/src/$S.captions.json"
+[[ -e "$CJ" ]] || echo '[{"text":"(placeholder)","start":0.2,"end":1.0},{"text":"That'"'"'s","start":1.2,"end":1.4},{"text":"the","start":1.4,"end":1.5},{"text":"mechanism.","start":1.5,"end":2.0}]' > "$CJ"
 R="$P/remotion/src/Root.tsx"
 # portable (GNU and BSD/macOS sed differ on -i and \n): edit Root.tsx with Python
 python3 - "$R" "$ID" "$S" <<'EOPY'

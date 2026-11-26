@@ -15,7 +15,7 @@ Outputs:
 import argparse
 import json
 import os
-import subprocess
+import subprocess, shutil
 import sys
 import time
 from datetime import datetime
@@ -23,6 +23,7 @@ from pathlib import Path
 import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import llm  # r7 vendor-neutral role adapter
 import metrics
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -431,69 +432,66 @@ def extract_audio_wav(mp4: Path, dst: Path) -> Path:
     return dst
 
 
-def call_agy(model: str, labeled_files: list[tuple[str, Path]], prompt: str, schema: dict,
+def frame_sheets(mp4: Path, dst_dir: Path, tag: str, fps: float = 1.0, cols: int = 6, rows: int = 2) -> list[Path]:
+    """For critics that cannot ingest video (claude, codex, cursor-agent): 1 fps frames tiled 6x2 per sheet."""
+    d = dst_dir / f"_frames_{tag}"; d.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(mp4), "-vf", f"fps={fps},scale=270:480,tile={cols}x{rows}", str(d / "sheet_%02d.png")],
+                   check=True, capture_output=True)
+    return sorted(d.glob("sheet_*.png"))
+
+
+def media_files(provider: str, labeled: list[tuple[str, Path]], work_dir: Path, tag: str) -> list[tuple[str, Path]]:
+    """Adapt critic inputs to what the provider can read (scripts/llm.py CAPS)."""
+    caps = llm.CAPS.get(provider, set())
+    out = []
+    for label, p in labeled:
+        suf = p.suffix.lower()
+        if suf == ".mp4" and "video" not in caps:
+            per = 12
+            for k, sh in enumerate(frame_sheets(p, work_dir, f"{tag}_{len(out)}")):
+                out.append((f"{label.split('(')[0].strip()} frames {k * per}-{k * per + per - 1} s (1 fps, 6x2 tiles, left-to-right then top-to-bottom)", sh))
+        elif suf == ".wav" and "audio" not in caps:
+            continue  # this critic has no ears: the measured QA lines (loudness, SFX gaps, silence beat) stand in for audio
+        else:
+            out.append((label, p))
+    return out
+
+
+def call_cli(provider: str, model: str, labeled_files: list[tuple[str, Path]], prompt: str, schema: dict,
              work_dir: Path, tag: str, timeout_s: int = 300) -> dict:
-    schema_path = work_dir / f"_agy_schema_{tag}.json"
-    schema_path.write_text(json.dumps(to_json_schema(schema), indent=2))
-    try:
-        file_lines = "\n".join(f"- {label}: {path.resolve()}" for label, path in labeled_files)
-        full_prompt = (
-            "INDEPENDENT VIDEO CRITIC INPUTS:\n"
-            f"{file_lines}\n\n"
-            "STRICT RULES FOR THIS RUN:\n"
-            "1. Do NOT run any shell commands and do NOT read any other files in the workspace "
-            "(do not read scripts, qa reports, episodes, docs, or source code).\n"
-            "2. Call read_file on EACH path listed above (the MP4 provides ~1 fps visual frames and the WAV provides the full mixed audio track).\n"
-            "3. Base your critique strictly on the visual frames and audio you observed, then return JSON matching the schema.\n\n"
-            + prompt
-        )
-        add_dirs = []
-        seen_dirs = {ROOT.resolve()}
-        for _, fpath in labeled_files:
-            d = fpath.resolve().parent
-            if d not in seen_dirs:
-                seen_dirs.add(d)
-                add_dirs.extend(["--add-dir", str(d)])
-        cmd = [
-            "agy",
-            "--model", model,
-            "--output-format", "json",
-            "--json-schema", str(schema_path),
-            "--dangerously-skip-permissions",
-            "--print-timeout", f"{timeout_s}s",
-            *add_dirs,
-            "-p", full_prompt,
-        ]
-        cp = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=timeout_s + 30)
-        if cp.returncode != 0:
-            raise RuntimeError(f"agy exit={cp.returncode}: {(cp.stderr or cp.stdout)[-300:]}")
-        data = json.loads(cp.stdout)
-        if data.get("status") != "SUCCESS":
-            raise RuntimeError(f"agy status={data.get('status')}: {cp.stdout[-300:]}")
-        parsed = data.get("structured_output")
-        if parsed is None:
-            parsed = json.loads(data["response"])
-        u = data.get("usage") or {}
-        return {
-            "candidates": [{"content": {"parts": [{"text": json.dumps(parsed)}]}}],
-            "usageMetadata": {
-                "promptTokenCount": u.get("input_tokens"),
-                "candidatesTokenCount": u.get("output_tokens"),
-                "totalTokenCount": u.get("total_tokens"),
-            },
-            "_agy_meta": {
-                "conversation_id": data.get("conversation_id"),
-                "duration_seconds": data.get("duration_seconds"),
-                "num_turns": data.get("num_turns"),
-                "thinking_tokens": u.get("thinking_tokens"),
-                "cache_read_tokens": u.get("cache_read_tokens"),
-            },
-        }
-    finally:
-        try:
-            schema_path.unlink()
-        except OSError:
-            pass
+    """Run one critic call on any agentic CLI provider via scripts/llm.py (agy, claude, codex, cursor-agent)."""
+    files = media_files(provider, labeled_files, work_dir, tag)
+    has_audio = any(p.suffix.lower() == ".wav" for _, p in files)
+    full_prompt = (
+        "INDEPENDENT VIDEO CRITIC RUN.\n"
+        "STRICT RULES FOR THIS RUN:\n"
+        "1. Do NOT run any shell commands and do NOT read any other files in the workspace "
+        "(do not read scripts, qa reports, episodes, docs, or source code).\n"
+        "2. Open EACH input file listed above with your file-reading tool"
+        + (" (an MP4 gives ~1 fps visual frames, a WAV gives the full mixed audio track).\n" if has_audio else
+           " (frame sheets: 1 frame per second; you have NO audio, so judge sound only from the measured QA lines if given and say so).\n")
+        + "3. Base your critique strictly on what you observed, then return JSON matching the schema.\n\n" + prompt
+    )
+    t0 = time.time()
+    res = llm.run("critic", full_prompt, ROOT, schema=to_json_schema(schema), files=files, read_only=True, timeout_s=timeout_s,
+                  spec={"provider": provider, "model": model, "timeout_s": timeout_s})
+    for _, p in files:
+        if p.parent.name.startswith("_frames_"):
+            shutil.rmtree(p.parent, ignore_errors=True)
+    if not res["ok"]:
+        raise RuntimeError(res["meta"].get("error"))
+    u = res["meta"].get("usage") or {}
+    return {
+        "candidates": [{"content": {"parts": [{"text": json.dumps(res["json"])}]}}],
+        "usageMetadata": {"promptTokenCount": u.get("input_tokens"), "candidatesTokenCount": u.get("output_tokens"),
+                          "totalTokenCount": u.get("total_tokens")},
+        "_cli_meta": {"provider": provider, "wall_s": round(time.time() - t0, 1), "cost_usd": res["meta"].get("cost_usd")},
+    }
+
+
+def call_agy(model, labeled_files, prompt, schema, work_dir, tag, timeout_s: int = 300):  # r6 name kept for callers
+    return call_cli("agy", model, labeled_files, prompt, schema, work_dir, tag, timeout_s)
+
 
 def render_md_cal(data: dict) -> str:
     s = data["scores"]
@@ -559,7 +557,7 @@ def compare_main(args, api_key: str, mp4_b: Path, out_dir: Path, models: list) -
         mp4_a = ROOT / mp4_a
     t0 = time.time(); fa = fb = None; wa = wb = None; raw = None; used = None; last = ""
     try:
-        if args.backend == "agy":
+        if args.backend != "gemini-api":
             wa = extract_audio_wav(mp4_a, out_dir / f"_agy_cmp_a_{args.name}.wav")
             wb = extract_audio_wav(mp4_b, out_dir / f"_agy_cmp_b_{args.name}.wav")
             files = [
@@ -573,8 +571,8 @@ def compare_main(args, api_key: str, mp4_b: Path, out_dir: Path, models: list) -
         for m in models:
             for attempt in range(2):
                 try:
-                    if args.backend == "agy":
-                        raw = call_agy(m, files, CMP_PROMPT, CMP_SCHEMA, out_dir, f"cmp_{args.name}"); break
+                    if args.backend != "gemini-api":
+                        raw = call_cli(args.backend, m, files, CMP_PROMPT, CMP_SCHEMA, out_dir, f"cmp_{args.name}"); break
                     else:
                         raw = call_model(m, fb["uri"], api_key, CMP_PROMPT, CMP_SCHEMA, None, first_uri=fa["uri"]); break
                 except Exception as exc:
@@ -618,7 +616,9 @@ def main() -> int:
     ap.add_argument("id", help="Composition id (e.g. QR, Elevator, Sky)")
     ap.add_argument("--mp4", help="Path to MP4 (default: renders/<Id>_<SUF>.mp4)")
     ap.add_argument("--out-dir", help="Output directory (default: qa/<Id>/<SUF>)")
-    ap.add_argument("--backend", choices=["gemini-api", "agy"], default="gemini-api", help="Critic backend: gemini-api (Files API) or agy (Antigravity CLI)")
+    ap.add_argument("--backend", choices=["gemini-api", "agy", "claude", "codex", "cursor-agent", "role"], default="role",
+                    help="Critic provider. Default 'role': read --role from pipeline.config.json llm.roles (provider + model)")
+    ap.add_argument("--role", default="critic", help="LLM role when --backend role (critic, critic_deep, critic_tiebreak)")
     ap.add_argument("--models", default=None, help="Comma-separated model fallback order")
     ap.add_argument("--label", default="", help="Optional label stored in metadata (e.g. baseline_v3)")
     ap.add_argument("--mode", choices=["calibrated", "legacy"], default="calibrated", help="legacy = round-4 prompt (kept for before/after)")
@@ -630,6 +630,11 @@ def main() -> int:
     ap.add_argument("--compare", help="Pairwise mode: this MP4 is VIDEO A, --mp4 is VIDEO B (e.g. A = last owner-approved render)")
     args = ap.parse_args()
 
+    if args.backend == "role":
+        spec = llm.role_spec(args.role)
+        args.backend = spec["provider"]
+        if not args.models and spec.get("model"):
+            args.models = ",".join([spec["model"]] + [f["model"] for f in spec.get("fallback") or [] if f.get("provider") == spec["provider"] and f.get("model")])
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
     if args.backend == "gemini-api" and not api_key:
         print("ERROR: GEMINI_API_KEY environment variable is not set", file=sys.stderr)
@@ -648,8 +653,10 @@ def main() -> int:
         out_dir = ROOT / out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    default_models = DEFAULT_AGY_MODELS if args.backend == "agy" else DEFAULT_MODELS
+    default_models = DEFAULT_MODELS if args.backend == "gemini-api" else DEFAULT_AGY_MODELS
     models = [m.strip() for m in args.models.split(",") if m.strip()] if args.models else default_models
+    if args.backend not in ("gemini-api", "agy") and not args.models:
+        models = [None]  # claude / codex / cursor-agent: the CLI's own default model
     t0 = time.time()
     finfo = None
     last_err = None
@@ -673,7 +680,7 @@ def main() -> int:
     usage_tot = {"promptTokenCount": 0, "candidatesTokenCount": 0, "totalTokenCount": 0}
     wav_tmp = None
     try:
-        if args.backend == "agy":
+        if args.backend != "gemini-api":
             wav_tmp = extract_audio_wav(mp4, out_dir / f"_agy_audio_{args.name}.wav")
             agy_files = [
                 ("VIDEO (1 fps visual frames)", mp4),
@@ -690,8 +697,8 @@ def main() -> int:
             for m in order:
                 for attempt in range(2):  # transient 503 / dropped connections get one retry
                     try:
-                        if args.backend == "agy":
-                            raw_resp = call_agy(m, agy_files, prompt, schema, out_dir, args.name)
+                        if args.backend != "gemini-api":
+                            raw_resp = call_cli(args.backend, m, agy_files, prompt, schema, out_dir, args.name)
                         else:
                             raw_resp = call_model(m, file_uri, api_key, prompt, schema, ref)
                         break

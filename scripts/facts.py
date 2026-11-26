@@ -12,6 +12,8 @@ check <slug>: FAILS (exit 1) when
   - schema problems (missing ids, dangling source ids)
 init <slug>: one-off migration from the older episodes/<slug>/sources.json claims list (statuses start as "unverified").
 The TTS step refuses to run while `check` fails (pipeline.config.json gates.facts), so a script can't be voiced on unverified claims."""
+import sys as _s, os as _o
+_s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__)))
 import json, re, sys
 from datetime import date
 from pathlib import Path
@@ -27,7 +29,7 @@ def load(slug):
 
 
 def check(slug) -> list[str]:
-    d = load(slug); script = (ROOT / "episodes" / slug / "script.txt").read_text()
+    d = load(slug); script = __import__("script_text").spoken((ROOT / "episodes" / slug / "script.txt").read_text())  # r8: pause tags are not spoken
     flat = " ".join(script.split())
     errs = []
     sids = {s["id"] for s in d.get("sources", [])}
