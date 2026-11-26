@@ -189,3 +189,22 @@ One entry per finding. Newest at the bottom. Format:
 - Root cause: the number/quantity scan counts any number word, including rhetorical ones.
 - Fix: mapped to f-0004 (noon vs sunset observers) instead of loosening the scan.
 - Status: fixed. Keep the scan strict; map rhetorical numbers to the fact they describe.
+
+### L-28 · 2026-11-25 · 05-anc · minor
+- Problem: beat check failed (-34.8 dBFS before the catchphrase) and safe-zone/contrast checks failed on the first full render (title fling under a punch, 17-char label in x>900, red text on a 82% ink TagLabel over a light panel = 2.4:1).
+- Root cause: tail of the riser plus my own clank + glide-swish cues landed inside the 0.2 s window; TagLabel backing width is estimated (0.6 em/glyph) and is too narrow for caps over light panels.
+- Fix: removed clank/glide-swish cues in the last 1.5 s before the card, title fades before the punch, labels moved to x<=900, light-panel labels use paper text on the ink tag.
+- Prevention: on light panels use TagLabel with paper text only; keep camera swishes out of the 1.5 s before "That's the mechanism". Checked by qa.py (beat, contrast, safe zones).
+- Status: fixed (15/15 on ANC v6 it3)
+### L-29 · 2026-11-25 · env · minor
+- Problem: `npx remotion render` crashed (Cannot find module @babel/core/lib/tools/build-external-helpers.js) in ttm-r6.
+- Root cause: incomplete node_modules install (only the CLI path needs it; the node API used by storyboard.py worked).
+- Fix: restored the missing lib/tools folder from the identical @babel/core 7.29.13 in a sibling checkout.
+- Status: fixed locally
+
+### L-30 · 2026-11-26 · r6 · major
+- Problem: the critic found defects every existing gate passed: an icon hiding the `CHIP` label (ANC_v6, 16 s), a label pushed off the left edge (Elevator_v6, 17–26 s), and flat-popping badges.
+- Root cause: gates measured contrast and safe zones but not geometry between elements or distance to the frame edge, and not entrance motion.
+- Fix: added A13 (icon/label clearance ≥ 36 px), A14 (badge pop with anticipation/overshoot) and A15 (text ≥ 24 px from the side edges), plus `Lane` / `LabeledBox` / `TagLabel` components in `Kit.tsx`.
+- Prevention: critic findings that are measurable are promoted to gates by `scripts/lessons.py` output (`docs/STYLE_RULES.md`, candidate gates). Open gaps are listed in `docs/ROUND6.md`.
+- Status: fixed for A13–A15; gaps in ROUND6.md remain.
