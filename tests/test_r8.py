@@ -20,5 +20,23 @@ def t_credits():
     assert credits.persist([dict(episode="e")], Path(d), log=lambda m: None) is False
 
 TESTS = [t_credits]
+
+def t_pause_and_align():
+    import script_text as st
+    c = st.chunks("A b. [pause: 0.8s] C d.\n\nE f [pause:1.2] g.\n\nEnd.")
+    assert c == [("A b.", 0.8), ("C d.", 0.35), ("E f", 1.2), ("g.", 0.35), ("End.", 0.5)], c
+    assert st.spoken("A [pause: 0.4s] b") == "A b" and st.words("x [pause: 2] y") == ["x", "y"]
+    try: st.chunks("a [pause: 9s] b"); assert False
+    except ValueError: pass
+    import importlib.util, types
+    src = (Path(__file__).resolve().parent.parent / "scripts/captions.py").read_text()
+    ns = {"__file__": str(Path(__file__).resolve().parent.parent / "scripts/captions.py")}; exec(src[:src.index("MIN_MATCH, MIN_SIM")], ns)   # library part only (no CLI loop)
+    al = ns["align"](["Reed-Solom", "and", "codes", "fix", "it"], ["Reed-Solomon", "codes", "fix", "it"])
+    assert al[0][0] == 0 and al[1][0] == 2 and all(a[2] > 0.7 for a in al), al
+    sf = ns["spoken_form"]([dict(text="40-50%", start=1.0, end=2.0)])
+    assert [w["text"] for w in sf] == ["forty", "to", "fifty", "percent"] and abs(sf[-1]["end"] - 2.0) < 1e-9
+
+TESTS.append(t_pause_and_align)
+
 if __name__ == "__main__":
     for t in TESTS: t(); print("PASS", t.__name__)
