@@ -25,6 +25,10 @@ Ideas and suggestions from reviews that are not bugs. Reviewers append; whoever 
 - [ ] (r4) drawing-skill backdrops as 2-3 parallax plates (far/mid/near) instead of one flat JPG, so ShotLayers can move them.
 - [ ] (r4) LOC API timed out (30 s) on every search; add retry/backoff or drop it from defaults.
 
+- [ ] (r6, gate) Lint committed scripts for absolute interpreter shebangs (`#!/workspace/...`); allow only `/usr/bin/env` or `/bin/(ba)sh` (L-34).
+
+- [ ] (r6, gate accuracy) contrast.py A13: merge glyph components of one Label (e.g. mono superscripts) before measuring clearance (L-35).
+
 ## Done
 - [x] (r6) Label overlap gate A13 (contrast.py occupancy) and agy critic backend (`critic.py --backend agy`, `ship_check.sh`); the pilot's `scripts/critic_agy.py` was dropped for them. (round 6, merged into the Microwave pilot)
 - [x] Extend `qa.py` minimum font-size gate from `<Label>` (>= 30 px) to raw SVG `<text>` elements (e.g. `CAR`, `EMPTY CAR`) so mobile readability matches primary labels (from critic L-17). (round 5)

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26T02:57:31-03:00",
+  "generated": "2026-11-26T12:29:31-03:00",
   "cost_usd_total": 0.0,
   "llm_tokens": "not available to the pipeline (authoring bot's token usage is not exposed)",
   "episodes": {
@@ -1195,6 +1195,37 @@
       },
       "qa_iterations": 0,
       "render_iterations": 0,
+      "cost_usd": 0.0
+    },
+    "06-microwave-door": {
+      "stages": {
+        "render": {
+          "runs": 5,
+          "wall_s_total": 2009.41,
+          "wall_s_last": 291.52,
+          "cpu_s_total": 520.85,
+          "peak_rss_mb": 4257,
+          "out_mb_last": 15.54
+        },
+        "master": {
+          "runs": 5,
+          "wall_s_total": 13.91,
+          "wall_s_last": 2.68,
+          "cpu_s_total": 15.06,
+          "peak_rss_mb": 160,
+          "out_mb_last": 15.54
+        },
+        "qa": {
+          "runs": 5,
+          "wall_s_total": 2652.93,
+          "wall_s_last": 679.9,
+          "cpu_s_total": 10423.83,
+          "peak_rss_mb": 4396,
+          "out_mb_last": null
+        }
+      },
+      "qa_iterations": 8,
+      "render_iterations": 8,
       "cost_usd": 0.0
     }
   }

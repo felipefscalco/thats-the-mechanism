@@ -1,4 +1,4 @@
-#!/workspace/ttm-r6/.venv-tts/bin/python
+#!/usr/bin/env python3
 """Automated acceptance QA for one rendered episode (see docs/ACCEPTANCE.md).
 Usage: scripts/qa.py <CompositionId> <slug> <iteration> [--no-stems]
 Writes qa/<Id>/report_it<N>.json, transitions_it<N>.png (dense frames around every shot boundary + the loop seam),

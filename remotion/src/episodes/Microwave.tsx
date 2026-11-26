@@ -179,7 +179,7 @@ const WaveLen: React.FC = () => {
   const hole = pop(f, twelve + 10, fps); // visible ~1.5 s before the whip (critic it3: "flashes < 0.5 s")
   return (
     <Stage>
-      <Label x={540} y={430} text="MICROWAVE OVEN FREQUENCY" size={36} color={C.dim} />
+      <Label x={540} y={390} text="MICROWAVE OVEN FREQUENCY" size={36} color={C.dim} />
       <g transform={`translate(540 560) scale(${1 + 0.08 * gp * Math.max(0, 1 - (f - ghz) / 12)})`}>
         <Label x={0} y={0} text={`${v.toFixed(2)} GHz`} size={120} color={C.amber} font={MONO} />
       </g>
@@ -228,7 +228,7 @@ const Side: React.FC<{ mode: "story" | "both" }> = ({ mode }) => {
         <clipPath id="sdL"><rect x={60} y={TOP} width={WALL - 60} height={BOT - TOP} /></clipPath>
       </defs>
       <rect x={60} y={TOP} width={WALL - 60} height={BOT - TOP} rx={24} fill="url(#sdIn)" opacity={0.55} />
-      <TagLabel x={100} y={TOP + 60} text="INSIDE" size={34} anchor="start" color={C.paper} />
+      <TagLabel x={100} y={TOP + 40} text="INSIDE" size={34} anchor="start" color={C.paper} />
       <Label x={WALL + 40} y={TOP + 60} text="OUTSIDE" size={36} anchor="start" color={C.dim} />
       {/* the food (left) */}
       <g transform={`translate(190 900) scale(${sx} ${sy})`}>
@@ -238,18 +238,18 @@ const Side: React.FC<{ mode: "story" | "both" }> = ({ mode }) => {
       </g>
       {/* microwave: incident, then reflected */}
       <g clipPath="url(#sdL)" opacity={mwDim}>
-        <path d={wave(90, 640, head - 90, 300, 90, f / 4)} stroke={MW} strokeWidth={14} fill="none" strokeLinecap="round" />
-        {f >= hitAt && <path d={waveL(WALL, 780, (WALL - 230) * ref, 300, 70, f / 4)} stroke={MW} strokeWidth={10} fill="none" strokeLinecap="round" strokeDasharray="28 14" opacity={0.85} />}
+        <path d={wave(90, 700, head - 90, 300, 80, f / 4)} stroke={MW} strokeWidth={14} fill="none" strokeLinecap="round" />
+        {f >= hitAt && <path d={waveL(WALL, 850, (WALL - 230) * ref, 300, 60, f / 4)} stroke={MW} strokeWidth={10} fill="none" strokeLinecap="round" strokeDasharray="28 14" opacity={0.85} />}
       </g>
-      {head > 160 && head < WALL - 4 && <Arrow x={head + 14} y={640} dir={1} color={MW} o={mwDim} />}
-      {f >= hitAt && ref > 0.1 && <Arrow x={WALL - (WALL - 230) * ref - 12} y={780} dir={-1} color={MW} o={mwDim * 0.9} />}
-      <TagLabel x={100} y={TOP + 130} text="MICROWAVE · ≈ 12 cm" size={34} anchor="start" color="#C9BFFF" o={mwDim * ease(f, s + 4, s + 12) * (both ? 1 - ease(f, wallSees - 6, wallSees) : 1)} />
+      {head > 160 && head < WALL - 4 && <Arrow x={head + 14} y={700} dir={1} color={MW} o={mwDim} />}
+      {f >= hitAt && ref > 0.1 && <Arrow x={WALL - (WALL - 230) * ref - 12} y={850} dir={-1} color={MW} o={mwDim * 0.9} />}
+      <TagLabel x={100} y={TOP + 140} text="MICROWAVE · ≈ 12 cm" size={34} anchor="start" color="#C9BFFF" o={mwDim * ease(f, s + 4, s + 12) * (both ? 1 - ease(f, wallSees - 6, wallSees) : 1)} />
       {/* light: short waves through the gaps to the eye */}
       {[5, 7, 9].map((k, i) => {
         const y = gapY(k), x0 = 250, x1 = 860, L = (x1 - x0) * Math.min(1, Math.max(0, lightLen * 1.15 - i * 0.07));
         return <path key={k} d={wave(x0, y, L, 26, 4, f / 1.5 + i)} stroke={LIGHT} strokeWidth={5} fill="none" strokeLinecap="round" />;
       })}
-      <TagLabel x={100} y={1070} text="LIGHT · < 1 µm" size={34} anchor="start" color={LIGHT} o={both ? 1 : ease(f, far, far + 8)} />
+      <TagLabel x={100} y={1040} text="LIGHT · < 1 µm" size={34} anchor="start" color={LIGHT} o={both ? 1 : ease(f, far, far + 8)} />
       {/* the screen in cross-section: bars with gaps (holes) */}
       {Array.from({ length: Math.floor((BOT - TOP) / PITCH) + 1 }).map((_, k) => (
         <rect key={k} x={WALL - 12} y={TOP + k * PITCH} width={24} height={BAR} rx={5} fill={wallTint > 0 ? MW : "#9AA0AE"} opacity={1} stroke={C.ink} strokeWidth={2} />
@@ -261,7 +261,7 @@ const Side: React.FC<{ mode: "story" | "both" }> = ({ mode }) => {
         <circle r={22 + 6 * eye} fill="#3A6EA5" /><circle r={10 + 3 * eye} fill={C.ink} />
         <circle r={60} fill={LIGHT} opacity={0.25 * eye} />
       </g>
-      <TagLabel x={100} y={TOP + 130} text="MICROWAVE SEES A WALL" size={34} color="#C9BFFF" anchor="start" o={both ? ease(f, wallSees, wallSees + 8) : 0} />
+      <TagLabel x={100} y={TOP + 140} text="MICROWAVE SEES A WALL" size={34} color="#C9BFFF" anchor="start" o={both ? ease(f, wallSees, wallSees + 8) : 0} />
       <TagLabel x={760} y={560} text="SEES A WINDOW" size={38} color={C.green} anchor="middle" o={both ? ease(f, lightSees, lightSees + 8) : 0} />
       {!both && <Label x={WALL} y={TOP - 24} text="THE SCREEN, SIDE-ON" size={34} color={C.dim} o={ease(f, solid - 40, solid - 30)} />}
     </Stage>
@@ -299,16 +299,16 @@ const Limit: React.FC = () => {
       <rect x={FX - 60} y={575} width={10} height={390} fill={BODY2} />
       <rect x={FX - 18} y={590} width={18} height={360} fill={METAL} />
       <rect x={FX} y={700} width={26} height={140} rx={10} fill={BODY2} />
-      <Label x={180} y={1060} text="OVEN, SIDE-ON" size={32} color={C.dim} />
+      <Label x={185} y={530} text="OVEN, SIDE-ON" size={32} color={C.dim} />
       {[0, 1, 2, 3].map((k) => {
         const r = ((f - esc) * 3 + k * 45) % 180;
         return <path key={k} d={`M${FX} ${770 - r * 0.9} A ${r} ${r * 0.9} 0 0 1 ${FX} ${770 + r * 0.9}`} fill="none" stroke={MW} strokeWidth={5} opacity={f >= esc ? 0.55 * (1 - r / 180) : 0} />;
       })}
       <Label x={610} y={500} text="MAXIMUM LEAKAGE" size={40} color={C.paper} o={ease(f, esc + 6, esc + 14)} />
       <g transform={`translate(610 650) scale(${popScale(np)})`} opacity={popOpacity(np)}>
-        <Label x={0} y={0} text="5 mW/cm²" size={104} color={C.amber} font={MONO} />
+        <Label x={0} y={0} text="5 mW/cm²" size={104} color={C.amber} />{/* proportional font: the mono ² sat 12 px off its word and A13 read it as a separate box */}
       </g>
-      <Label x={610} y={730} text="21 CFR 1030.10 · US FDA" size={32} color={C.paper} font={MONO} o={ease(f, five + 12, five + 20)} />
+      <Label x={610} y={760} text="21 CFR 1030.10 · US FDA" size={32} color={C.paper} font={MONO} o={ease(f, five + 12, five + 20)} />
       {/* 2 in / 5 cm ruler from the oven front to the probe */}
       <g opacity={ease(f, two - 4, two + 4)}>
         <line x1={FX} y1={1010} x2={FX + 240 * rule} y2={1010} stroke={C.amber} strokeWidth={6} />
@@ -350,7 +350,7 @@ export const MicrowaveVideo: React.FC = () => {
       cardAt={card} cardUntil={fin} cues={cues} hook={<Front />}
       chapters={[{ at: 0, label: "SEE IN, NOT OUT" }, { at: closer, label: "THE SCREEN" }, { at: runs, label: "THE WAVE" }, { at: twa, label: "BLOCKED" },
         { at: li, label: "LIGHT" }, { at: esc, label: "THE LIMIT" }, { at: same, label: "SAME DOOR" }]}>
-      <Shot from={0} to={closer} inT="none" outT="push" cam={[{ at: 30, kind: "push", s: 1.06, y: 10, dur: 50 }, { at: at("stay in"), kind: "punch", s: 1.12, y: 16 }]}><Front /></Shot>
+      <Shot from={0} to={closer} inT="none" outT="push" cam={[{ at: 30, kind: "push", s: 1.06, y: 10, dur: 50 }, { at: at("stay in"), kind: "punch", s: 1.12, x: 60, y: 16 }]}><Front /></Shot>
       <Shot from={closer} to={runs} inT="push" outT="cut" cam={[{ at: at("Behind the glass"), kind: "push", s: 1.06 }, { at: at("tiny holes"), kind: "glide", s: 1.1, x: -20, dur: 24 }]}><Closer /></Shot>
       <Shot from={runs} to={twa} inT="cut" outT="whip" cam={[{ at: at("Each wave"), kind: "glide", s: 1.04, y: -30, dur: 24 }, { at: at("twelve"), kind: "punch", s: 1.12, x: 30, y: 20 }]}><WaveLen /></Shot>
       <Shot from={twa} to={esc} inT="whip" outT="whipUp" hud={<SideHud />} cam={[

@@ -1,4 +1,4 @@
-#!/workspace/ttm-r6/.venv-tts/bin/python
+#!/usr/bin/env python3
 """Independent multimodal video critic using Gemini Files API (watches MP4 WITH audio).
 
 Usage:

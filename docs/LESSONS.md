@@ -230,3 +230,16 @@ One entry per finding. Newest at the bottom. Format:
 - Rejected critic claims (contradicted by measurements): broken loop seam (PSNR 48.5 dB), holds > 2 s (longest 1.27 s), labels < 30 px (both font gates pass).
 - Prevention: label collisions are not gated yet. The probe render already knows every Label/TagLabel box, so contrast.py could flag overlapping boxes held >= 0.6 s (BACKLOG, gate). Rule (prose until gated): a wave drawn "through a hole" has amplitude + stroke/2 < gap/2.
 - Status: fixed in it4 (pending QA + verify)
+
+### L-34 · 2026-11-26 · env · major (r6 scripts pinned to one machine)
+- Problem: on the Mac, after merging round 6, `iterate.sh` rendered fine but QA never ran: `scripts/metrics.py ... scripts/qa.py` failed with "No such file or directory" although qa.py existed.
+- Root cause: round 6 changed the shebang of `scripts/qa.py` and `scripts/critic.py` to `#!/workspace/ttm-r6/.venv-tts/bin/python` (the other box's venv). The exec fails when the interpreter path is missing, and Python reports the script itself as missing.
+- Fix: both back to `#!/usr/bin/env python3`; the pipeline puts `.venv-tts/bin` first on PATH.
+- Prevention: never pin an absolute interpreter path in a committed script. Candidate gate: a pre-commit/lint check that fails on `^#!/` lines other than `/usr/bin/env` or `/bin/(ba)?sh` under scripts/ (BACKLOG).
+- Status: fixed
+
+### L-35 · 2026-11-26 · QA · minor (iterate.sh judged a stale MP4; A13 glyph split)
+- Problem: (a) it6's first render timed out fetching Google Fonts; iterate.sh then mastered and QA'd the previous MP4 as if it were it6. (b) A13 reported "5 mW/cm²" (JetBrains Mono 104 px) as two boxes 12 px apart: the monospace superscript sits centred in a wide cell.
+- Fix: iterate.sh stops (continue) when render.sh fails. The episode number uses the proportional display font.
+- Prevention: (a) is now code. (b) BACKLOG: contrast.py occupancy could merge magenta components that come from one Label (probe id per label) instead of relying on 2 px dilation.
+- Status: fixed
