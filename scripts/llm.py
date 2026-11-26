@@ -85,7 +85,8 @@ WRITE_TOOLS = READ_TOOLS + RUN_TOOLS   # + Edit(<scope glob>) per run, see edit_
 DEFAULT_WRITE_SCOPE = ["remotion/src/episodes/**", "episodes/**"]
 PROTECTED = ["scripts/**", "prompts/**", "tests/**", ".venv-tts/**", "tools/**", "remotion/node_modules/**", "remotion/package.json",
              "remotion/package-lock.json", "remotion/tsconfig.json", "remotion/remotion.config.ts", "remotion/*.mjs",
-             "remotion/src/brand/**", "remotion/src/Root.tsx", "pipeline.config.json", ".claude/**", ".git/**", "AGENTS.md", "docs/**"]
+             "remotion/src/brand/**", "remotion/src/Root.tsx", "remotion/src/index.ts", "pipeline.config.json", ".claude/**", ".git/**",
+             "AGENTS.md", "CLAUDE.md", "GEMINI.md", ".mcp.json", "**/.npmrc", "**/.env*", "docs/**"]
 DENY_TOOLS = ["WebFetch", "WebSearch", "Task", "Agent", "NotebookEdit"] + [f"Edit({p})" for p in PROTECTED]
 
 
@@ -169,8 +170,9 @@ def build_cmd(provider: str, model, prompt: str, workdir: Path, schema_path, fil
         for d in dirs: cmd += [f"--add-dir={d}"]
         if read_only:
             cmd += ["--allowedTools=" + ",".join(READ_TOOLS), "--disallowedTools=" + ",".join(["Bash", "Edit", "Write"] + DENY_TOOLS)]
-        else:   # explicit allowlist; anything else is denied in -p mode instead of prompting
-            cmd += ["--permission-mode", "acceptEdits", "--allowedTools=" + ",".join(tools), "--disallowedTools=" + ",".join(DENY_TOOLS)]
+        else:   # default mode: in -p, any edit or command outside --allowedTools is DENIED (acceptEdits would auto-approve
+                # every edit in the project and make the Edit(scope) rules meaningless). DENY_TOOLS is a second layer.
+            cmd += ["--permission-mode", "default", "--allowedTools=" + ",".join(tools), "--disallowedTools=" + ",".join(DENY_TOOLS)]
         return cmd, claude_env(), full          # prompt goes on stdin (no ARG_MAX limit, no variadic-flag ambiguity)
     if provider == "agy":
         cmd = ["agy", "--output-format", "json", "--print-timeout", f"{timeout_s}s", "--sandbox",

@@ -12,7 +12,7 @@ def t_argv():
     c, _, _ = llm.build_cmd("claude", "sonnet", "hi", wd, sch, files, read_only=True)
     assert c[:4] == ["claude", "-p", "--output-format", "json"] and "--json-schema" in c and "--allowedTools=Read,Glob,Grep" in c and "hi" not in c
     c, _, _ = llm.build_cmd("claude", None, "hi", wd, None, [], read_only=False)
-    assert "--dangerously-skip-permissions" not in c and c[c.index("--permission-mode") + 1] == "acceptEdits"   # r10: allowlist, no bypass
+    assert "--dangerously-skip-permissions" not in c and c[c.index("--permission-mode") + 1] == "default"   # r10: allowlist, no bypass
     c, _, p = llm.build_cmd("agy", "gemini-3.8-flash-high", "hi", wd, sch, files, read_only=True)   # r10: agy is read-only
     assert c[0] == "agy" and c[c.index("--model") + 1] == "gemini-3.8-flash-high" and c[-2] == "-p" and "--json-schema" in c and str(files[0][1]) in p
     c, _, _ = llm.build_cmd("codex", "gpt-5.6", "hi", wd, sch, [("IMG", ROOT / "contact_sheet.png")], read_only=True, last_msg=Path("/x/last.txt"))

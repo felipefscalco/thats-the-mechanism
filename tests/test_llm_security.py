@@ -31,7 +31,7 @@ def _list(cmd, flag):
 def t_claude_write_allowlist():
     scope = ["remotion/src/episodes/Sky.tsx", "episodes/03-sky/*.json"]
     cmd, _ = argv("claude", False, scope=scope)
-    assert cmd[cmd.index("--permission-mode") + 1] == "acceptEdits", cmd
+    assert cmd[cmd.index("--permission-mode") + 1] == "default" and "acceptEdits" not in cmd, cmd   # acceptEdits would void Edit(scope)
     allowed = _list(cmd, "--allowedTools=")
     assert {"Edit(remotion/src/episodes/Sky.tsx)", "Edit(episodes/03-sky/*.json)"} <= set(allowed), allowed
     assert not {"Edit", "Write", "Bash"} & set(allowed), allowed          # nothing unscoped
