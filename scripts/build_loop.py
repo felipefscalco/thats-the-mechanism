@@ -118,6 +118,8 @@ while st["step"] == "ship":
     rep = QA / f"report_it{100 + k}.json"
     fails = [c for c in json.loads(rep.read_text())["checks"] if not c["ok"]] if rep.exists() else [dict(check="render", detail=r.stderr[-600:])]
     ev("ship_render_qa", ship_it=k, wall_s=w, failed=[c["check"] for c in fails])
+    if not rep.exists():   # infrastructure failure (render/master/QA crashed): not the builder's job, stop and keep state
+        st["ship_it"] -= 1; save(); sys.exit(f"ship render/QA infrastructure failure, see {QA}; stderr tail: {r.stderr[-600:]}")
     if not fails:
         st.update(step="judge", ship_report=str(rep)); save(); break
     if k >= MAXS:

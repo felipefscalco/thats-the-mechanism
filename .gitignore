@@ -83,3 +83,4 @@ tools/d2/
 tools/whisper.cpp
 remotion/node_modules
 .remotion/
+tools/fn-venv
