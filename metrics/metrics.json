@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26T06:57:21-03:00",
+  "generated": "2026-11-26T08:27:21-03:00",
   "cost_usd_total": 0.0,
   "llm_tokens": "not available to the pipeline (authoring bot's token usage is not exposed)",
   "episodes": {
@@ -150,20 +150,20 @@
     "03-sky": {
       "stages": {
         "qa": {
-          "runs": 24,
-          "wall_s_total": 2881.31,
-          "wall_s_last": 200.73,
-          "cpu_s_total": 4231.47,
-          "peak_rss_mb": 4425,
+          "runs": 26,
+          "wall_s_total": 3367.42,
+          "wall_s_last": 235.52,
+          "cpu_s_total": 5284.1,
+          "peak_rss_mb": 4865,
           "out_mb_last": null
         },
         "render": {
-          "runs": 22,
-          "wall_s_total": 2247.18,
-          "wall_s_last": 170.62,
-          "cpu_s_total": 1910.79,
+          "runs": 24,
+          "wall_s_total": 2795.2,
+          "wall_s_last": 72.36,
+          "cpu_s_total": 2145.82,
           "peak_rss_mb": 4893,
-          "out_mb_last": 17.23
+          "out_mb_last": 21.29
         },
         "captions": {
           "runs": 3,
@@ -190,12 +190,12 @@
           "out_mb_last": 2.11
         },
         "master": {
-          "runs": 17,
-          "wall_s_total": 62.05,
-          "wall_s_last": 3.55,
-          "cpu_s_total": 70.31,
+          "runs": 19,
+          "wall_s_total": 68.88,
+          "wall_s_last": 3.03,
+          "cpu_s_total": 78.59,
           "peak_rss_mb": 204,
-          "out_mb_last": 17.23
+          "out_mb_last": 21.29
         },
         "loudnorm": {
           "runs": 1,
@@ -1040,12 +1040,12 @@
     "Sky:ship": {
       "stages": {
         "critic": {
-          "runs": 2,
-          "wall_s_total": 205.95,
-          "wall_s_last": 91.73,
+          "runs": 3,
+          "wall_s_total": 300.56,
+          "wall_s_last": 94.61,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.007
+          "out_mb_last": 0.0076
         }
       },
       "qa_iterations": 0,
@@ -1055,12 +1055,12 @@
     "Sky:ship_swap": {
       "stages": {
         "critic": {
-          "runs": 2,
-          "wall_s_total": 240.37,
-          "wall_s_last": 125.0,
+          "runs": 3,
+          "wall_s_total": 405.77,
+          "wall_s_last": 165.4,
           "cpu_s_total": 0.0,
           "peak_rss_mb": 0,
-          "out_mb_last": 0.0089
+          "out_mb_last": 0.0078
         }
       },
       "qa_iterations": 0,

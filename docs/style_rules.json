@@ -1,10 +1,10 @@
 {
-  "generated": "2026-11-26T07:02:50-03:00",
-  "source_rules": 193,
+  "generated": "2026-11-26T08:56:02-03:00",
+  "source_rules": 204,
   "clusters": [
     {
       "id": "R-001",
-      "rule": "Keep all badge text, secondary labels, icons, and label typography at WCAG AA contrast of at least 4.5:1 against their immediate container or parent surface, and back top-of-frame metadata with an adaptive dark scrim whenever the area behind it is bright.",
+      "rule": "Maintain at least a 4.5:1 contrast ratio (WCAG AA) between every label, badge, icon, and annotation and its immediate background or container fill.",
       "category": "design_typography",
       "enforcement": "gate",
       "active": true,
@@ -13,8 +13,7 @@
       "proposed_gate": "Scan all text elements across rendered frames and fail if any text-to-background contrast ratio falls below 4.5:1.",
       "gates": [
         "scripts/qa.py + scripts/contrast.py: labels: icon/label clearance >= 36 px (held >= 0.6 s)",
-        "scripts/qa.py + scripts/contrast.py: WCAG contrast >= 4.5:1 (held >= 0.6 s)",
-        "scripts/qa.py: labels >= 30 px and no raw SVG/CSS fontSize < 30"
+        "scripts/qa.py + scripts/contrast.py: WCAG contrast >= 4.5:1 (held >= 0.6 s)"
       ],
       "components": [
         "remotion/src/brand/Kit.tsx `Lane` / `LabeledBox` (LANE_GAP = 36)"
@@ -52,27 +51,15 @@
         },
         {
           "episode": "Sky",
-          "timestamp": "00:19",
-          "severity": "major",
-          "source": "qa/Sky/agy_rules/critic_rules.json"
-        },
-        {
-          "episode": "Sky",
           "timestamp": "B 0:35",
           "severity": "minor",
           "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "00:00-00:04",
-          "severity": "major",
-          "source": "qa/Sky/v7/ship/critic_cal.json"
         }
       ]
     },
     {
       "id": "R-002",
-      "rule": "Render every on-stage text element, including SVG labels, axis ticks, pictograms, callouts, leader-line annotations, and credit lines, at a minimum of 30 px on a 1080-wide canvas, placed in dedicated gutters with clearance from captions and container borders.",
+      "rule": "Render every on-stage label, annotation, credit, axis tick, and pictogram at or above the 30px mobile minimum type size on a 1080-wide canvas.",
       "category": "design_typography",
       "enforcement": "gate",
       "active": true,
@@ -138,6 +125,12 @@
         },
         {
           "episode": "Sky",
+          "timestamp": "00:19",
+          "severity": "major",
+          "source": "qa/Sky/agy_rules/critic_rules.json"
+        },
+        {
+          "episode": "Sky",
           "timestamp": "00:32-00:34 (proof-card attribution text renders visibly smaller than 30 px and requires squinting on a phone screen).",
           "severity": "major",
           "source": "qa/Sky/v6/ship/critic_cal.json"
@@ -146,7 +139,7 @@
     },
     {
       "id": "R-003",
-      "rule": "Burn captions onto a dedicated top-level track at full target opacity, isolated from camera zooms, overlays, and card transitions; reveal them with position or mask motion rather than opacity ramps, and terminate each caption block before any hard scene cut.",
+      "rule": "Keep captions and stage labels at full target opacity and contrast on every visible frame, revealing them by position or mask rather than opacity ramps; render burned-in captions on a dedicated top-level track isolated from camera zooms, overlays, and card transitions.",
       "category": "voice_captions",
       "enforcement": "gate",
       "active": true,
@@ -159,23 +152,16 @@
       "components": [],
       "episodes": [
         "ANC",
-        "Elevator",
         "QR",
         "Sky"
       ],
-      "episode_count": 4,
+      "episode_count": 3,
       "evidence": [
         {
           "episode": "ANC",
           "timestamp": "00:01, 00:15, 00:25, 00:35, 00:39 (measured contrast min_ratio=1.53)",
           "severity": "minor",
           "source": "qa/ANC/v7/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:38-00:39",
-          "severity": "minor",
-          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
         },
         {
           "episode": "QR",
@@ -199,8 +185,8 @@
     },
     {
       "id": "R-004",
-      "rule": "Strip markdown punctuation, leading underscores, stray dashes, and orphaned hyphen delimiters from caption text before rendering.",
-      "category": "voice_captions",
+      "rule": "Strip markdown artifacts, leading dashes, leading underscores, and orphaned hyphen delimiters from caption text before rendering.",
+      "category": "design_typography",
       "enforcement": "candidate_gate",
       "active": false,
       "severity": "major",
@@ -229,7 +215,7 @@
     },
     {
       "id": "R-005",
-      "rule": "Break caption lines at natural clause boundaries, never split hyphenated compounds or proper nouns across lines or chunks, and never strand an article, preposition, or single short word alone on a line.",
+      "rule": "Break caption lines only at natural clause boundaries, never stranding an article, preposition, or single function word, and never split a hyphenated compound or proper noun across lines or caption chunks.",
       "category": "voice_captions",
       "enforcement": "candidate_gate",
       "active": true,
@@ -278,20 +264,27 @@
     },
     {
       "id": "R-006",
-      "rule": "Time every caption window to the speech it displays within about 50 ms of the corresponding phonemes, and give every spoken word its own timed caption token with no dropped words.",
-      "category": "sound_sync",
+      "rule": "Sync caption windows to the spoken phonemes (within about 50 ms), give every spoken word a timed caption token, and flush caption blocks at scene and section cuts so no trailing words bleed into the next beat.",
+      "category": "voice_captions",
       "enforcement": "candidate_gate",
-      "active": false,
+      "active": true,
       "severity": "major",
       "measurable": true,
-      "proposed_gate": "Compare caption display start timestamps against forced-alignment word boundaries and fail if any token offset exceeds 100 milliseconds.",
+      "proposed_gate": "Cross-check caption chunk timestamps against section and end-card cut frames and fail if any caption phrase spans across a card transition boundary.",
       "gates": [],
       "components": [],
       "episodes": [
+        "Elevator",
         "QR"
       ],
-      "episode_count": 1,
+      "episode_count": 2,
       "evidence": [
+        {
+          "episode": "Elevator",
+          "timestamp": "00:38-00:39",
+          "severity": "minor",
+          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
+        },
         {
           "episode": "QR",
           "timestamp": "B 0:14 / B 0:15",
@@ -308,7 +301,7 @@
     },
     {
       "id": "R-007",
-      "rule": "Enter, exit, and reposition every on-stage element through eased spring or multi-frame motion with anticipation and overshoot; never use raw pops, zero-transform entrances, linear or bare opacity fades, blur or opacity cross-fades between sections, or teleporting between keyframes.",
+      "rule": "Enter every foreground graphic, badge, callout, and sibling item with eased spring motion using anticipation and overshoot, staggered across siblings, never via bare opacity fades, zero-transform pops, or instant single-frame toggles.",
       "category": "motion_craft",
       "enforcement": "gate",
       "active": true,
@@ -322,10 +315,9 @@
       "episodes": [
         "ANC",
         "Elevator",
-        "QR",
         "Sky"
       ],
-      "episode_count": 4,
+      "episode_count": 3,
       "evidence": [
         {
           "episode": "ANC",
@@ -347,12 +339,6 @@
         },
         {
           "episode": "Elevator",
-          "timestamp": "A 0:31-0:32",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Elevator",
           "timestamp": "00:03, 00:17, 00:19, 00:28, 00:36, 00:41",
           "severity": "major",
           "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
@@ -370,22 +356,10 @@
           "source": "qa/Elevator/v7/ship/critic_cal.json"
         },
         {
-          "episode": "QR",
-          "timestamp": "00:05 (blurred hero dissolving into background), 00:49 (end card cross-fading directly over returning hero graphic)",
-          "severity": "major",
-          "source": "qa/QR/v6/ship/critic_cal.json"
-        },
-        {
           "episode": "Sky",
           "timestamp": "00:32",
           "severity": "minor",
           "source": "qa/Sky/agy_rules/critic_rules.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:34 / B 0:34",
-          "severity": "minor",
-          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
         },
         {
           "episode": "Sky",
@@ -397,7 +371,7 @@
     },
     {
       "id": "R-008",
-      "rule": "Stagger paired chips and side-by-side callout tags by at least 4 frames so they never appear on the same frame.",
+      "rule": "Stagger the entrance of paired categorical chips or side-by-side callout tags by at least four frames.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
       "active": false,
@@ -421,44 +395,231 @@
     },
     {
       "id": "R-009",
-      "rule": "Add secondary physical response to transient and climactic events, such as squash-and-stretch, expanding scale or opacity shockwaves, and particle bursts timed to the sound spike.",
+      "rule": "Never leave the primary stage or hero subject visually static for more than two seconds; keep continuous motion, a structural state change, or a meaningful camera move, and vary the camera framing across consecutive chapters.",
       "category": "motion_craft",
-      "enforcement": "prose",
+      "enforcement": "gate",
       "active": true,
-      "severity": "major",
-      "measurable": false,
-      "proposed_gate": "",
-      "gates": [],
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Measure masked stage pixel change (excluding captions and footer chrome) across every sliding 1.5 s window and fail if mean stage motion falls below the active-motion threshold.",
+      "gates": [
+        "scripts/qa.py: motion: no stage hold > 2.0 s",
+        "scripts/qa.py + scripts/contrast.py: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges, A14)"
+      ],
       "components": [],
       "episodes": [
         "ANC",
+        "Elevator",
+        "QR",
+        "Sky"
+      ],
+      "episode_count": 4,
+      "evidence": [
+        {
+          "episode": "ANC",
+          "timestamp": "00:06-00:09, 00:12-00:14, 00:21-00:23",
+          "severity": "major",
+          "source": "qa/ANC/v7/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:08",
+          "severity": "major",
+          "source": "qa/Elevator/agy_rules/critic_rules.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:01-00:04, 00:08-00:13, 00:29-00:31",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:14-0:26 / B 0:14-0:26",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:01-00:04, 00:10-00:13, 00:22-00:26, 00:35-00:37",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:05-00:07, 00:10-00:13, and 00:22-00:26 hold the main stage diagram visually static for 3 to 5 seconds during active narration.",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6b/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:05-00:07, 00:10-00:13, 00:14-00:16, and 00:29-00:31 hold completely frozen for 2.5-4 s, while 00:00-00:34 stays locked on a single unchanging front-elevation schematic across five chapters.",
+          "severity": "blocker",
+          "source": "qa/Elevator/v7/ship/critic_cal.json"
+        },
+        {
+          "episode": "QR",
+          "timestamp": "00:29",
+          "severity": "major",
+          "source": "qa/QR/agy_rules/critic_rules.json"
+        },
+        {
+          "episode": "QR",
+          "timestamp": "00:11-00:14 (4 s static grid), 00:19-00:21 (3 s static diagram), 00:23-00:27 (5 s stuck 0% display), 00:30-00:35 (6 s motionless hero graphic), 00:45-00:47 (3 s static highlight)",
+          "severity": "blocker",
+          "source": "qa/QR/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "00:10",
+          "severity": "major",
+          "source": "qa/Sky/agy_rules/critic_rules.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "00:01-00:03, 00:08-00:09, 00:15-00:17, 00:19-00:21, 00:24-00:26, 00:32-00:34, and 00:43-00:45 all hold nearly static for 2-3 seconds while badges fade in linearly.",
+          "severity": "major",
+          "source": "qa/Sky/v6/ship/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-010",
+      "rule": "Start primary subject motion or a distinct graphical state change within the first few frames (about 12 frames or 500 ms) of the opening shot.",
+      "category": "hook",
+      "enforcement": "candidate_gate",
+      "active": true,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Verify that the pixel delta between frame 0 and frame 12 exceeds 5% of the central stage bounding box.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "QR",
         "Sky"
       ],
       "episode_count": 2,
       "evidence": [
         {
-          "episode": "ANC",
-          "timestamp": "00:32",
+          "episode": "QR",
+          "timestamp": "00:00",
           "severity": "major",
-          "source": "qa/ANC/v6/critic_rules.json"
-        },
-        {
-          "episode": "ANC",
-          "timestamp": "A 0:32 / B 0:32",
-          "severity": "minor",
-          "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
+          "source": "qa/QR/agy_rules/critic_rules.json"
         },
         {
           "episode": "Sky",
-          "timestamp": "A 0:14 vs B 0:14",
+          "timestamp": "A 0:00 / B 0:00",
+          "severity": "minor",
+          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-011",
+      "rule": "Add continuous secondary motion (drift, push-in, or micro-pulse) to any static photo or end card held on screen longer than two seconds.",
+      "category": "finish_texture",
+      "enforcement": "gate",
+      "active": false,
+      "severity": "minor",
+      "measurable": false,
+      "proposed_gate": "",
+      "gates": [
+        "scripts/qa.py: motion: no stage hold > 2.0 s",
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+      ],
+      "components": [
+        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
+      ],
+      "episodes": [
+        "Elevator"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:34 / B 0:34",
+          "severity": "minor",
+          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:39 / B 0:39",
+          "severity": "minor",
+          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:00–0:34 / B 0:00–0:34 (flat solid fills, motionless bottom springs, static cable lines), A 0:35–0:37 / B 0:35–0:37 (static archival photo without gentle push-in), A 0:39–0:42 / B 0:39–0:42 (static comparison cards)",
+          "severity": "minor",
+          "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
+        }
+      ]
+    },
+    {
+      "id": "R-012",
+      "rule": "Open on one dominant, unboxed, full-stage hero visual with at most two text components at frame zero, restrict early labels to the primary subject, and depict the promised mechanism or anomaly literally from the first second.",
+      "category": "hook",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Limit total on-screen text nodes during the first 30 frames (excluding title bar and captions) to at most two elements.",
+      "gates": [
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB",
+        "scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17)",
+        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)"
+      ],
+      "components": [
+        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
+      ],
+      "episodes": [
+        "Elevator",
+        "QR",
+        "Sky"
+      ],
+      "episode_count": 3,
+      "evidence": [
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:00 vs B 0:00",
+          "severity": "minor",
+          "source": "qa/Elevator/v7/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "QR",
+          "timestamp": "00:00-00:04 (pristine graphic shown during self-repairing damage claim), 00:08-00:22 (unlinked placeholder boxes and arc from empty space), 00:38-00:40 (tear shown during glare/scratches line), 00:41-00:47 (occluded corner without alignment geometry)",
+          "severity": "blocker",
+          "source": "qa/QR/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "00:00",
+          "severity": "major",
+          "source": "qa/Sky/agy_rules/critic_rules.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:00 / B 0:00",
+          "severity": "minor",
+          "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "B 0:00 - B 0:03",
+          "severity": "major",
+          "source": "qa/Sky/v7/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:00 vs B 0:00",
           "severity": "major",
           "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
         }
       ]
     },
     {
-      "id": "R-010",
-      "rule": "Make the final frame match frame zero exactly, pixel for pixel, in geometry, scale, camera coordinates, hero transform, crop, canvas background, container framing, layout, and HUD or chrome state, binding these values programmatically where possible.",
+      "id": "R-013",
+      "rule": "Make the final frame match frame zero exactly in geometry, scale, camera position, background, element layout, hero transform, recurring background motifs, and persistent chrome or chapter indicators, so the loop seam is invisible.",
       "category": "loop",
       "enforcement": "gate",
       "active": true,
@@ -466,8 +627,8 @@
       "measurable": true,
       "proposed_gate": "Compute SSIM between the first and last rendered frame; fail if structural similarity drops below 0.98.",
       "gates": [
-        "scripts/static_gates.py: no decorative HUD / fake timecode strings (A18)",
-        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB",
+        "scripts/static_gates.py: no decorative HUD / fake timecode strings (A18)"
       ],
       "components": [
         "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
@@ -524,6 +685,18 @@
         },
         {
           "episode": "QR",
+          "timestamp": "A 0:48 / B 0:48",
+          "severity": "minor",
+          "source": "qa/QR/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "QR",
+          "timestamp": "A 00:53 and B 00:53 zoom to the opening composition layout but leave the chapter progress bar at '05/05', causing an abrupt visual snap when looping back to '01/05' at 00:00.",
+          "severity": "minor",
+          "source": "qa/QR/v6/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "QR",
           "timestamp": "00:53 vs 00:00 (final frame zooms ~1.4x larger than frame 0, clipping hero edges while chapter deck still displays 05/05 instead of 01/05)",
           "severity": "major",
           "source": "qa/QR/v6/ship/critic_cal.json"
@@ -545,12 +718,18 @@
           "timestamp": "A 0:46 vs B 0:46",
           "severity": "blocker",
           "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "B 0:01 and B 0:43 both included radial volumetric light rays, establishing seamless aesthetic consistency between hook and loop, whereas A omitted them.",
+          "severity": "minor",
+          "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
         }
       ]
     },
     {
-      "id": "R-011",
-      "rule": "Bring the closing callback back into the opening visual world within the final second with a matched kinetic whip or vector, and hold the final visual state for at least 6 frames before any loop transition.",
+      "id": "R-014",
+      "rule": "End on a held final frame, then bridge into the opening hook with a matched kinetic whip or directional move; pad every bounding box so none cut into the viewport, and never cut to an isolated card layout.",
       "category": "loop",
       "enforcement": "gate",
       "active": true,
@@ -558,8 +737,8 @@
       "measurable": true,
       "proposed_gate": "Check that the final frame image embedding or SSIM against frame 0 exceeds 0.85 or that a spatial motion vector connects them.",
       "gates": [
-        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB",
-        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)"
+        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)",
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
       ],
       "components": [
         "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
@@ -593,632 +772,43 @@
           "timestamp": "A 0:45 / B 0:45",
           "severity": "minor",
           "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
-        }
-      ]
-    },
-    {
-      "id": "R-012",
-      "rule": "Clear or hide persistent chapter indexes and section titles on the outro and closing callback frames so they match the opening frame.",
-      "category": "loop",
-      "enforcement": "candidate_gate",
-      "active": false,
-      "severity": "minor",
-      "measurable": true,
-      "proposed_gate": "Verify that the chapter deck component updates its active step index or switches to an outro state when the end-card trigger fires.",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "QR"
-      ],
-      "episode_count": 1,
-      "evidence": [
-        {
-          "episode": "QR",
-          "timestamp": "A 0:48 / B 0:48",
-          "severity": "minor",
-          "source": "qa/QR/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "QR",
-          "timestamp": "A 00:53 and B 00:53 zoom to the opening composition layout but leave the chapter progress bar at '05/05', causing an abrupt visual snap when looping back to '01/05' at 00:00.",
-          "severity": "minor",
-          "source": "qa/QR/v6/ship/cmp_prev_vs_new.json"
-        }
-      ]
-    },
-    {
-      "id": "R-013",
-      "rule": "Hold the signature end card from before the first word of the catchphrase until at least 0.25 seconds after its last word, with a minimum hold of 1.5 seconds, and lock its duration to the full spoken phrase plus a settle beat.",
-      "category": "sound_sync",
-      "enforcement": "gate",
-      "active": false,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Verify the catchphrase end-card frame range spans the complete word-timestamp duration plus at least 0.3 s settle, and flag audio mixes where over 60% of transition cues share identical spectral fingerprints.",
-      "gates": [
-        "scripts/qa.py: >= 0.2 s near-silence (<= -38 dBFS) before the catchphrase",
-        "scripts/qa.py: SFX density 1.2-1.5/s and 10-16 dB under voice"
-      ],
-      "components": [],
-      "episodes": [
-        "Sky"
-      ],
-      "episode_count": 1,
-      "evidence": [
-        {
-          "episode": "Sky",
-          "timestamp": "00:41-00:42 (end card exits before the catchphrase finishes on captions) and 00:00-00:46 (the same air-whoosh repeats across nearly every cut alongside synthetic UI pings).",
-          "severity": "major",
-          "source": "qa/Sky/v6/ship/critic_cal.json"
         },
         {
           "episode": "Sky",
-          "timestamp": "00:41-00:42",
-          "severity": "major",
-          "source": "qa/Sky/v7/ship/critic_cal.json"
-        }
-      ]
-    },
-    {
-      "id": "R-014",
-      "rule": "Never leave the primary stage visually static for more than two seconds during any beat; keep camera, structural, mechanism, or particle motion running, including micro-motion on end cards held before the loop seam.",
-      "category": "motion_craft",
-      "enforcement": "gate",
-      "active": true,
-      "severity": "blocker",
-      "measurable": true,
-      "proposed_gate": "Compute optical flow or pixel delta on the central hero bounding box across every rolling 60-frame window and fail if delta is zero.",
-      "gates": [
-        "scripts/qa.py: motion: no stage hold > 2.0 s",
-        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB",
-        "scripts/qa.py + scripts/contrast.py: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges, A14)"
-      ],
-      "components": [
-        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
-      ],
-      "episodes": [
-        "Elevator",
-        "QR",
-        "Sky"
-      ],
-      "episode_count": 3,
-      "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "00:08",
-          "severity": "major",
-          "source": "qa/Elevator/agy_rules/critic_rules.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:39 / B 0:39",
-          "severity": "minor",
-          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:01-00:04, 00:08-00:13, 00:29-00:31",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:14-0:26 / B 0:14-0:26",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:01-00:04, 00:10-00:13, 00:22-00:26, 00:35-00:37",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:05-00:07, 00:10-00:13, and 00:22-00:26 hold the main stage diagram visually static for 3 to 5 seconds during active narration.",
+          "timestamp": "B 0:46",
           "severity": "blocker",
-          "source": "qa/Elevator/v6b/ship/critic_cal.json"
-        },
-        {
-          "episode": "QR",
-          "timestamp": "00:29",
-          "severity": "major",
-          "source": "qa/QR/agy_rules/critic_rules.json"
-        },
-        {
-          "episode": "QR",
-          "timestamp": "00:11-00:14 (4 s static grid), 00:19-00:21 (3 s static diagram), 00:23-00:27 (5 s stuck 0% display), 00:30-00:35 (6 s motionless hero graphic), 00:45-00:47 (3 s static highlight)",
-          "severity": "blocker",
-          "source": "qa/QR/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "00:10",
-          "severity": "major",
-          "source": "qa/Sky/agy_rules/critic_rules.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "00:01-00:03, 00:08-00:09, 00:15-00:17, 00:19-00:21, 00:24-00:26, 00:32-00:34, and 00:43-00:45 all hold nearly static for 2-3 seconds while badges fade in linearly.",
-          "severity": "major",
-          "source": "qa/Sky/v6/ship/critic_cal.json"
+          "source": "qa/Sky/v8/ship/cmp_new_vs_prev_swap.json"
         }
       ]
     },
     {
       "id": "R-015",
-      "rule": "Never leave the main stage region static for more than 1.5 seconds between motion events.",
+      "rule": "Transition between sections and out of end cards with crisp element-driven moves or directional whips; never use blur or opacity cross-fades or double-exposure frames.",
       "category": "motion_craft",
-      "enforcement": "gate",
+      "enforcement": "candidate_gate",
       "active": false,
       "severity": "major",
       "measurable": true,
-      "proposed_gate": "Measure masked stage pixel change (excluding captions and footer chrome) across every sliding 1.5 s window and fail if mean stage motion falls below the active-motion threshold.",
-      "gates": [
-        "scripts/qa.py: motion: no stage hold > 2.0 s"
-      ],
+      "proposed_gate": "Enforce section boundaries through a shared world-move transition component and fail QA if any transition frame blends two section canvases or applies blur above threshold.",
+      "gates": [],
       "components": [],
       "episodes": [
-        "ANC"
+        "QR"
       ],
       "episode_count": 1,
       "evidence": [
         {
-          "episode": "ANC",
-          "timestamp": "00:06-00:09, 00:12-00:14, 00:21-00:23",
-          "severity": "major",
-          "source": "qa/ANC/v7/ship/critic_cal.json"
-        }
-      ]
-    },
-    {
-      "id": "R-016",
-      "rule": "Start dynamic subject motion, camera movement, or a distinct graphic state change within the first 12 frames (about 500 ms) of the opening shot.",
-      "category": "hook",
-      "enforcement": "candidate_gate",
-      "active": true,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Verify that the pixel delta between frame 0 and frame 12 exceeds 5% of the central stage bounding box.",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "QR",
-        "Sky"
-      ],
-      "episode_count": 2,
-      "evidence": [
-        {
           "episode": "QR",
-          "timestamp": "00:00",
+          "timestamp": "00:05 (blurred hero dissolving into background), 00:49 (end card cross-fading directly over returning hero graphic)",
           "severity": "major",
-          "source": "qa/QR/agy_rules/critic_rules.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:00 / B 0:00",
-          "severity": "minor",
-          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
-        }
-      ]
-    },
-    {
-      "id": "R-017",
-      "rule": "Keep the opening hook to one dominant hero element on a full-stage environment, with no more than two text components, no heavy boxed title containers or dark boxed cards, and initial labels restricted to the primary subject.",
-      "category": "hook",
-      "enforcement": "gate",
-      "active": true,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Limit total on-screen text nodes during the first 30 frames (excluding title bar and captions) to at most two elements.",
-      "gates": [
-        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)",
-        "scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17)",
-        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
-      ],
-      "components": [
-        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
-      ],
-      "episodes": [
-        "Elevator",
-        "Sky"
-      ],
-      "episode_count": 2,
-      "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:00 vs B 0:00",
-          "severity": "minor",
-          "source": "qa/Elevator/v7/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "00:00",
-          "severity": "major",
-          "source": "qa/Sky/agy_rules/critic_rules.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:00 / B 0:00",
-          "severity": "minor",
-          "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "B 0:00 - B 0:03",
-          "severity": "major",
-          "source": "qa/Sky/v7/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:00 vs B 0:00",
-          "severity": "major",
-          "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
-        }
-      ]
-    },
-    {
-      "id": "R-018",
-      "rule": "Show the core mechanism literally from the first second as one unmistakable sensory hero demonstration: animate the causal interaction between every input and the combined step on screen, with diegetic audio proving the effect in real time, rather than cutting from inputs to a labelled result or a quiet diagram.",
-      "category": "clarity",
-      "enforcement": "prose",
-      "active": true,
-      "severity": "blocker",
-      "measurable": false,
-      "proposed_gate": "",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "ANC",
-        "QR"
-      ],
-      "episode_count": 2,
-      "evidence": [
-        {
-          "episode": "ANC",
-          "timestamp": "00:10-00:16 (disconnected chip output), 00:18-00:21 (missing visual wave superposition before flat result)",
-          "severity": "blocker",
-          "source": "qa/ANC/v7/ship/critic_cal.json"
-        },
-        {
-          "episode": "ANC",
-          "timestamp": "00:03-00:05, 00:18-00:21, 00:32-00:35",
-          "severity": "blocker",
-          "source": "qa/ANC/v7/ship/critic_cal.json"
-        },
-        {
-          "episode": "QR",
-          "timestamp": "00:00-00:04 (pristine graphic shown during self-repairing damage claim), 00:08-00:22 (unlinked placeholder boxes and arc from empty space), 00:38-00:40 (tear shown during glare/scratches line), 00:41-00:47 (occluded corner without alignment geometry)",
-          "severity": "blocker",
           "source": "qa/QR/v6/ship/critic_cal.json"
         }
       ]
     },
     {
-      "id": "R-019",
-      "rule": "Vary framing deliberately: punch in on the decisive turning point, break out of the primary diagram frame at least once for a full-stage reveal, and give the central twist a dedicated camera move or visual transformation of at least 2.5 seconds; never hold one framing for more than half the runtime or across consecutive chapters.",
-      "category": "concept_wow",
-      "enforcement": "gate",
-      "active": true,
-      "severity": "blocker",
-      "measurable": true,
-      "proposed_gate": "Compute per-second optical flow / frame-difference within the content safe zone (y 290-1190) and block the render if any window > 2.0 s falls below the active-motion threshold or if consecutive chapters lack a framing/scale shift.",
-      "gates": [
-        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)",
-        "scripts/qa.py: motion: no stage hold > 2.0 s"
-      ],
-      "components": [],
-      "episodes": [
-        "Elevator"
-      ],
-      "episode_count": 1,
-      "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "00:00-00:34, 00:32",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:27-00:42",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:05 / B 0:05",
-          "severity": "minor",
-          "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:00-00:34 stays locked on the same boxed diagram for 35 of 42 seconds, compressing the centerpiece counterintuitive reveal at 00:32 into roughly 1 second.",
-          "severity": "blocker",
-          "source": "qa/Elevator/v6b/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:05-00:07, 00:10-00:13, 00:14-00:16, and 00:29-00:31 hold completely frozen for 2.5-4 s, while 00:00-00:34 stays locked on a single unchanging front-elevation schematic across five chapters.",
-          "severity": "blocker",
-          "source": "qa/Elevator/v7/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:29-00:32 executes the main surprise inside the same distant 34-second schematic box, and 00:39-00:42 closes on plain bordered cards with generic clip-art iconography.",
-          "severity": "major",
-          "source": "qa/Elevator/v7/ship/critic_cal.json"
-        }
-      ]
-    },
-    {
-      "id": "R-020",
-      "rule": "Keep one consistent observer frame of reference throughout a continuous spatial diagram; do not move the light source and rotate the subject at the same time.",
-      "category": "clarity",
-      "enforcement": "prose",
-      "active": false,
-      "severity": "major",
-      "measurable": false,
-      "proposed_gate": "",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "Sky"
-      ],
-      "episode_count": 1,
-      "evidence": [
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:26 / B 0:26",
-          "severity": "major",
-          "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
-        }
-      ]
-    },
-    {
-      "id": "R-021",
-      "rule": "Keep every label, graphic, chart, callout, and subject inside both horizontal safe margins, with at least 40 px clearance from the stage frame, through every pan, zoom, camera move, and multi-state beat; never crop a focal component to rescue the layout.",
-      "category": "design_typography",
-      "enforcement": "gate",
-      "active": true,
-      "severity": "blocker",
-      "measurable": true,
-      "proposed_gate": "Calculate bounding boxes of on-screen assets and fail if distance to stage container edges is less than 40 pixels.",
-      "gates": [
-        "scripts/qa.py + scripts/contrast.py: labels: icon/label clearance >= 36 px (held >= 0.6 s)",
-        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB",
-        "scripts/qa.py + scripts/contrast.py: >= 24 px from side edges; intro (first 2 s) judged frame by frame (A15)"
-      ],
-      "components": [
-        "remotion/src/brand/Kit.tsx `Lane` / `LabeledBox` (LANE_GAP = 36)",
-        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
-      ],
-      "episodes": [
-        "ANC",
-        "Elevator",
-        "Sky"
-      ],
-      "episode_count": 3,
-      "evidence": [
-        {
-          "episode": "ANC",
-          "timestamp": "00:17",
-          "severity": "minor",
-          "source": "qa/ANC/v6/critic_rules.json"
-        },
-        {
-          "episode": "ANC",
-          "timestamp": "A 0:17 / B 0:18",
-          "severity": "minor",
-          "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:23",
-          "severity": "blocker",
-          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:17-00:18, 00:22-00:26",
-          "severity": "blocker",
-          "source": "qa/Elevator/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:11–0:13 (leftward camera pan slices off the left wall of the car housing), A 0:10–0:13 ('+ 40–50% LOAD' badge crowds the right vertical rail near the platform UI column)",
-          "severity": "major",
-          "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:08-00:13 shifts the main schematic left to fit right-side callouts, cropping the left wall and hero car off-screen (x < 0) for over 5 seconds.",
-          "severity": "major",
-          "source": "qa/Elevator/v7/ship/critic_cal.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "00:00 (top-left card label is sliced off the left edge by an oversized initial scale), 00:46 (loop whip lands into the clipped frame 0), and 00:38-00:40 (camera zoom crops half of the right-side hero object off-screen).",
-          "severity": "blocker",
-          "source": "qa/Sky/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "00:27-00:31, 00:34-00:40",
-          "severity": "major",
-          "source": "qa/Sky/v7/ship/critic_cal.json"
-        }
-      ]
-    },
-    {
-      "id": "R-022",
-      "rule": "Clip the stage viewport to its vertical safe band, keep headers and persistent UI outside camera transforms, and keep stage artwork, zoomed layers, callouts, and stray geometry out of the caption track and outer margins.",
-      "category": "design_typography",
-      "enforcement": "gate",
-      "active": true,
-      "severity": "blocker",
-      "measurable": true,
-      "proposed_gate": "Wrap multi-element hero assets in bounded layout primitives that prevent component limbs from intersecting container strokes.",
-      "gates": [
-        "scripts/qa.py: labels inside Shorts UI safe zones"
-      ],
-      "components": [],
-      "episodes": [
-        "ANC",
-        "Elevator",
-        "QR",
-        "Sky"
-      ],
-      "episode_count": 4,
-      "evidence": [
-        {
-          "episode": "ANC",
-          "timestamp": "B 0:00",
-          "severity": "minor",
-          "source": "qa/ANC/v7/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:08, 00:27-00:31",
-          "severity": "blocker",
-          "source": "qa/Elevator/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:09-00:13, 00:27-00:31",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:06-00:13",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:07-0:15 stray dark vertical stripe appears on the right screen edge.",
-          "severity": "major",
-          "source": "qa/Elevator/v7/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "QR",
-          "timestamp": "B 0:53",
-          "severity": "major",
-          "source": "qa/QR/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:37 / B 0:37",
-          "severity": "major",
-          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
-        }
-      ]
-    },
-    {
-      "id": "R-023",
-      "rule": "Keep the background a single full-bleed canvas of consistent luminance that stays subordinate and thematically neutral, with no decorative or unrelated illustrations behind technical diagrams and no leftover silhouettes when moving to abstract beats.",
-      "category": "finish_texture",
-      "enforcement": "gate",
-      "active": true,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Enforce a full-bleed root layout container in the brand shell that prohibits arbitrary nested card borders around the primary animation stage.",
-      "gates": [
-        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)"
-      ],
-      "components": [],
-      "episodes": [
-        "ANC",
-        "Sky"
-      ],
-      "episode_count": 2,
-      "evidence": [
-        {
-          "episode": "ANC",
-          "timestamp": "A 0:10 / B 0:10",
-          "severity": "major",
-          "source": "qa/ANC/v7/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "ANC",
-          "timestamp": "A 0:05 / A 0:10",
-          "severity": "major",
-          "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:08 / B 0:08",
-          "severity": "minor",
-          "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "B 0:07 - B 0:20",
-          "severity": "major",
-          "source": "qa/Sky/v7/ship/cmp_new_vs_prev_swap.json"
-        }
-      ]
-    },
-    {
-      "id": "R-024",
-      "rule": "Draw every diagram and foreground icon in one cohesive flat, hard-edged stroke-and-fill vector grammar with accurate scale and lighting, rather than mismatched stock glyphs, soft airbrushed glows, or single-primitive layouts.",
+      "id": "R-016",
+      "rule": "Keep one unified full-bleed canvas across all beats: no nested or floating card containers, no alternating background luminance, no decorative silhouettes behind technical diagrams, and background layers subordinate and thematically neutral, built from hard-edged flat vector shapes.",
       "category": "style_fidelity",
-      "enforcement": "prose",
-      "active": true,
-      "severity": "major",
-      "measurable": false,
-      "proposed_gate": "",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "ANC",
-        "Sky"
-      ],
-      "episode_count": 2,
-      "evidence": [
-        {
-          "episode": "ANC",
-          "timestamp": "00:00-00:42 (unexplained grey clouds overlapping waveforms/labels at 00:11, 00:15, 00:29, 00:33; thin wireframe stock icons mixed with filled flat shapes at 00:16-00:20)",
-          "severity": "major",
-          "source": "qa/ANC/v7/ship/critic_cal.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "00:00-00:06, 00:07-00:17, 00:27-00:36",
-          "severity": "major",
-          "source": "qa/Sky/v7/ship/critic_cal.json"
-        }
-      ]
-    },
-    {
-      "id": "R-025",
-      "rule": "Reserve semantic status colors for success, failure, or balance states; never recolor neutral mechanical components with them.",
-      "category": "design_typography",
-      "enforcement": "candidate_gate",
-      "active": false,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Lint component stroke and fill colors against a whitelist that forbids semantic status tokens on passive machinery or structural containers.",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "Elevator"
-      ],
-      "episode_count": 1,
-      "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:33",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
-        }
-      ]
-    },
-    {
-      "id": "R-026",
-      "rule": "Avoid nesting diagrams, titles, or proof assets in arbitrary card containers or slide-deck boxes; use one full-bleed canvas and show proof photos at maximum safe-zone width.",
-      "category": "design_typography",
       "enforcement": "gate",
       "active": true,
       "severity": "major",
@@ -1243,223 +833,87 @@
         },
         {
           "episode": "ANC",
+          "timestamp": "A 0:10 / B 0:10",
+          "severity": "major",
+          "source": "qa/ANC/v7/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "ANC",
           "timestamp": "A 0:00 / A 0:05",
           "severity": "major",
           "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
         },
         {
-          "episode": "Sky",
-          "timestamp": "B 0:30 vs A 0:30",
+          "episode": "ANC",
+          "timestamp": "A 0:05 / A 0:10",
           "severity": "major",
-          "source": "qa/Sky/v7/ship/cmp_new_vs_prev_swap.json"
+          "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
         },
         {
-          "episode": "Sky",
-          "timestamp": "A 0:32 vs B 0:32",
+          "episode": "ANC",
+          "timestamp": "00:00-00:42 (unexplained grey clouds overlapping waveforms/labels at 00:11, 00:15, 00:29, 00:33; thin wireframe stock icons mixed with filled flat shapes at 00:16-00:20)",
           "severity": "major",
-          "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
-        }
-      ]
-    },
-    {
-      "id": "R-027",
-      "rule": "Present real-world proof photos as feathered vignettes, picture-in-picture or split-screen docks, or full-bleed frames rather than floating rectangles or full overlays; dim or clear the underlying diagram when a card enters, animate it out before diagram secondary motion resumes, and keep it alive with a gentle camera push-in, continuous drift, progressive callout boxes, and a dimmed focus mask.",
-      "category": "motion_craft",
-      "enforcement": "gate",
-      "active": true,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Check that proof cards and modal overlays either pause underlying animated elements or occupy no more than 60% of the stage height.",
-      "gates": [
-        "scripts/qa.py: motion: no stage hold > 2.0 s",
-        "scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17)"
-      ],
-      "components": [],
-      "episodes": [
-        "Elevator",
-        "Sky"
-      ],
-      "episode_count": 2,
-      "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:34 / B 0:34",
-          "severity": "minor",
-          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:34 / B 0:34",
-          "severity": "minor",
-          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:35-00:37 holds a static, visually cluttered archival photo with only a thin unmasked dashed outline around the highlighted hardware.",
-          "severity": "minor",
-          "source": "qa/Elevator/v6b/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:00–0:34 / B 0:00–0:34 (flat solid fills, motionless bottom springs, static cable lines), A 0:35–0:37 / B 0:35–0:37 (static archival photo without gentle push-in), A 0:39–0:42 / B 0:39–0:42 (static comparison cards)",
-          "severity": "minor",
-          "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
+          "source": "qa/ANC/v7/ship/critic_cal.json"
         },
         {
           "episode": "Sky",
-          "timestamp": "00:32",
-          "severity": "minor",
-          "source": "qa/Sky/agy_rules/critic_rules.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:31 / B 0:31",
-          "severity": "minor",
-          "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:33 / B 0:33",
+          "timestamp": "A 0:08 / B 0:08",
           "severity": "minor",
           "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
         },
         {
           "episode": "Sky",
-          "timestamp": "00:32-00:34 (a bright circular diagram element protrudes awkwardly from behind the right border of the dark proof card).",
+          "timestamp": "B 0:07 - B 0:20",
           "severity": "major",
-          "source": "qa/Sky/v6/ship/critic_cal.json"
-        }
-      ]
-    },
-    {
-      "id": "R-028",
-      "rule": "Hold real-world photographic proof and evidence cards on screen for at least 2.5 seconds, with full-size credit typography and no overlapping overlay clutter.",
-      "category": "clarity",
-      "enforcement": "gate",
-      "active": true,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Verify that proof card visual components hold a minimum duration of 60 frames (2.0 seconds at 30 fps).",
-      "gates": [
-        "scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17)",
-        "scripts/qa.py: labels >= 30 px and no raw SVG/CSS fontSize < 30"
-      ],
-      "components": [],
-      "episodes": [
-        "Elevator",
-        "QR",
-        "Sky"
-      ],
-      "episode_count": 3,
-      "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:35 / B 0:35: The archival traction machine photograph card remains on screen for under two seconds, rushing viewer absorption of the callout box and credit line.",
-          "severity": "minor",
-          "source": "qa/Elevator/v6/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:35 / B 0:35 archival photo card holds for under 2.0 seconds before transitioning to the end card.",
-          "severity": "minor",
-          "source": "qa/Elevator/v7/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "QR",
-          "timestamp": "A 0:37 / B 0:37",
-          "severity": "minor",
-          "source": "qa/QR/v6/ship/cmp_new_vs_prev_swap.json"
+          "source": "qa/Sky/v7/ship/cmp_new_vs_prev_swap.json"
         },
         {
           "episode": "Sky",
-          "timestamp": "A 0:31 / B 0:31",
-          "severity": "major",
-          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "00:32-00:33",
+          "timestamp": "00:00-00:06, 00:07-00:17, 00:27-00:36",
           "severity": "major",
           "source": "qa/Sky/v7/ship/critic_cal.json"
         }
       ]
     },
     {
-      "id": "R-029",
-      "rule": "Keep illustrations, comparison diagrams, and resolved state diagrams on screen for a minimum dwell with secondary motion; never unmount a comparison while the narration still describes it, and never flash a cutaway for under 45 frames.",
-      "category": "clarity",
-      "enforcement": "candidate_gate",
-      "active": true,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Assert that section comparison overlay components maintain mounted state across all sub-beats of their parent sequence.",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "Elevator",
-        "QR"
-      ],
-      "episode_count": 2,
-      "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:20",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "QR",
-          "timestamp": "A 0:16 / B 0:16",
-          "severity": "minor",
-          "source": "qa/QR/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "QR",
-          "timestamp": "A 00:22 and B 00:22 hold the rebuilt byte resolution state for under one second before transitioning, making the mechanical recovery difficult to inspect.",
-          "severity": "minor",
-          "source": "qa/QR/v6/ship/cmp_prev_vs_new.json"
-        }
-      ]
-    },
-    {
-      "id": "R-030",
-      "rule": "Hold complex formulas and multi-variable comparison cards on screen for at least 2.5 seconds, and pair any equation on screen with an immediate visual ratio.",
-      "category": "clarity",
+      "id": "R-017",
+      "rule": "Draw arrows, status markers, and icons as dedicated SVG vector components in one cohesive stroke-and-fill grammar, and never combine an inline text symbol and an icon in the same badge.",
+      "category": "design_typography",
       "enforcement": "candidate_gate",
       "active": false,
       "severity": "minor",
       "measurable": true,
-      "proposed_gate": "Verify that shots or cards containing mathematical formula markup or multi-bar charts maintain an on-screen duration of at least 75 frames (2.5 s at 30 fps).",
+      "proposed_gate": "Reject badge text strings containing directional arrow characters when accompanied by a dedicated icon element.",
       "gates": [],
       "components": [],
       "episodes": [
-        "Sky"
+        "Elevator"
       ],
       "episode_count": 1,
       "evidence": [
         {
-          "episode": "Sky",
-          "timestamp": "A 0:18 / B 0:18",
+          "episode": "Elevator",
+          "timestamp": "B 0:31",
           "severity": "minor",
-          "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
+          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
         },
         {
-          "episode": "Sky",
-          "timestamp": "A 0:19 / B 0:19",
+          "episode": "Elevator",
+          "timestamp": "B 0:32",
           "severity": "minor",
-          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+          "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
         }
       ]
     },
     {
-      "id": "R-031",
-      "rule": "Label comparative charts and meters with a top-level descriptor, fixed axis headers above the plot area, consistent column positions across states, and series labels or meter headers bound directly above or on their own bar, persistently visible while the chart is on screen.",
-      "category": "clarity",
+      "id": "R-018",
+      "rule": "Reserve success, failure, and metric-balance status colors for their semantic meaning; never recolor neutral mechanical components with them.",
+      "category": "design_typography",
       "enforcement": "candidate_gate",
       "active": false,
       "severity": "major",
       "measurable": true,
-      "proposed_gate": "Ensure comparative telemetry components enforce a required title or descriptor prop in their component signature.",
+      "proposed_gate": "Lint component stroke and fill colors against a whitelist that forbids semantic status tokens on passive machinery or structural containers.",
       "gates": [],
       "components": [],
       "episodes": [
@@ -1469,71 +923,15 @@
       "evidence": [
         {
           "episode": "Elevator",
-          "timestamp": "A 0:14 / B 0:14: Version A displays comparative vertical bars identified only by bottom abbreviations 'CAR' and 'CW', whereas Version B provides an explicit top-level descriptor 'CAR vs CW'.",
+          "timestamp": "B 0:33",
           "severity": "major",
-          "source": "qa/Elevator/v6/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:24",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:24",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:17–0:26 (CAR and CW bar-chart labels vanish during the active weight comparison), A 0:14–0:16 / B 0:14–0:16 (series labels stacked vertically on one side rather than anchored over each bar)",
-          "severity": "major",
-          "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:08-00:09 fills the secondary color 2 s before its narration arrives, 00:14-00:26 stacks two meter headers vertically rather than directly above each bar, 00:19-00:21 shows a downward arrow directly above an upward-action label, and 00:29-00:31 delays motion for 2.5 s after brake release.",
-          "severity": "major",
-          "source": "qa/Elevator/v7/ship/critic_cal.json"
+          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
         }
       ]
     },
     {
-      "id": "R-032",
-      "rule": "Clamp gauge bars, chart bars, and their text labels inside bounded layout containers with minimum padding and font size so they never clip or touch adjacent axis markers.",
-      "category": "design_typography",
-      "enforcement": "gate",
-      "active": true,
-      "severity": "blocker",
-      "measurable": true,
-      "proposed_gate": "Check that bounding boxes of animated meter fills and data labels do not intersect adjacent coordinate guides or exceed parent bounds.",
-      "gates": [
-        "scripts/qa.py: labels >= 30 px and no raw SVG/CSS fontSize < 30"
-      ],
-      "components": [],
-      "episodes": [
-        "Elevator"
-      ],
-      "episode_count": 1,
-      "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:22-0:25",
-          "severity": "blocker",
-          "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:14: In B, the gauge column headers in the left margin are stacked vertically with tight spacing right next to the shaft axis markings.",
-          "severity": "minor",
-          "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
-        }
-      ]
-    },
-    {
-      "id": "R-033",
-      "rule": "Never let labels, badges, charts, panels, headlines, connector lines, or particle paths overlap or collide with other labels, axis ticks, diagram geometry, or primary silhouettes; keep badges out of the buffer zones of endpoints and baselines, keep numeric badges 40 px clear of wave peaks and troughs, and clear or suppress conflicting layers before entering new elements.",
+      "id": "R-019",
+      "rule": "Keep every label, badge, panel, chart, and connector clear of neighboring diagram geometry, axis ticks, background annotations, and mechanical endpoints or baselines, with explicit clearance (about 40px) from wave peaks and troughs and from frame boundaries.",
       "category": "design_typography",
       "enforcement": "gate",
       "active": true,
@@ -1580,19 +978,7 @@
         },
         {
           "episode": "Elevator",
-          "timestamp": "00:00-00:03 overlaps the opening headline onto the top drive wheel and upper floor markers, and 00:14-00:26 overlays the comparison bar chart directly on top of the left vertical level markers.",
-          "severity": "major",
-          "source": "qa/Elevator/v6b/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
           "timestamp": "B 0:14-0:26",
-          "severity": "major",
-          "source": "qa/Elevator/v7/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:14 vs B 0:14",
           "severity": "major",
           "source": "qa/Elevator/v7/ship/cmp_new_vs_prev_swap.json"
         },
@@ -1613,12 +999,18 @@
           "timestamp": "A 0:11 / B 0:11",
           "severity": "minor",
           "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:12 / B 0:12",
+          "severity": "minor",
+          "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
         }
       ]
     },
     {
-      "id": "R-034",
-      "rule": "Back every diagram label with a solid pill, high-contrast fill, or exclusive collision-free callout zone so strokes, rays, and background shapes never pass through letterforms.",
+      "id": "R-020",
+      "rule": "Give every overlay label a solid backdrop pill or a reserved collision-free callout zone so animated strokes, rays, or background shapes never cross letterforms.",
       "category": "design_typography",
       "enforcement": "gate",
       "active": true,
@@ -1645,12 +1037,6 @@
         },
         {
           "episode": "Sky",
-          "timestamp": "A 0:12 / B 0:12",
-          "severity": "minor",
-          "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Sky",
           "timestamp": "00:15-00:17 (radial vector lines slice straight through the top diagram label) and 00:24-00:26 (unboxed label crosses a high-contrast shape edge and grazes animated rays).",
           "severity": "major",
           "source": "qa/Sky/v6/ship/critic_cal.json"
@@ -1658,28 +1044,162 @@
       ]
     },
     {
-      "id": "R-035",
-      "rule": "Limit simultaneous floating callouts and annotation pills to three per stage, with one consolidated status badge per component, no duplicate component names, and no mixed text-symbol-plus-icon badges.",
+      "id": "R-021",
+      "rule": "Keep every subject, label, chart, and telemetry card at least 40px inside both horizontal safe-zone edges during every camera pan, zoom, and layout shift, and never crop a focal component to make room for another.",
       "category": "design_typography",
-      "enforcement": "candidate_gate",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Calculate bounding boxes of on-screen assets and fail if distance to stage container edges is less than 40 pixels.",
+      "gates": [
+        "scripts/qa.py + scripts/contrast.py: labels: icon/label clearance >= 36 px (held >= 0.6 s)",
+        "scripts/qa.py + scripts/contrast.py: >= 24 px from side edges; intro (first 2 s) judged frame by frame (A15)"
+      ],
+      "components": [
+        "remotion/src/brand/Kit.tsx `Lane` / `LabeledBox` (LANE_GAP = 36)"
+      ],
+      "episodes": [
+        "ANC",
+        "Elevator",
+        "Sky"
+      ],
+      "episode_count": 3,
+      "evidence": [
+        {
+          "episode": "ANC",
+          "timestamp": "00:17",
+          "severity": "minor",
+          "source": "qa/ANC/v6/critic_rules.json"
+        },
+        {
+          "episode": "ANC",
+          "timestamp": "A 0:17 / B 0:18",
+          "severity": "minor",
+          "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "B 0:23",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:17-00:18, 00:22-00:26",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "B 0:11–0:13 (leftward camera pan slices off the left wall of the car housing), A 0:10–0:13 ('+ 40–50% LOAD' badge crowds the right vertical rail near the platform UI column)",
+          "severity": "major",
+          "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:08-00:13 shifts the main schematic left to fit right-side callouts, cropping the left wall and hero car off-screen (x < 0) for over 5 seconds.",
+          "severity": "major",
+          "source": "qa/Elevator/v7/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "00:27-00:31, 00:34-00:40",
+          "severity": "major",
+          "source": "qa/Sky/v7/ship/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-022",
+      "rule": "Clip the stage viewport to its safe vertical band so zoomed, panned, or overflowing geometry, strokes, and callouts never bleed into the caption track, header track, or frame edge.",
+      "category": "design_typography",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Wrap multi-element hero assets in bounded layout primitives that prevent component limbs from intersecting container strokes.",
+      "gates": [
+        "scripts/qa.py + scripts/contrast.py: >= 24 px from side edges; intro (first 2 s) judged frame by frame (A15)",
+        "scripts/qa.py: labels inside Shorts UI safe zones",
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+      ],
+      "components": [
+        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
+      ],
+      "episodes": [
+        "ANC",
+        "Elevator",
+        "Sky"
+      ],
+      "episode_count": 3,
+      "evidence": [
+        {
+          "episode": "ANC",
+          "timestamp": "B 0:00",
+          "severity": "minor",
+          "source": "qa/ANC/v7/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:08, 00:27-00:31",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:09-00:13, 00:27-00:31",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:06-00:13",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "B 0:07-0:15 stray dark vertical stripe appears on the right screen edge.",
+          "severity": "major",
+          "source": "qa/Elevator/v7/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "00:00 (top-left card label is sliced off the left edge by an oversized initial scale), 00:46 (loop whip lands into the clipped frame 0), and 00:38-00:40 (camera zoom crops half of the right-side hero object off-screen).",
+          "severity": "blocker",
+          "source": "qa/Sky/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:37 / B 0:37",
+          "severity": "major",
+          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-023",
+      "rule": "Limit on-stage annotation badges to at most three simultaneous per stage or focal region, never duplicate component names across simultaneous badges, use one consolidated status badge per subject, and keep clear vertical spacing between stacked pills and card headers.",
+      "category": "design_typography",
+      "enforcement": "gate",
       "active": true,
       "severity": "major",
       "measurable": true,
-      "proposed_gate": "Reject badge text strings containing directional arrow characters when accompanied by a dedicated icon element.",
-      "gates": [],
-      "components": [],
+      "proposed_gate": "Reject frames where the exact same identifier string appears simultaneously in more than one active badge container.",
+      "gates": [
+        "scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17)",
+        "scripts/qa.py + scripts/contrast.py: labels: icon/label clearance >= 36 px (held >= 0.6 s)"
+      ],
+      "components": [
+        "remotion/src/brand/Kit.tsx `Lane` / `LabeledBox` (LANE_GAP = 36)"
+      ],
       "episodes": [
         "Elevator",
         "Sky"
       ],
       "episode_count": 2,
       "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:31",
-          "severity": "minor",
-          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
-        },
         {
           "episode": "Elevator",
           "timestamp": "B 0:16",
@@ -1709,18 +1229,24 @@
           "timestamp": "B 0:34 - B 0:38",
           "severity": "major",
           "source": "qa/Sky/v7/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "B 0:33 placed the secondary callout pill too close to the header badge, creating vertical crowding in the upper half of the frame.",
+          "severity": "minor",
+          "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
         }
       ]
     },
     {
-      "id": "R-036",
-      "rule": "Animate out or unmount the previous transient badge before the next callout renders, and remove any badge as soon as the physical state it describes has changed.",
-      "category": "design_typography",
+      "id": "R-024",
+      "rule": "Manage the callout lifecycle: introduce a callout only when narration names its component, keep comparison diagrams mounted while narration describes them, suppress background reference markers during metric callouts, clear transient or conflicting badges before the next callout, and remove outdated state badges as soon as the system changes phase.",
+      "category": "clarity",
       "enforcement": "candidate_gate",
       "active": false,
       "severity": "major",
       "measurable": true,
-      "proposed_gate": "Assert that state label visibility intervals strictly terminate when the opposing velocity keyframe initiates.",
+      "proposed_gate": "Assert that section comparison overlay components maintain mounted state across all sub-beats of their parent sequence.",
       "gates": [],
       "components": [],
       "episodes": [
@@ -1730,9 +1256,33 @@
       "evidence": [
         {
           "episode": "Elevator",
+          "timestamp": "B 0:20",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
           "timestamp": "B 0:31 / A 0:31",
           "severity": "major",
           "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:00-00:03 overlaps the opening headline onto the top drive wheel and upper floor markers, and 00:14-00:26 overlays the comparison bar chart directly on top of the left vertical level markers.",
+          "severity": "major",
+          "source": "qa/Elevator/v6b/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "B 0:00 vs A 0:14",
+          "severity": "major",
+          "source": "qa/Elevator/v7/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:14 vs B 0:14",
+          "severity": "major",
+          "source": "qa/Elevator/v7/ship/cmp_new_vs_prev_swap.json"
         },
         {
           "episode": "Elevator",
@@ -1743,82 +1293,68 @@
       ]
     },
     {
-      "id": "R-037",
-      "rule": "Show force and motion vectors that physically agree with the narrated cause and effect: arrows follow actual travel direction, opposing forces meet at the point of action, rotation and torque indicators match the moving parts, and balanced or braking systems show tension or vector state.",
-      "category": "clarity",
-      "enforcement": "candidate_gate",
+      "id": "R-025",
+      "rule": "Trigger each visual state change, callout, punchline reveal, sound effect, and counter increment on the onset of the spoken word or beat that names it, within half a second, and never before the audio cue.",
+      "category": "sound_sync",
+      "enforcement": "gate",
       "active": true,
-      "severity": "blocker",
+      "severity": "major",
       "measurable": true,
-      "proposed_gate": "Assert that any directional arrow icon within a translating component container matches the sign of the container velocity vector unless an explicit vector label prop is present.",
-      "gates": [],
+      "proposed_gate": "Check that negation overlays or strike-through graphics have enter keyframes aligned within 100ms of the corresponding spoken keyword timestamp.",
+      "gates": [
+        "scripts/qa.py: SFX density 1.2-1.5/s and 10-16 dB under voice"
+      ],
       "components": [],
       "episodes": [
-        "ANC",
-        "Elevator"
+        "Elevator",
+        "Sky"
       ],
       "episode_count": 2,
       "evidence": [
         {
-          "episode": "ANC",
-          "timestamp": "A 0:18 / B 0:18",
+          "episode": "Elevator",
+          "timestamp": "B 0:40",
           "severity": "major",
-          "source": "qa/ANC/v7/ship/cmp_new_vs_prev_swap.json"
+          "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
         },
         {
-          "episode": "ANC",
-          "timestamp": "A 0:18 / B 0:18",
+          "episode": "Elevator",
+          "timestamp": "B 0:28 / A 0:29",
           "severity": "major",
-          "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:14-00:26",
-          "severity": "major",
-          "source": "qa/Elevator/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:31-0:32",
-          "severity": "blocker",
-          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:17-00:26, 00:28-00:32",
-          "severity": "blocker",
-          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "A 0:17 / A 0:36",
-          "severity": "minor",
           "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
         },
         {
           "episode": "Elevator",
-          "timestamp": "A 0:17 / B 0:17: In A, the motor fighting the load difference is completely static on the sheave, whereas B uses curved rotational arrows to visualize torque.",
+          "timestamp": "B 0:19–0:26 (car still holds 8 to 6 passengers during 'nearly empty, the counterweight is the heavier side', and the footer reverts to 'DIFFERENCE' from 0:22 to 0:25 before flashing 'MOTOR HOLDS IT BACK' only at 0:26)",
           "severity": "major",
-          "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
+          "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
         },
         {
-          "episode": "Elevator",
-          "timestamp": "A 0:27 / B 0:27: A shows the brake clamping on a neutral wheel with no tension indicator, making the subsequent upward motion feel unmotivated.",
+          "episode": "Sky",
+          "timestamp": "A 0:40 / B 0:40",
           "severity": "minor",
-          "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
+          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:18 / B 0:18",
+          "severity": "major",
+          "source": "qa/Sky/v8/ship/cmp_new_vs_prev_swap.json"
         }
       ]
     },
     {
-      "id": "R-038",
-      "rule": "Distinguish directional motion vectors from static gravitational or applied force vectors with a different style or line pattern, label every force vector with unit or concept text, and draw arrows and status markers as dedicated SVG components rather than inline unicode characters.",
+      "id": "R-026",
+      "rule": "Give every comparative chart a top-level descriptor and fixed headers outside the plot, lock axis labels and meter headers above their own columns, label every series directly on its bar or track, keep comparator columns in fixed positions across states, and clamp gauge bars and their text inside bounded containers.",
       "category": "clarity",
-      "enforcement": "candidate_gate",
-      "active": false,
-      "severity": "minor",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "blocker",
       "measurable": true,
-      "proposed_gate": "Scan label strings for raw unicode symbol characters such as arrows or math operators and require dedicated iconography components instead.",
-      "gates": [],
+      "proposed_gate": "Ensure comparative telemetry components enforce a required title or descriptor prop in their component signature.",
+      "gates": [
+        "scripts/qa.py: labels >= 30 px and no raw SVG/CSS fontSize < 30"
+      ],
       "components": [],
       "episodes": [
         "Elevator"
@@ -1827,33 +1363,51 @@
       "evidence": [
         {
           "episode": "Elevator",
-          "timestamp": "B 0:32",
-          "severity": "minor",
+          "timestamp": "A 0:14 / B 0:14: Version A displays comparative vertical bars identified only by bottom abbreviations 'CAR' and 'CW', whereas Version B provides an explicit top-level descriptor 'CAR vs CW'.",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "B 0:24",
+          "severity": "major",
           "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
         },
         {
           "episode": "Elevator",
-          "timestamp": "A 0:19 / B 0:19",
-          "severity": "minor",
+          "timestamp": "B 0:24",
+          "severity": "major",
           "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
         },
         {
           "episode": "Elevator",
-          "timestamp": "B 0:17-0:30",
-          "severity": "minor",
-          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
+          "timestamp": "B 0:22-0:25",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
         },
         {
           "episode": "Elevator",
-          "timestamp": "B 0:18: Both opposing weights display identical solid downward arrows, which can momentarily look like both components are moving downwards at once.",
+          "timestamp": "B 0:14: In B, the gauge column headers in the left margin are stacked vertically with tight spacing right next to the shaft axis markings.",
           "severity": "minor",
           "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "B 0:17–0:26 (CAR and CW bar-chart labels vanish during the active weight comparison), A 0:14–0:16 / B 0:14–0:16 (series labels stacked vertically on one side rather than anchored over each bar)",
+          "severity": "major",
+          "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:08-00:09 fills the secondary color 2 s before its narration arrives, 00:14-00:26 stacks two meter headers vertically rather than directly above each bar, 00:19-00:21 shows a downward arrow directly above an upward-action label, and 00:29-00:31 delays motion for 2.5 s after brake release.",
+          "severity": "major",
+          "source": "qa/Elevator/v7/ship/critic_cal.json"
         }
       ]
     },
     {
-      "id": "R-039",
-      "rule": "Show quantities, ratios, comparisons, and dynamic mechanisms as animated physical demonstrations with moving parts, particles, or rays, and depict mathematical transformations as physical interlocking mechanisms; never use static bar charts, dashboard bars, raw formula cards, or disconnected 2D charts in place of a direct mechanical indicator.",
+      "id": "R-027",
+      "rule": "Show quantitative comparisons, formulas, and mechanisms as active physical demonstrations (particles, rays, interlocking mechanisms, visual ratios) rather than static bar charts, dashboard tiles, raw formula cards, or disconnected 2D charts replacing physical indicators.",
       "category": "clarity",
       "enforcement": "prose",
       "active": true,
@@ -1889,6 +1443,12 @@
         },
         {
           "episode": "Sky",
+          "timestamp": "A 0:18 / B 0:18",
+          "severity": "minor",
+          "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
           "timestamp": "00:10-00:17 (short wave never contacts the interacting particle), 00:18-00:21 (Keynote-style bar chart), and 00:07-00:40 (unrelated dark city/gear wallpaper persists behind every abstract physics diagram).",
           "severity": "major",
           "source": "qa/Sky/v6/ship/critic_cal.json"
@@ -1908,8 +1468,459 @@
       ]
     },
     {
-      "id": "R-040",
-      "rule": "Score every physical action, mechanism state, and transition with subject-authentic, tactile foley and varied round-robin hits, leaving purposeful silence before key turns; never use generic UI clicks, bleeps, chimes, arcade pings, or identical repeated whooshes, and never repeat the same transition sound on consecutive cuts.",
+      "id": "R-028",
+      "rule": "Animate cause and effect directly: connect every stage of the mechanical chain on screen, show the physical combination step, move objects through intermediate frames instead of teleporting them, deform or redirect trajectories physically on deflection or collision, interpolate progressive changes continuously along active paths, and keep one consistent observer frame.",
+      "category": "clarity",
+      "enforcement": "candidate_gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Scan animated transform properties across keyframe transitions to ensure the maximum delta between consecutive frames does not exceed fifty percent of the total displacement.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "ANC",
+        "Elevator",
+        "Sky"
+      ],
+      "episode_count": 3,
+      "evidence": [
+        {
+          "episode": "ANC",
+          "timestamp": "00:10-00:16 (disconnected chip output), 00:18-00:21 (missing visual wave superposition before flat result)",
+          "severity": "blocker",
+          "source": "qa/ANC/v7/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:31-0:32",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:26 / B 0:26",
+          "severity": "major",
+          "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:17-0:19 / B 0:17-0:19",
+          "severity": "major",
+          "source": "qa/Sky/v8/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:36-0:38 / B 0:36-0:38",
+          "severity": "minor",
+          "source": "qa/Sky/v8/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:18 kept the primary ray completely straight during bounce narration, whereas B 0:18 animated dynamic zigzag deflection points matching the bounce count.",
+          "severity": "major",
+          "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-029",
+      "rule": "Give impacts, climaxes, and transient disruptions a secondary physical response (squash-and-stretch, expanding shockwaves, scale and opacity pulses, continuous burst motion) timed to the matching sound spike.",
+      "category": "motion_craft",
+      "enforcement": "prose",
+      "active": true,
+      "severity": "major",
+      "measurable": false,
+      "proposed_gate": "",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "ANC",
+        "Sky"
+      ],
+      "episode_count": 2,
+      "evidence": [
+        {
+          "episode": "ANC",
+          "timestamp": "00:32",
+          "severity": "major",
+          "source": "qa/ANC/v6/critic_rules.json"
+        },
+        {
+          "episode": "ANC",
+          "timestamp": "A 0:32 / B 0:32",
+          "severity": "minor",
+          "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:14 vs B 0:14",
+          "severity": "major",
+          "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-030",
+      "rule": "Show opposing forces, flows, and rotations as labeled directional vectors that converge on the point of action and agree with the narrated cause and effect; distinguish static gravitational or applied force vectors from motion arrows with distinct styling, keep arrows from opposing actual travel unless labeled as opposing forces, and pair force vectors with unit or concept labels.",
+      "category": "clarity",
+      "enforcement": "candidate_gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Assert that any directional arrow icon within a translating component container matches the sign of the container velocity vector unless an explicit vector label prop is present.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "ANC",
+        "Elevator"
+      ],
+      "episode_count": 2,
+      "evidence": [
+        {
+          "episode": "ANC",
+          "timestamp": "A 0:18 / B 0:18",
+          "severity": "major",
+          "source": "qa/ANC/v7/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "ANC",
+          "timestamp": "A 0:18 / B 0:18",
+          "severity": "major",
+          "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:14-00:26",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:19 / B 0:19",
+          "severity": "minor",
+          "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "B 0:31-0:32",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "B 0:17-0:30",
+          "severity": "minor",
+          "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:17-00:26, 00:28-00:32",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:17 / A 0:36",
+          "severity": "minor",
+          "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:17 / B 0:17: In A, the motor fighting the load difference is completely static on the sheave, whereas B uses curved rotational arrows to visualize torque.",
+          "severity": "major",
+          "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "B 0:18: Both opposing weights display identical solid downward arrows, which can momentarily look like both components are moving downwards at once.",
+          "severity": "minor",
+          "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:27 / B 0:27: A shows the brake clamping on a neutral wheel with no tension indicator, making the subsequent upward motion feel unmotivated.",
+          "severity": "minor",
+          "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-031",
+      "rule": "Build each episode around one sensory hero demonstration in which visuals and diegetic audio prove the effect together, and stage the centerpiece twist as a dedicated full-bleed camera move or visual transformation held at least 2.5 seconds, breaking out of the primary diagram frame.",
+      "category": "concept_wow",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": false,
+      "proposed_gate": "",
+      "gates": [
+        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)"
+      ],
+      "components": [],
+      "episodes": [
+        "ANC",
+        "Elevator"
+      ],
+      "episode_count": 2,
+      "evidence": [
+        {
+          "episode": "ANC",
+          "timestamp": "00:03-00:05, 00:18-00:21, 00:32-00:35",
+          "severity": "blocker",
+          "source": "qa/ANC/v7/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:00-00:34, 00:32",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:00-00:34 stays locked on the same boxed diagram for 35 of 42 seconds, compressing the centerpiece counterintuitive reveal at 00:32 into roughly 1 second.",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6b/ship/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:29-00:32 executes the main surprise inside the same distant 34-second schematic box, and 00:39-00:42 closes on plain bordered cards with generic clip-art iconography.",
+          "severity": "major",
+          "source": "qa/Elevator/v7/ship/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-032",
+      "rule": "Vary camera framing: punch in on decisive turns and technical details, break long sequences with macro punch-ins and match-cuts, and mark extreme scale differences with an animated zoom and an explicit magnification indicator.",
+      "category": "clarity",
+      "enforcement": "prose",
+      "active": true,
+      "severity": "major",
+      "measurable": false,
+      "proposed_gate": "",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "Elevator",
+        "Sky"
+      ],
+      "episode_count": 2,
+      "evidence": [
+        {
+          "episode": "Elevator",
+          "timestamp": "00:27-00:42",
+          "severity": "major",
+          "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:05 / B 0:05",
+          "severity": "minor",
+          "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:09-0:11 / B 0:09-0:11",
+          "severity": "minor",
+          "source": "qa/Sky/v8/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:10 showed a sub-microscopic entity beside waves without scale cues, whereas B 0:11 added a magnification reticle to contextualize the extreme scale difference.",
+          "severity": "minor",
+          "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-033",
+      "rule": "Present real-world proof photos full-bleed at maximum safe-zone width or as picture-in-picture or split-screen docks, never inside nested card boxes; ease their entry and exit with directional push or scale, animating underlying diagram motion out first.",
+      "category": "motion_craft",
+      "enforcement": "gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Check that proof cards and modal overlays either pause underlying animated elements or occupy no more than 60% of the stage height.",
+      "gates": [
+        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)"
+      ],
+      "components": [],
+      "episodes": [
+        "Sky"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Sky",
+          "timestamp": "00:32",
+          "severity": "minor",
+          "source": "qa/Sky/agy_rules/critic_rules.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:31 / B 0:31",
+          "severity": "minor",
+          "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:33 / B 0:33",
+          "severity": "minor",
+          "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:34 / B 0:34",
+          "severity": "minor",
+          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "B 0:30 vs A 0:30",
+          "severity": "major",
+          "source": "qa/Sky/v7/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:32 vs B 0:32",
+          "severity": "major",
+          "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:30 / B 0:30",
+          "severity": "minor",
+          "source": "qa/Sky/v8/ship/cmp_new_vs_prev_swap.json"
+        }
+      ]
+    },
+    {
+      "id": "R-034",
+      "rule": "Direct attention in proof photos with a focal pointer or a progressively drawn callout box, and dim, scale back, or clear the underlying diagram elements with an outer focus mask so the subject separates from archival clutter.",
+      "category": "finish_texture",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Detect high-luminance stage pixels within a 60 px halo outside an active proof card's border and fail when underlying diagram elements remain un-dimmed behind it.",
+      "gates": [
+        "scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17)"
+      ],
+      "components": [],
+      "episodes": [
+        "Elevator",
+        "Sky"
+      ],
+      "episode_count": 2,
+      "evidence": [
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:34 / B 0:34",
+          "severity": "minor",
+          "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:35-00:37 holds a static, visually cluttered archival photo with only a thin unmasked dashed outline around the highlighted hardware.",
+          "severity": "minor",
+          "source": "qa/Elevator/v6b/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "00:32-00:34 (a bright circular diagram element protrudes awkwardly from behind the right border of the dark proof card).",
+          "severity": "major",
+          "source": "qa/Sky/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:32 showed an unannotated photo slide where the phenomenon was ambiguous, whereas B 0:33 added a direct callout pointer identifying the active layer.",
+          "severity": "major",
+          "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-035",
+      "rule": "Hold proof photos and evidence cards on screen for at least two seconds (2.5 seconds for archival detail), hold formulas and dense comparison cards at least 2.5 seconds, and hold resolved diagrams, cutaways, and end cards for a minimum dwell time, or keep them in motion.",
+      "category": "clarity",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Verify that proof card visual components hold a minimum duration of 60 frames (2.0 seconds at 30 fps).",
+      "gates": [
+        "scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17)",
+        "scripts/qa.py: >= 0.2 s near-silence (<= -38 dBFS) before the catchphrase",
+        "scripts/qa.py: labels >= 30 px and no raw SVG/CSS fontSize < 30"
+      ],
+      "components": [],
+      "episodes": [
+        "Elevator",
+        "QR",
+        "Sky"
+      ],
+      "episode_count": 3,
+      "evidence": [
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:35 / B 0:35: The archival traction machine photograph card remains on screen for under two seconds, rushing viewer absorption of the callout box and credit line.",
+          "severity": "minor",
+          "source": "qa/Elevator/v6/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "A 0:35 / B 0:35 archival photo card holds for under 2.0 seconds before transitioning to the end card.",
+          "severity": "minor",
+          "source": "qa/Elevator/v7/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "QR",
+          "timestamp": "A 0:37 / B 0:37",
+          "severity": "minor",
+          "source": "qa/QR/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "QR",
+          "timestamp": "A 0:16 / B 0:16",
+          "severity": "minor",
+          "source": "qa/QR/v6/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "QR",
+          "timestamp": "A 00:22 and B 00:22 hold the rebuilt byte resolution state for under one second before transitioning, making the mechanical recovery difficult to inspect.",
+          "severity": "minor",
+          "source": "qa/QR/v6/ship/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:19 / B 0:19",
+          "severity": "minor",
+          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:31 / B 0:31",
+          "severity": "major",
+          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "00:41-00:42",
+          "severity": "major",
+          "source": "qa/Sky/v7/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "00:32-00:33",
+          "severity": "major",
+          "source": "qa/Sky/v7/ship/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-036",
+      "rule": "Score transitions, mechanism states, and climaxes with subject-specific tactile foley and round-robin hits, leaving silence pockets before key turns; never reuse the same transition sound on consecutive cuts, and never use generic UI clicks, bleeps, chimes, arcade pings, or identical whooshes.",
       "category": "sound_sync",
       "enforcement": "gate",
       "active": true,
@@ -1967,6 +1978,12 @@
         },
         {
           "episode": "Sky",
+          "timestamp": "00:41-00:42 (end card exits before the catchphrase finishes on captions) and 00:00-00:46 (the same air-whoosh repeats across nearly every cut alongside synthetic UI pings).",
+          "severity": "major",
+          "source": "qa/Sky/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
           "timestamp": "00:00-00:46, 00:18-00:21",
           "severity": "major",
           "source": "qa/Sky/v7/ship/critic_cal.json"
@@ -1974,53 +1991,33 @@
       ]
     },
     {
-      "id": "R-041",
-      "rule": "Trigger every visual state change, callout, punchline reveal, and sound hit on the exact spoken cue that names it, never before the cue begins and never drifting to a placeholder label; align climax stings within two frames of the title impact.",
-      "category": "sound_sync",
-      "enforcement": "gate",
+      "id": "R-037",
+      "rule": "Pin persistent headers, progress trackers, and brand metadata to a layer outside camera transforms, backed by an adaptive dark gradient scrim whenever the stage behind them is bright.",
+      "category": "design_typography",
+      "enforcement": "candidate_gate",
       "active": true,
       "severity": "major",
       "measurable": true,
-      "proposed_gate": "Check that negation overlays or strike-through graphics have enter keyframes aligned within 100ms of the corresponding spoken keyword timestamp.",
-      "gates": [
-        "scripts/qa.py: SFX density 1.2-1.5/s and 10-16 dB under voice"
-      ],
+      "proposed_gate": "Verify that all persistent UI elements and headers maintain minimum padding within the safe boundary (y >= 100) across all rendered frames.",
+      "gates": [],
       "components": [],
       "episodes": [
-        "Elevator",
+        "QR",
         "Sky"
       ],
       "episode_count": 2,
       "evidence": [
         {
-          "episode": "Elevator",
-          "timestamp": "B 0:40",
+          "episode": "QR",
+          "timestamp": "B 0:53",
           "severity": "major",
-          "source": "qa/Elevator/v6/ship_it4/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:28 / A 0:29",
-          "severity": "major",
-          "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:00 vs A 0:14",
-          "severity": "major",
-          "source": "qa/Elevator/v7/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "B 0:19–0:26 (car still holds 8 to 6 passengers during 'nearly empty, the counterweight is the heavier side', and the footer reverts to 'DIFFERENCE' from 0:22 to 0:25 before flashing 'MOTOR HOLDS IT BACK' only at 0:26)",
-          "severity": "major",
-          "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
+          "source": "qa/QR/v6/ship/cmp_new_vs_prev_swap.json"
         },
         {
           "episode": "Sky",
-          "timestamp": "A 0:40 / B 0:40",
-          "severity": "minor",
-          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+          "timestamp": "00:00-00:04",
+          "severity": "major",
+          "source": "qa/Sky/v7/ship/critic_cal.json"
         }
       ]
     }

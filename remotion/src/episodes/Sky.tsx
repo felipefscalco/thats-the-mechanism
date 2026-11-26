@@ -1,7 +1,7 @@
 import React from "react";
 import { Img, staticFile, useVideoConfig } from "remotion";
 import words from "../03-sky.captions.json";
-import { C, EpisodeShell, FlatPlanet, LabeledBox, Label, MONO, PILLARS, Pill, Shot, Stage, TagLabel, cue, ease, makeAt, pop, reveal, squash, useG } from "../brand";
+import { C, Enter, EpisodeShell, FlatPlanet, LabeledBox, Label, PILLARS, Pill, Shot, Stage, TagLabel, cue, ease, makeAt, pop, reveal, squash, useG } from "../brand";
 
 /**
  * Sky v7 — one continuous sky world (plan: episodes/03-sky/VIDEO.md).
@@ -54,6 +54,7 @@ const Defs: React.FC = () => (
     <linearGradient id="sk-scrim" gradientUnits="userSpaceOnUse" x1={0} y1={250} x2={0} y2={590}>
       <stop offset="0" stopColor="#0D0E12" stopOpacity={0} /><stop offset="0.3" stopColor="#0D0E12" stopOpacity={0.62} /><stop offset="0.72" stopColor="#0D0E12" stopOpacity={0.62} /><stop offset="1" stopColor="#0D0E12" stopOpacity={0} />
     </linearGradient>
+    <linearGradient id="sk-topscrim" gradientUnits="userSpaceOnUse" x1={0} y1={0} x2={0} y2={330}><stop offset="0" stopColor="#0D0E12" stopOpacity={0.7} /><stop offset="1" stopColor="#0D0E12" stopOpacity={0} /></linearGradient>
     <linearGradient id="sk-beam" gradientUnits="userSpaceOnUse" x1={540} y1={0} x2={40} y2={0}>
       <stop offset="0" stopColor="#FFF2C0" /><stop offset="0.5" stopColor="#FFA040" /><stop offset="1" stopColor="#FF8A2E" stopOpacity={0} />
     </linearGradient>
@@ -65,6 +66,12 @@ const Defs: React.FC = () => (
     <clipPath id="sk-above"><rect x={0} y={0} width={1080} height={HZ} /></clipPath>
   </defs>
 );
+
+/** Slow light band sweeping the sky (structure-level motion, period 36 f; skips the frames where a label pops). */
+const Sweep: React.FC<{ f: number; per?: number }> = ({ f, per = 36 }) => {
+  const u = (f % per) / per, x = -420 + u * 1900, env = Math.min(1, u / 0.15, (1 - u) / 0.15);
+  return <polygon points={`${x},1920 ${x + 300},1920 ${x + 560},0 ${x + 260},0`} fill="#fff" opacity={0.17 * env} />;
+};
 
 /** The Sun: same disc + gradient in every shot (clip = half-set on the horizon). */
 const Sun: React.FC<{ f: number; cx: number; cy: number; r: number; clip?: boolean }> = ({ f, cx, cy, r, clip }) => {
@@ -117,9 +124,15 @@ const SunsetWorld: React.FC<{ f: number; blue: number; sunY: number; n: number }
       <rect x={0} y={HZ} width={1080} height={1040} fill="url(#sk-ground)" />
       <ellipse cx={540} cy={HZ} rx={560} ry={130} fill="url(#sk-glow)" opacity={0.7} />
       <ellipse cx={540} cy={HZ + 130} rx={140} ry={190} fill="url(#sk-glow)" opacity={0.35} />
-      {[0, 1, 2, 3].map((k) => (
-        <line key={k} x1={300 + k * 40} y1={HZ + 60 + k * 46} x2={780 - k * 40} y2={HZ + 60 + k * 46} stroke="#FFB070" strokeWidth={4} strokeLinecap="round" strokeDasharray="60 44" strokeDashoffset={-f * (2 + k) } opacity={0.25 - k * 0.04} />
-      ))}
+      {/* crisp layered horizon strata + silhouette ridge (fills the lower stage) */}
+      <path d={`M0,${HZ}L0,${HZ + 60}C180,${HZ + 20} 300,${HZ + 70} 470,${HZ + 36}S800,${HZ + 10} 1080,${HZ + 56}L1080,${HZ}Z`} fill="#3A1B4A" />
+      <path d={`M0,${HZ + 150}C220,${HZ + 100} 420,${HZ + 170} 640,${HZ + 120}S960,${HZ + 110} 1080,${HZ + 150}L1080,1920L0,1920Z`} fill="#1B1026" />
+      <path d={`M0,${HZ + 330}C260,${HZ + 280} 520,${HZ + 360} 760,${HZ + 300}S1000,${HZ + 290} 1080,${HZ + 320}L1080,1920L0,1920Z`} fill="#110B1A" />
+      {/* sunbeam rays from the solar disc (replaces the stray dashed rectangle) */}
+      {[-62, -42, -24, -8, 8, 24, 42, 62].map((a, k) => {
+        const r = (a * Math.PI) / 180, len = 520 + 90 * Math.sin(f / 11 + k * 1.7);
+        return <polygon key={k} points={`540,${sunY} ${540 + Math.sin(r - 0.04) * len},${sunY - Math.cos(r - 0.04) * len} ${540 + Math.sin(r + 0.04) * len},${sunY - Math.cos(r + 0.04) * len}`} fill="#FFE9A8" opacity={0.16} />;
+      })}
       <line x1={540} y1={866} x2={40} y2={770} stroke="#FF8A2E" strokeWidth={70} strokeLinecap="round" opacity={0.22} />
       <line x1={540} y1={866} x2={40} y2={770} stroke="url(#sk-beam)" strokeWidth={30} strokeLinecap="round" />
       <line x1={520} y1={862} x2={80} y2={778} stroke="#FFF6D8" strokeWidth={7} strokeLinecap="round" strokeDasharray="50 70" strokeDashoffset={-f * 10} opacity={0.6} />
@@ -129,17 +142,24 @@ const SunsetWorld: React.FC<{ f: number; blue: number; sunY: number; n: number }
   );
 };
 
-/* ---------- Shot 1 / hook (also the frozen loop target) ---------- */
-const sunY1 = (f: number) => 850 + ease(f, 0, 125, 0, 28);
+/* ---------- Shot 1 / hook (also the frozen loop target: LoopEnd renders this at f=0) ---------- */
+const sunY1 = (f: number) => 520 + ease(f, 0, 26, 0, 360); // the sun visibly sinks to the horizon from frame 0
 const Hook: React.FC = () => {
   const f = useG();
   const { fps } = useVideoConfig();
   const b2 = makeAt(words, fps)("the same");
   const o = ease(f, b2 - 10, b2 - 3, 1, 0);
+  const rx = -300 + f * 200; // light ribbon sweeping left-to-right across the sky, from frame 0
   return (
     <Stage>
       <Defs />
       <SunsetWorld f={f} blue={0} sunY={sunY1(f)} n={8} />
+      <g opacity={0.9}>
+        <polygon points={`${rx},${HZ} ${rx + 320},${HZ} ${rx + 620},60 ${rx + 300},60`} fill="#FFF0C0" opacity={0.55} />
+        <polygon points={`${rx + 190},${HZ} ${rx + 240},${HZ} ${rx + 540},60 ${rx + 490},60`} fill="#FFFFFF" opacity={0.5} />
+      </g>
+      {[34, 70].map((t0, k) => f >= t0 && f < t0 + 30 ? <circle key={k} cx={540} cy={sunY1(f)} r={170 + ease(f, t0, t0 + 30, 0, 330)} fill="none" stroke="#FFE9A8" strokeWidth={8} opacity={0.6 * (1 - ease(f, t0, t0 + 30))} /> : null)}
+      <rect x={0} y={0} width={1080} height={330} fill="url(#sk-topscrim)" />
       <rect x={0} y={250} width={1080} height={340} fill="url(#sk-scrim)" opacity={o} />
       <Label x={115} y={375} text="SOMEONE ELSE'S" anchor="start" size={80} o={o} />
       <Label x={115} y={470} text="BLUE SKY" anchor="start" size={96} o={o} />
@@ -158,6 +178,8 @@ const SameTrick: React.FC = () => {
     <Stage>
       <Defs />
       <SunsetWorld f={f} blue={ease(f, b2 + 6, b2 + 48)} sunY={878} n={14} />
+      {[b2 + 26, b2 + 56].map((t0, k) => f >= t0 && f < t0 + 26 ? <ellipse key={k} cx={540} cy={HZ} rx={ease(f, t0, t0 + 26, 80, 620)} ry={ease(f, t0, t0 + 26, 14, 120)} fill="none" stroke="#BFE4FF" strokeWidth={7} opacity={0.7 * (1 - ease(f, t0, t0 + 26))} /> : null)}
+      <Sweep f={f} per={40} />
       <Pill x={540} y={1040} w={460} text="SAME TRICK" color={C.amber} s={pop(f, same, fps)} />
     </Stage>
   );
@@ -176,11 +198,16 @@ const Prism: React.FC = () => {
     <Stage>
       <Defs />
       <rect x={0} y={0} width={1080} height={1920} fill="url(#sk-open)" />
+      <Sweep f={f} />
       <Sun f={f} cx={SX} cy={SY} r={95} />
       <line x1={SX - 70} y1={SY + 45} x2={SX - 70 + (PX + 55 - SX + 70) * g} y2={SY + 45 + (PY - 15 - SY - 45) * g} stroke="#fff" strokeWidth={20} strokeLinecap="round" />
-      <g opacity={ease(f, b3 + 6, b3 + 16)}>
-        <polygon points={`${PX},${PY - 130} ${PX + 110},${PY + 60} ${PX - 110},${PY + 60}`} fill="rgba(255,255,255,0.2)" stroke={C.paper} strokeWidth={5} />
-      </g>
+      <Enter p={ease(f, b3 + 4, b3 + 20)} cx={PX} cy={700} from="scale">
+        <polygon points={`${PX},320 ${PX + 250},1080 ${PX - 250},1080`} fill="rgba(255,255,255,0.16)" stroke={C.paper} strokeWidth={5} />
+        <polygon points={`${PX},320 ${PX + 250},1080 ${PX + 40},1080`} fill="rgba(180,220,255,0.22)" />
+        <polygon points={`${PX},320 ${PX - 250},1080 ${PX - 40},1080`} fill="rgba(255,255,255,0.12)" />
+        <line x1={PX} y1={320} x2={PX + 40} y2={1080} stroke="#fff" strokeWidth={3} opacity={0.55} />
+        <line x1={PX} y1={320} x2={PX - 40} y2={1080} stroke="#fff" strokeWidth={3} opacity={0.35} />
+      </Enter>
       {SPECTRUM.map((c, i) => {
         const k = ease(f, col + i * 2, col + i * 2 + 14), [x2, y2] = rayEnd(i, k);
         return (
@@ -192,8 +219,8 @@ const Prism: React.FC = () => {
       })}
       <Sparks f={f} n={14} speed={0.014} r={8} o={ease(f, col + 8, col + 22)} col={(i) => SPECTRUM[i % 7]}
         pos={(i, u) => { const [x, y] = rayEnd(i % 7, u * 1.05); return [x, y]; }} />
-      <TagLabel x={450} y={470} text="SUNLIGHT" size={40} o={f < col ? ease(f, b3 + 4, b3 + 12) : 0} />
-      <TagLabel x={450} y={470} text="EVERY COLOR" size={40} color={C.amber} o={ease(f, col, col + 8)} />
+      <TagLabel x={290} y={400} text="SUNLIGHT" size={44} o={f < col ? ease(f, b3 + 4, b3 + 12) : 0} />
+      <TagLabel x={290} y={400} text="EVERY COLOR" size={44} color={C.amber} o={ease(f, col, col + 8)} />
     </Stage>
   );
 };
@@ -218,17 +245,28 @@ const MolIntro: React.FC = () => {
   const { fps } = useVideoConfig();
   const at = makeAt(words, fps);
   const mol = at("Air molecules"), th = at("thousand");
-  const frontB = ease(f, mol, mol + 45, 0, 470), frontR = ease(f, mol + 8, mol + 60, 0, 440);
+  const frontB = ease(f, mol, mol + 45, 0, 520), frontR = ease(f, mol + 8, mol + 60, 0, 520);
   return (
     <Stage>
       <Defs />
       <rect x={0} y={0} width={1080} height={1920} fill="url(#sk-dark)" />
       <Dust f={f} />
-      <path d={wave(-20, 690, frontB + 20, 190, 34, f / 2.5)} stroke="#6CB4FF" strokeWidth={9} fill="none" strokeLinecap="round" />
-      <path d={wave(-20, 810, frontR + 20, 380, 34, f / 4)} stroke={RED} strokeWidth={9} fill="none" strokeLinecap="round" />
-      <Mol f={f} />
-      <TagLabel x={MX} y={575} text="N₂ / O₂ MOLECULE" size={36} color="#D8CEFF" o={ease(f, mol + 12, mol + 22)} />
-      <TagLabel x={MX} y={960} text="~1000× SMALLER" size={36} color={C.amber} o={ease(f, th, th + 8)} />
+      <Sweep f={f} per={40} />
+      {/* big, long waves on the molecule's axis; the molecule itself is drawn tiny (~1000x smaller) */}
+      <path d={wave(-20, MY - 6, frontB + 20, 330, 70, f / 2.5)} stroke="#6CB4FF" strokeWidth={9} fill="none" strokeLinecap="round" />
+      <path d={wave(-20, MY + 150, frontR + 20, 640, 70, f / 4)} stroke={RED} strokeWidth={9} fill="none" strokeLinecap="round" />
+      <Mol f={f} sx={0.16} sy={0.16} />
+      <Enter p={ease(f, mol + 14, mol + 30)} cx={MX} cy={MY} from="scale">
+        <circle cx={MX} cy={MY} r={64} fill="none" stroke={C.paper} strokeWidth={5} />
+        <line x1={MX + 45} y1={MY + 45} x2={MX + 100} y2={MY + 100} stroke={C.paper} strokeWidth={10} strokeLinecap="round" />
+      </Enter>
+      <Enter p={ease(f, th + 4, th + 20)} cx={MX} cy={MY - 140} from="down" dist={40}>
+        <g stroke={C.amber} strokeWidth={5} strokeLinecap="round" fill="none">
+          <line x1={MX - 165} y1={MY - 150} x2={MX + 165} y2={MY - 150} /><line x1={MX - 165} y1={MY - 166} x2={MX - 165} y2={MY - 134} /><line x1={MX + 165} y1={MY - 166} x2={MX + 165} y2={MY - 134} />
+        </g>
+      </Enter>
+      <TagLabel x={MX} y={575} text="N₂ / O₂ MOLECULE" size={36} color="#D8CEFF" o={ease(f, mol + 2, mol + 10)} />
+      <TagLabel x={MX} y={1010} text="~1000× SMALLER" size={36} color={C.amber} o={ease(f, th, th + 8)} />
     </Stage>
   );
 };
@@ -249,6 +287,7 @@ const MolHit: React.FC = () => {
       <Defs />
       <rect x={0} y={0} width={1080} height={1920} fill="url(#sk-deep)" />
       <Dust f={f} />
+      <Sweep f={f} per={38} />
       <path d={wave(-20, MY, blueEnd, 190, 34, f / 2.5)} stroke="#6CB4FF" strokeWidth={9} fill="none" strokeLinecap="round" opacity={blueOp} />
       <path d={wave(-20, MY, redEnd, 380, 30, f / 4)} stroke={RED} strokeWidth={9} fill="none" strokeLinecap="round" opacity={0.9} />
       {hit && Array.from({ length: 14 }).map((_, i) => {
@@ -262,6 +301,7 @@ const MolHit: React.FC = () => {
           </g>
         );
       })}
+      {f >= (b5 + imp) / 2 && f < (b5 + imp) / 2 + 24 && <circle cx={MX} cy={MY} r={ease(f, (b5 + imp) / 2, (b5 + imp) / 2 + 24, 30, 110)} fill="none" stroke="#9FDCFF" strokeWidth={5} opacity={0.6 * (1 - ease(f, (b5 + imp) / 2, (b5 + imp) / 2 + 24))} />}
       <Mol f={f} kx={hit ? 18 * Math.exp(-tt / 6) * Math.cos(tt / 2.5) : 0} ky={4 * Math.sin(f * 1.1) * wob} sx={sx} sy={sy} flash={hit ? Math.exp(-tt / 8) : 0} />
       <TagLabel x={MX} y={440} text="SHORT WAVES SCATTER" size={36} color="#CFEBFF" o={ease(f, b5 + 4, b5 + 12)} />
     </Stage>
@@ -293,11 +333,20 @@ const Ratio: React.FC = () => {
     <Stage>
       <Defs />
       <rect x={0} y={0} width={1080} height={1920} fill="url(#sk-dark)" />
+      <Sweep f={f} per={44} />
       {Array.from({ length: 40 }).map((_, i) => (
         <circle key={i} cx={330 + rnd(i, 1) * 430 + 14 * Math.sin(f / 30 + i)} cy={540 + rnd(i, 2) * 420 + 10 * Math.cos(f / 26 + i)} r={6 + rnd(i, 3) * 3} fill="#CFE4FF" opacity={0.45} />
       ))}
-      <line x1={0} y1={640} x2={L} y2={640} stroke="#59C2FF" strokeWidth={14} strokeLinecap="round" />
-      <line x1={0} y1={640} x2={L} y2={640} stroke="#fff" strokeWidth={4} strokeDasharray="30 60" strokeDashoffset={-f * 8} opacity={0.6} />
+      <clipPath id="sk-L"><rect x={0} y={400} width={L} height={700} /></clipPath>
+      <g clipPath="url(#sk-L)">
+        <path d="M0,640L380,640L410,606L470,640L500,674L560,640L590,606L650,640L1080,640" stroke="#59C2FF" strokeWidth={14} strokeLinejoin="round" fill="none" />
+        <path d="M0,640L380,640L410,606L470,640L500,674L560,640L590,606L650,640L1080,640" stroke="#fff" strokeWidth={4} strokeDasharray="30 60" strokeDashoffset={-f * 8} opacity={0.6} fill="none" />
+      </g>
+      {[380, 470, 560, 650].map((x, k) => <circle key={k} cx={x} cy={640} r={10} fill="#DCD3FF" stroke="#fff" strokeWidth={2} />)}
+      {[380, 470, 560, 650].map((x, k) => {
+        const g = ease(f, blueT[k], blueT[k] + 10), an = (k % 2 === 0 ? -1 : 1) * (0.9 + 0.15 * k);
+        return <line key={k} x1={x} y1={640} x2={x + Math.cos(an) * 190 * g} y2={640 + Math.sin(an) * 190 * g} stroke="#8FE0FF" strokeWidth={8} strokeLinecap="round" opacity={g > 0 ? 0.9 : 0} />;
+      })}
       <line x1={0} y1={860} x2={L} y2={860} stroke="#FF6B5E" strokeWidth={14} strokeLinecap="round" />
       <line x1={0} y1={860} x2={L} y2={860} stroke="#fff" strokeWidth={4} strokeDasharray="30 60" strokeDashoffset={-f * 8} opacity={0.6} />
       {[380, 470, 560, 650].map((x, k) => <Burst key={k} f={f} t0={blueT[k]} x={x} y={640} color="#8FE0FF" />)}
@@ -339,8 +388,10 @@ const Dome: React.FC = () => {
       <rect x={0} y={GY} width={1080} height={900} fill="#16202E" />
       <rect x={0} y={GY} width={1080} height={5} fill="#2F4260" />
       <path d={`M${OX - 430},${DCY} A430,430 0 0 1 ${OX + 430},${DCY}`} fill="none" stroke="#fff" strokeWidth={3} strokeDasharray="10 14" strokeDashoffset={-f / 2} opacity={0.35} />
+      <Sweep f={f} per={42} />
       <Sun f={f} cx={760} cy={400} r={80} />
       <line x1={715} y1={460} x2={715 - 105 * g} y2={460 + 180 * g} stroke="#fff" strokeWidth={14} strokeLinecap="round" />
+      {[b7 + 40, scb + 30, sky - 6].map((t0, k) => f >= t0 && f < t0 + 28 ? <circle key={k} cx={760} cy={400} r={ease(f, t0, t0 + 28, 80, 330)} fill="none" stroke="#FFF0C0" strokeWidth={6} opacity={0.6 * (1 - ease(f, t0, t0 + 28))} /> : null)}
       {arrows}
       <g transform={`translate(${OX} ${GY})`}><rect x={-9} y={-44} width={18} height={38} rx={7} fill={C.paper} /><circle cy={-58} r={12} fill={C.paper} /></g>
       <Pill x={OX} y={1110} w={460} text="YOU, AT NOON" color={C.amber} s={pop(f, b7 + 14, fps)} />
@@ -350,7 +401,7 @@ const Dome: React.FC = () => {
 };
 
 /* ---------- Shots 8, 10, 11: Earth cross-section (one continuous diagram) ---------- */
-const EX = 330, EY = 850, ER = 250, AR = 272, YB = EY - ER, SUNX = 840, OBX = EX + ER;
+const EX = 350, EY = 850, ER = 250, AR = 272, YB = EY - ER, SUNX = 840, OBX = EX + ER;
 const arcPos = (i: number, u: number): [number, number] => {
   const sx = 345 + 90 * rnd(i, 1), th0 = ((-90 + 16 * rnd(i, 2)) * Math.PI) / 180, R = AR + 34;
   const a0: [number, number] = [EX + R * Math.cos(th0), EY + R * Math.sin(th0)];
@@ -375,12 +426,12 @@ const Earth: React.FC = () => {
       <Defs />
       <linearGradient id="sk-beamE" gradientUnits="userSpaceOnUse" x1={780} y1={0} x2={EX} y2={0}><stop offset="0" stopColor={c0} /><stop offset="0.45" stopColor={c1} /><stop offset="1" stopColor={c2} /></linearGradient>
       <rect x={0} y={0} width={1080} height={1920} fill="url(#sk-earthsky)" />
-      <circle cx={OBX + 10} cy={EY} r={200} fill="#0A1450" opacity={0.55 * (1 - flood)} />
       <circle cx={OBX + 10} cy={EY} r={210 * (0.6 + 0.4 * flood)} fill="url(#sk-flood)" opacity={flood} />
       {f > b10 + 38 && [0, 1, 2].map((k) => {
         const r = ((f - b10 - 38) * 3 + k * 64) % 192;
         return <circle key={k} cx={OBX} cy={EY} r={r} fill="none" stroke="#CFF1FF" strokeWidth={4} opacity={(1 - r / 192) * 0.75 * flood} />;
       })}
+      <Sweep f={f} per={hero ? 60 : 48} />
       <Sun f={f} cx={SUNX} cy={YB} r={70} />
       <circle cx={EX} cy={EY} r={AR} fill="#7FC8FF" opacity={0.12} />
       <FlatPlanet x={EX} y={EY} r={ER} f={f} id="sk" />
@@ -390,6 +441,8 @@ const Earth: React.FC = () => {
       <line x1={780} y1={YB} x2={xHead} y2={YB} stroke="url(#sk-beamE)" strokeWidth={bw + 26} strokeLinecap="round" opacity={0.28 + 0.2 * bloom} />
       <line x1={780} y1={YB} x2={xHead} y2={YB} stroke="url(#sk-beamE)" strokeWidth={bw} strokeLinecap="round" />
       <line x1={760} y1={YB} x2={xHead} y2={YB} stroke="#fff" strokeWidth={4} strokeDasharray="28 60" strokeDashoffset={-f * 9} opacity={0.5 * g} />
+      {f >= dz + 26 && f < b9 && <path d={`M${EX + AR * Math.cos(-Math.PI / 2 + 1.0)},${EY + AR * Math.sin(-Math.PI / 2 + 1.0)} A${AR},${AR} 0 0 0 ${EX},${YB - 22}`} pathLength={1} stroke={C.amber} strokeWidth={14} strokeLinecap="round" fill="none" strokeDasharray="1 1" strokeDashoffset={1 - ease(f, dz + 26, dz + 52)} />}
+      {land && [b11 + 34, b11 + 64].map((t0, k) => f >= t0 && f < t0 + 30 ? <circle key={k} cx={EX} cy={YB} r={ease(f, t0, t0 + 30, 30, 260)} fill="none" stroke="#FFD27A" strokeWidth={7} opacity={0.7 * (1 - ease(f, t0, t0 + 30))} /> : null)}
       {phase8 && (
         <g opacity={ease(f, dz, dz + 8)}>
           <g stroke={C.amber} strokeWidth={4}>
@@ -429,7 +482,7 @@ const Earth: React.FC = () => {
 const IssWindow: React.FC = () => {
   const f = useG();
   const { fps } = useVideoConfig();
-  const along = makeAt(words, fps)("Along the way");
+  const at2 = makeAt(words, fps), along = at2("Along the way");
   const xs = -700 + (((f - along) * 22) % 1800);
   return (
     <>
@@ -442,9 +495,11 @@ const IssWindow: React.FC = () => {
           </linearGradient>
         </defs>
         <rect x={0} y={1014} width={1080} height={9} fill="url(#sk-sweep)" />
+        {f >= along + 30 && <circle cx={ease(f, along + 30, along + 62, 100, 900)} cy={1018} r={ease(f, along + 30, along + 62, 10, 34)} fill="none" stroke="#59C2FF" strokeWidth={6} opacity={1 - ease(f, along + 50, along + 62)} />}
         <TagLabel x={400} y={430} text="SEEN FROM THE ISS" size={40} o={ease(f, along + 8, along + 18)} />
-        <Label x={100} y={1100} text="NASA ISS028-E-007274" anchor="start" size={32} font={MONO} weight={500} o={ease(f, along + 14, along + 22)} />
-        <Label x={100} y={1146} text="PUBLIC DOMAIN" anchor="start" size={32} font={MONO} weight={500} o={ease(f, along + 14, along + 22)} />
+        <TagLabel x={540} y={560} text="BLUE SCATTERED OUT" size={40} color="#9FDCFF" o={ease(f, at2("scattered out"), at2("scattered out") + 8)} />
+        <TagLabel x={100} y={1070} text="NASA ISS028-E-007274" anchor="start" size={32} o={ease(f, along + 14, along + 22)} />
+        <TagLabel x={100} y={1165} text="PUBLIC DOMAIN" anchor="start" size={32} o={ease(f, along + 18, along + 26)} />
       </Stage>
     </>
   );
@@ -461,7 +516,7 @@ const Callback: React.FC = () => {
   const at = makeAt(words, fps);
   const fin = at("Your sunset is"), loop = D - 14;
   const blue = 1 - ease(f, fin + 34, loop - 24);
-  const o = ease(f, fin + 8, fin + 16) * ease(f, fin + 44, fin + 52, 1, 0);
+  const o = ease(f, fin + 8, fin + 16) * ease(f, loop - 22, loop - 14, 1, 0);
   return (
     <Stage>
       <Defs />
@@ -475,16 +530,13 @@ export const SkyVideo: React.FC = () => {
   const { fps, durationInFrames: D } = useVideoConfig();
   const at = makeAt(words, fps);
   const b2 = at("the same"), same = at("same trick"), b3 = at("Sunlight is every"), col = at("every color"), mol = at("Air molecules"), th = at("thousand"),
-    b5 = at("tiny things"), imp = at("scatter"), b6 = at("Blue gets bounced"), bt = at("bounced"), red = at("than red"),
+    b5 = at("tiny things"), imp = at("scatter"), b6 = at("Blue gets bounced"), bt = at("bounced"),
     b7 = at("At noon"), scb = at("scattered blue"), sky = at("That's the sky"), b8 = at("At sunset"), dz = at("dozens"),
     b9 = at("Along the way"), b10 = at("beam"), pillT = at("someone else's afternoon"), b11 = at("What survives"), orr = at("orange and red"),
     card = at("That's the mechanism"), fin = at("Your sunset is"), loop = D - 14;
   const cues = [
-    cue(4, "swish", 0.91), cue(at("blue"), "tick", 0.98), cue(same, "pop", 0.9), cue(at("two places"), "tick", 0.91),
-    cue(col, "glint", 1.0), cue(mol, "pop", 0.9), cue(th, "count", 1.0), cue(imp, "glitch", 0.91), cue(at("short waves"), "pop", 1.0),
-    ...[0, 1, 2, 3].map((k) => cue(bt + 4 + k * 14, "tick", 0.98)), cue(red, "tick", 1.0), cue(at("four times"), "thud", 0.91),
-    cue(scb, "tick", 1.0), cue(sky, "confirm", 0.85),
-    cue(dz, "pop", 0.85), cue(b9, "pop3", 0.85), cue(b10, "riser", 0.78), cue(pillT, "pop", 1.0),
+    cue(4, "swish", 0.91), cue(same, "pop", 0.9), cue(col, "glint", 1.0), cue(mol - 2, "whoosh", 0.7), cue(mol, "pop", 0.9), cue(th, "count", 1.0), cue(imp, "glitch", 0.91), ...[0, 1, 2, 3].map((k) => cue(bt + 4 + k * 14, "detent", 0.7)), cue(at("four times"), "thud", 0.91),
+    cue(sky, "confirm", 0.85), cue(b7 - 2, "whip", 0.8), cue(dz, "pop", 0.85), cue(b9, "pop3", 0.85), cue(b10, "riser", 0.78), cue(pillT, "pop", 1.0),
     cue(b11 + 2, "thud", 0.78), ...reveal(orr, 0.9), cue(at("leftovers"), "pop", 0.9),
   ];
   return (
@@ -494,11 +546,11 @@ export const SkyVideo: React.FC = () => {
       <Shot from={0} to={b2} inT="none" outT="cut" cam={[{ at: 0, kind: "glide", s: 1.06, y: 12, dur: b2 }]}><Hook /></Shot>
       <Shot from={b2} to={b3} inT="cut" outT="cut" depth={false} cam={[{ at: same, kind: "punch", s: 1.05, y: 20 }]}><SameTrick /></Shot>
       <Shot from={b3} to={mol} inT="cut" outT="push" depth={false} cam={[{ at: b3, kind: "glide", s: 1.05, x: 30, y: -10, dur: 30 }]}><Prism /></Shot>
-      <Shot from={mol} to={b5} inT="push" outT="cut" depth={false} cam={[{ at: mol, kind: "push", s: 1.15, y: 10, dur: 60 }, { at: at("light wave"), kind: "glide", s: 1.15, x: 30, dur: 24 }]}><MolIntro /></Shot>
-      <Shot from={b5} to={b6} inT="cut" outT="cut" depth={false} cam={[{ at: imp - 7, kind: "punch", s: 1.08, y: 8 }, { at: imp + 22, kind: "pull", s: 1.0, y: 0 }]}><MolHit /></Shot>
+      <Shot from={mol} to={b5} inT="push" outT="cut" depth={false} cam={[{ at: mol, kind: "push", s: 1.15, y: 10, dur: 60 }, { at: at("light wave"), kind: "glide", s: 1.15, x: 30, dur: 24 }, { at: mol + 70, kind: "glide", s: 1.2, x: -40, y: -20, dur: 60 }]}><MolIntro /></Shot>
+      <Shot from={b5} to={b6} inT="cut" outT="cut" depth={false} cam={[{ at: imp - 7, kind: "punch", s: 1.08, y: 8 }, { at: imp + 22, kind: "pull", s: 1.0, y: 0 }, { at: imp + 50, kind: "glide", s: 1.07, x: 20, y: -10, dur: 70 }]}><MolHit /></Shot>
       <Shot from={b6} to={b7} inT="cut" outT="whipUp" depth={false} cam={[{ at: b6 + 10, kind: "push", s: 1.06, dur: 40 }, { at: at("four times"), kind: "punch", s: 1.08 }]}><Ratio /></Shot>
       <Shot from={b7} to={b8} inT="whipUp" outT="cut" depth={false} cam={[{ at: b7, kind: "glide", s: 1.04, y: -10, dur: 30 }, { at: scb, kind: "push", s: 1.1, x: 30, y: 10, dur: 36 }]}><Dome /></Shot>
-      <Shot from={b8} to={b9} inT="cut" outT="cut" depth={false} cam={[{ at: b8, kind: "glide", s: 1.14, y: 60, dur: 1 }, { at: b8 + 3, kind: "pull", s: 1.0, y: 0, dur: 40 }]}><Earth /></Shot>
+      <Shot from={b8} to={b9} inT="cut" outT="cut" depth={false} cam={[{ at: b8, kind: "glide", s: 1.14, y: 60, dur: 1 }, { at: b8 + 3, kind: "pull", s: 1.0, y: 0, dur: 40 }, { at: dz + 24, kind: "glide", s: 1.06, x: -30, y: 20, dur: 70 }]}><Earth /></Shot>
       <Shot from={b9} to={b10} inT="cut" outT="cut" depth={false} cam={[{ at: b9, kind: "glide", s: 1.04, dur: 12 }, { at: b9 + 12, kind: "push", s: 1.12, dur: 52 }]}><IssWindow /></Shot>
       <Shot from={b10} to={b11} inT="cut" outT="cut" depth={false} cam={[{ at: b10, kind: "glide", s: 1.1, x: -60, y: 40, dur: 40 }, { at: pillT, kind: "pull", s: 1.0, x: 0, y: 0 }]}><Earth /></Shot>
       <Shot from={b11} to={card} inT="cut" outT="push" depth={false} cam={[{ at: b11, kind: "push", s: 1.06, y: 20, dur: 80 }]}><Earth /></Shot>

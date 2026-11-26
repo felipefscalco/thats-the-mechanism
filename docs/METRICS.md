@@ -19,12 +19,12 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | 02-elevator | master | 16 | 3.06 | 56.32 | 60.02 | 204 | 16.21 | $0 |
 | 02-elevator | r4_contrast_check | 1 | 25.06 | 25.06 | 71.4 | 2537 | – | $0 |
 | 02-elevator | loudnorm | 1 | 0.76 | 0.76 | 0.72 | 79 | 3.85 | $0 |
-| 03-sky | qa | 24 | 200.73 | 2881.31 | 4231.47 | 4425 | – | $0 |
-| 03-sky | render | 22 | 170.62 | 2247.18 | 1910.79 | 4893 | 17.23 | $0 |
+| 03-sky | qa | 26 | 235.52 | 3367.42 | 5284.1 | 4865 | – | $0 |
+| 03-sky | render | 24 | 72.36 | 2795.2 | 2145.82 | 4893 | 21.29 | $0 |
 | 03-sky | captions | 3 | 9.45 | 22.07 | 115.65 | 946 | 0.01 | $0 |
 | 03-sky | mix | 2 | 1.54 | 2.8 | 3.03 | 54 | 8.64 | $0 |
 | 03-sky | tts | 2 | 8.53 | 15.9 | 99.98 | 792 | 2.11 | $0 |
-| 03-sky | master | 17 | 3.55 | 62.05 | 70.31 | 204 | 17.23 | $0 |
+| 03-sky | master | 19 | 3.03 | 68.88 | 78.59 | 204 | 21.29 | $0 |
 | 03-sky | loudnorm | 1 | 1.02 | 1.02 | 0.82 | 79 | 4.23 | $0 |
 | 04-ice-demo | tts | 1 | 4.83 | 4.83 | 29.81 | 670 | 1.38 | $0 |
 | 04-ice-demo | loudnorm | 1 | 0.76 | 0.76 | 0.56 | 79 | 2.75 | $0 |
@@ -83,10 +83,10 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Sky | qa | 1 | 124.85 | 124.85 | 199.52 | 4444 | – | $0 |
 | Sky:A=v4 B=v5 | critic | 1 | 21.97 | 21.97 | 0.0 | 0 | 0.0026 | $0 |
 | Sky:agy_v4_vs_v5 | critic | 1 | 62.53 | 62.53 | 0.0 | 0 | 0.0046 | $0 |
-| Sky:ship | critic | 2 | 91.73 | 205.95 | 0.0 | 0 | 0.007 | $0 |
+| Sky:ship | critic | 3 | 94.61 | 300.56 | 0.0 | 0 | 0.0076 | $0 |
 | Sky:ship_cal | critic | 2 | 626.11 | 827.0 | 0.0 | 0 | 0.0176 | $0 |
 | Sky:ship_retry | critic | 1 | 143.87 | 143.87 | 0.0 | 0 | 0.0078 | $0 |
-| Sky:ship_swap | critic | 2 | 125.0 | 240.37 | 0.0 | 0 | 0.0089 | $0 |
+| Sky:ship_swap | critic | 3 | 165.4 | 405.77 | 0.0 | 0 | 0.0078 | $0 |
 | Sky:v4 | critic | 2 | 13.09 | 40.46 | 0.0 | 0 | 0.0035 | $0 |
 | Sky:v5 | critic | 1 | 14.41 | 14.41 | 0.0 | 0 | 0.0042 | $0 |
 | Sky:v5-legacy | critic | 2 | 11.62 | 24.57 | 0.0 | 0 | 0.0014 | $0 |
@@ -160,7 +160,7 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 |---|---|---|---|---|
 | 01-qr-code | 3260.4 | 4877.1 | 4597 | $0 |
 | 02-elevator | 4459.9 | 5875.1 | 4731 | $0 |
-| 03-sky | 5232.3 | 6432.1 | 4893 | $0 |
+| 03-sky | 6273.3 | 7728.0 | 4893 | $0 |
 | 04-ice-demo | 99.9 | 221.6 | 3332 | $0 |
 | 05-anc-headphones | 1579.5 | 1613.2 | 4305 | $0 |
 | ANC:ship | 93.6 | 0.0 | 0 | $0 |
@@ -208,10 +208,10 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Sky | 142.6 | 199.5 | 4444 | $0 |
 | Sky:A=v4 B=v5 | 22.0 | 0.0 | 0 | $0 |
 | Sky:agy_v4_vs_v5 | 62.5 | 0.0 | 0 | $0 |
-| Sky:ship | 205.9 | 0.0 | 0 | $0 |
+| Sky:ship | 300.6 | 0.0 | 0 | $0 |
 | Sky:ship_cal | 827.0 | 0.0 | 0 | $0 |
 | Sky:ship_retry | 143.9 | 0.0 | 0 | $0 |
-| Sky:ship_swap | 240.4 | 0.0 | 0 | $0 |
+| Sky:ship_swap | 405.8 | 0.0 | 0 | $0 |
 | Sky:v4 | 40.5 | 0.0 | 0 | $0 |
 | Sky:v5 | 14.4 | 0.0 | 0 | $0 |
 | Sky:v5-legacy | 24.6 | 0.0 | 0 | $0 |

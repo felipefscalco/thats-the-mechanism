@@ -1,9 +1,9 @@
 {
  "episode": "03-sky",
  "composition": "Sky",
- "render": "renders/Sky_v7.mp4",
- "video_sha256": "b1df677d442ae19524e1e202ed12d4929cbf0a31fbe83fdb5d0e343d64d9172a",
- "created": "2026-11-26T05:16:52-0300",
+ "render": "renders/Sky_v8.mp4",
+ "video_sha256": "1c9809f67fb1ea93dec5e120c0c74acf79f188057be453d0d8b57b452c1661dd",
+ "created": "2026-11-26T09:01:53-0300",
  "platforms": {
   "tiktok": {
    "title": "The Sunset Made of Someone Else's Blue Sky",
@@ -26,7 +26,7 @@
     "hashtags": 5
    },
    "ai_generated_content_label": true,
-   "request_id": "b48c25d559dea284952d"
+   "request_id": "65cc825718ea455e3d16"
   },
   "youtube_shorts": {
    "title": "The Sunset Made of Someone Else's Blue Sky",
@@ -50,7 +50,7 @@
    "made_for_kids": false,
    "category": "Education",
    "visibility": "private_until_approved",
-   "request_id": "964f5a0b0daacd48df1b"
+   "request_id": "a3e0bbc64a8af34d395f"
   },
   "instagram_reels": {
    "title": "The Sunset Made of Someone Else's Blue Sky",
@@ -76,7 +76,7 @@
     "hashtags": 8
    },
    "ai_info_label": true,
-   "request_id": "bbccfa15defc3172a1ef"
+   "request_id": "d5380876d666fd6f23f6"
   }
  },
  "credits": {
@@ -130,6 +130,6 @@
   "status": "pending"
  },
  "upload": "not implemented (r8): stub refuses",
- "pack_sha": "3dedb8eb5038068d",
+ "pack_sha": "de86007461aeb2f8",
  "violations": []
 }

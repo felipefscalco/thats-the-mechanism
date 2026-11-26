@@ -1,7 +1,7 @@
 # Publish review — 03-sky
 
-Video: `publish/03-sky/video.mp4` (sha256 b1df677d442a…, from `renders/Sky_v7.mp4`)
-Pack sha: **3dedb8eb5038068d**
+Video: `publish/03-sky/video.mp4` (sha256 1c9809f67fb1…, from `renders/Sky_v8.mp4`)
+Pack sha: **de86007461aeb2f8**
 
 Nothing has been posted. Upload is not implemented in r8.
 
@@ -18,7 +18,7 @@ Images: NASA (JSC) (Public domain (NASA media usage guidelines))
 #ThatsTheMechanism #science #physics #sunset #sky
 ```
 - AI-generated content label: **True**
-- request_id: `b48c25d559dea284952d`
+- request_id: `65cc825718ea455e3d16`
 
 ## youtube_shorts
 - title (42/100): **The Sunset Made of Someone Else's Blue Sky**
@@ -33,7 +33,7 @@ Images: NASA (JSC) (Public domain (NASA media usage guidelines))
 #Shorts #ThatsTheMechanism #science
 ```
 - altered/synthetic content disclosure: **True** · made for kids: **False** · visibility: private_until_approved
-- request_id: `964f5a0b0daacd48df1b`
+- request_id: `a3e0bbc64a8af34d395f`
 
 ## instagram_reels
 - title (42/125): **The Sunset Made of Someone Else's Blue Sky**
@@ -48,7 +48,7 @@ Images: NASA (JSC) (Public domain (NASA media usage guidelines))
 #ThatsTheMechanism #science #physics #sunset #sky #optics #lightscattering #HowItWorks
 ```
 - AI info label: **True**
-- request_id: `bbccfa15defc3172a1ef`
+- request_id: `d5380876d666fd6f23f6`
 
 ## Credits
 - Earth Observation — NASA (JSC) — Public domain (NASA media usage guidelines) — https://images.nasa.gov/details/iss028e007274
@@ -70,5 +70,5 @@ Images: NASA (JSC) (Public domain (NASA media usage guidelines))
 To approve this exact pack (any change voids it):
 
 ```
-echo 3dedb8eb5038068d > publish/03-sky/APPROVED
+echo de86007461aeb2f8 > publish/03-sky/APPROVED
 ```
