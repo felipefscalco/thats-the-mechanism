@@ -77,17 +77,37 @@ def available(provider: str) -> bool:
 # explicit allowlist (override per role with "tools": [...] in pipeline.config.json). The commands below are the only
 # ones the builder/fixer/selfcritique prompts ask for; SUF reaches the child through the environment, not a prefix.
 READ_TOOLS = ["Read", "Glob", "Grep"]
-WRITE_TOOLS = READ_TOOLS + ["Edit", "Write", "Bash(cd remotion)", "Bash(npx tsc --noEmit:*)",
-                            "Bash(.venv-tts/bin/python scripts/preview.py:*)", "Bash(python3 scripts/lint_shots.py:*)"]
-DENY_TOOLS = ["WebFetch", "WebSearch", "Task", "Agent", "NotebookEdit"]
-# Secrets never reach an agent's environment unless that provider needs them to authenticate.
-SECRET_ENV = re.compile(r"(API_?KEY|_KEY$|TOKEN|SECRET|PASSWORD|PASSWD|CREDENTIAL)", re.I)
-PROVIDER_KEEP = {"claude": {"CLAUDE_CODE_OAUTH_TOKEN"}, "codex": {"OPENAI_API_KEY"}, "cursor-agent": {"CURSOR_API_KEY"}, "agy": set()}
+# Commands a write role may run. Each one EXECUTES repo code, so a write role must never be able to edit that code:
+# Edit/Write are path-scoped to the role's scope globs (claude path rules) and the files below are explicitly denied.
+RUN_TOOLS = ["Bash(cd remotion)", "Bash(npx tsc --noEmit:*)", "Bash(.venv-tts/bin/python scripts/preview.py:*)",
+             "Bash(python3 scripts/lint_shots.py:*)"]
+WRITE_TOOLS = READ_TOOLS + RUN_TOOLS   # + Edit(<scope glob>) per run, see edit_rules()
+DEFAULT_WRITE_SCOPE = ["remotion/src/episodes/**", "episodes/**"]
+PROTECTED = ["scripts/**", "prompts/**", "tests/**", ".venv-tts/**", "tools/**", "remotion/node_modules/**", "remotion/package.json",
+             "remotion/package-lock.json", "remotion/tsconfig.json", "remotion/remotion.config.ts", "remotion/*.mjs",
+             "remotion/src/brand/**", "remotion/src/Root.tsx", "pipeline.config.json", ".claude/**", ".git/**", "AGENTS.md", "docs/**"]
+DENY_TOOLS = ["WebFetch", "WebSearch", "Task", "Agent", "NotebookEdit"] + [f"Edit({p})" for p in PROTECTED]
+
+
+def edit_rules(scope) -> list[str]:
+    """Claude path rules: one Edit(glob) per scope glob (Edit rules cover Write too)."""
+    return [f"Edit({g})" for g in (list(scope) if scope else DEFAULT_WRITE_SCOPE)]
+
+
+# Agents get an ALLOWLISTED environment (not a secret denylist): the basics a CLI needs to run, SUF/QA_DIR for the
+# pipeline commands, and only the credential the provider itself logs in with.
+ENV_BASE = {"PATH", "HOME", "USER", "LOGNAME", "SHELL", "TERM", "TMPDIR", "LANG", "TZ", "SUF", "QA_DIR", "__CF_USER_TEXT_ENCODING"}
+ENV_PREFIX = ("LC_", "XDG_")
+PROVIDER_KEEP = {"claude": {"CLAUDE_CODE_OAUTH_TOKEN", "CLAUDE_CONFIG_DIR"}, "codex": {"OPENAI_API_KEY", "CODEX_HOME"},
+                 "cursor-agent": {"CURSOR_API_KEY"}, "agy": set()}
+# Providers that cannot restrict WHERE a write role edits (no path rules), so they could rewrite the scripts their own
+# allowed commands execute. They serve read-only roles only.
+NO_PATH_SCOPED_WRITES = {"agy", "codex", "cursor-agent"}
 
 
 def child_env(provider: str) -> dict:
-    keep = PROVIDER_KEEP.get(provider, set())
-    return {k: v for k, v in os.environ.items() if k in keep or not SECRET_ENV.search(k)}
+    keep = ENV_BASE | PROVIDER_KEEP.get(provider, set())
+    return {k: v for k, v in os.environ.items() if k in keep or k.startswith(ENV_PREFIX)}
 
 
 def untrusted(label: str, text: str) -> str:
@@ -133,9 +153,13 @@ def _files_block(files) -> str:
 
 
 def build_cmd(provider: str, model, prompt: str, workdir: Path, schema_path, files, read_only: bool, effort=None,
-              timeout_s: int = 1800, last_msg: Path | None = None, tools=None):
+              timeout_s: int = 1800, last_msg: Path | None = None, tools=None, scope=None):
     """Return (argv, env, prompt_text). Pure function: used by run() and by the dry-run tests (tests/test_llm_security.py)."""
-    tools = list(tools or (READ_TOOLS if read_only else WRITE_TOOLS))
+    if not read_only and provider in NO_PATH_SCOPED_WRITES:
+        raise ProviderUnavailable(f"{provider}: write roles refused (no path-scoped edit permissions; it could rewrite the "
+                                  "scripts its allowed commands run). Use claude for builder/fixer.")
+    tools = list(tools or (READ_TOOLS if read_only else WRITE_TOOLS + edit_rules(scope)))
+    tools = [x for x in tools if x not in ("Edit", "Write", "Bash")]   # never a bare, unscoped Edit/Write/Bash
     dirs = sorted({str(Path(p).resolve().parent) for _, p in files if Path(p).resolve().parent != workdir.resolve()})
     full = _files_block(files) + prompt
     if provider == "claude":
@@ -273,7 +297,7 @@ def run(role: str, prompt: str, workdir=ROOT, scope=None, schema=None, files=(),
         to = int(timeout_s or s.get("timeout_s") or 1800)
         try:
             cmd, env, full = build_cmd(prov, model, prompt, workdir, schema_path, files, read_only, s.get("effort"), to, last_msg,
-                                       tools=s.get("tools"))
+                                       tools=s.get("tools"), scope=scope)
         except ProviderUnavailable as e:
             last_err = str(e); print(f"[llm] role={role} {e}; trying fallback", file=sys.stderr)
             shutil.rmtree(tmp, ignore_errors=True); continue

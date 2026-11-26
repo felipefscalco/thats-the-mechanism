@@ -13,13 +13,15 @@ def t_argv():
     assert c[:4] == ["claude", "-p", "--output-format", "json"] and "--json-schema" in c and "--allowedTools=Read,Glob,Grep" in c and "hi" not in c
     c, _, _ = llm.build_cmd("claude", None, "hi", wd, None, [], read_only=False)
     assert "--dangerously-skip-permissions" not in c and c[c.index("--permission-mode") + 1] == "acceptEdits"   # r10: allowlist, no bypass
-    c, _, p = llm.build_cmd("agy", "gemini-3.8-flash-high", "hi", wd, sch, files, read_only=False)
+    c, _, p = llm.build_cmd("agy", "gemini-3.8-flash-high", "hi", wd, sch, files, read_only=True)   # r10: agy is read-only
     assert c[0] == "agy" and c[c.index("--model") + 1] == "gemini-3.8-flash-high" and c[-2] == "-p" and "--json-schema" in c and str(files[0][1]) in p
     c, _, _ = llm.build_cmd("codex", "gpt-5.6", "hi", wd, sch, [("IMG", ROOT / "contact_sheet.png")], read_only=True, last_msg=Path("/x/last.txt"))
     assert c[:2] == ["codex", "exec"] and c[c.index("--sandbox") + 1] == "read-only" and c[c.index("-m") + 1] == "gpt-5.6"
     assert "--output-schema" in c and c[c.index("-o") + 1] == "/x/last.txt" and "-i" in c and c[-1].endswith("hi")
-    c, _, _ = llm.build_cmd("codex", None, "hi", wd, None, [], read_only=False)
-    assert c[c.index("--sandbox") + 1] == "workspace-write"
+    try:   # r10: codex has no path-scoped edits -> write roles refused
+        llm.build_cmd("codex", None, "hi", wd, None, [], read_only=False); raise AssertionError("codex write must be refused")
+    except llm.ProviderUnavailable:
+        pass
     c, _, p = llm.build_cmd("cursor-agent", "sonnet-5.5", "hi", wd, sch, [], read_only=True)
     assert c[:4] == ["cursor-agent", "-p", "--output-format", "json"] and "--mode" in c and "ask" in c and "JSON Schema" in p
     try:   # r10: cursor-agent has no tool allowlist, so write roles are refused instead of run with --force
@@ -28,8 +30,10 @@ def t_argv():
         pass
     # role override + dry run (works even when the CLI is not installed)
     import os
+    os.environ["LLM_PLANNER"] = "codex:gpt-5.6"; r = llm.run("planner", "x", read_only=True, dry_run=True); del os.environ["LLM_PLANNER"]
+    assert r["meta"]["provider"] == "codex" and r["meta"]["cmd"][:2] == ["codex", "exec"]   # override honoured (read-only role)
     os.environ["LLM_BUILDER"] = "codex:gpt-5.6"; r = llm.run("builder", "x", dry_run=True); del os.environ["LLM_BUILDER"]
-    assert r["meta"]["provider"] == "codex" and r["meta"]["cmd"][:2] == ["codex", "exec"]
+    assert r["meta"].get("provider") != "codex"   # r10: codex cannot take a write role
     os.environ["LLM_FIXER"] = "cursor-agent:sonnet-5.5"; r = llm.run("fixer", "x", dry_run=True); del os.environ["LLM_FIXER"]
     assert r["meta"].get("provider") != "cursor-agent"   # r10: refused for a write role, falls back (or fails) instead
     assert llm._extract_json('noise ```json\n{"a": 1}\n``` tail') == {"a": 1}
