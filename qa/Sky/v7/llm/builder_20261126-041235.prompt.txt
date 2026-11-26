@@ -1,0 +1,12 @@
+INPUT FILES (open each one with your file-reading tool):
+- contact sheet: /workspace/ttm-r7/qa/Sky/v7/preview_sheet_it1.png
+- key stills: /workspace/ttm-r7/qa/Sky/v7/keystills_it1.png
+
+You are the BUILDER of composition `Sky` (repository: /workspace/ttm-r7), doing a self-review before an independent critic sees it.
+Open these images: the contact sheet /workspace/ttm-r7/qa/Sky/v7/preview_sheet_it1.png (one still every 1.5 s, left-to-right, top-to-bottom) and the key stills /workspace/ttm-r7/qa/Sky/v7/keystills_it1.png
+(hook / mid / end). Compare them with the frozen plan episodes/03-sky/VIDEO.md (read it).
+Check, honestly: does each shot read as ONE continuous world (not a slide deck)? Is the hook the subject at frame 0? Any text
+cramped, clipped, overlapping or low-contrast? More than 3 callouts at once? Dead holds? Does the end match frame 0?
+If you find real problems, fix them in remotion/src/episodes/Sky.tsx only (same rules as before; no full renders; run tsc),
+then re-run: SUF=v7 .venv-tts/bin/python scripts/preview.py Sky 03-sky 2
+Reply with JSON: {"issues_found": [..], "changed": true|false, "confidence_ship": 1-5}
