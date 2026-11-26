@@ -25,7 +25,7 @@ _TOKENISH = re.compile(r"(?i)\b(?:api[_-]?key|access[_-]?token|token|sig|signatu
 _LONG_SECRET = re.compile(r"\b(?:sk-[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_-]{30,}|eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})")
 _LOCAL_PATH = re.compile(r"(?:(?<![\w/])/(?:home|Users|workspace|tmp|var|root|mnt|private|cursor)/[^\s|,;)\]]*|[A-Za-z]:\\[^\s|,;)\]]*|~/[^\s|,;)\]]*)")
 SAFE_QUERY = {"curid", "oldid"}
-_URL_IN_TEXT = re.compile(r"[a-z][a-z0-9+.-]*://[^\s|)\]>]+", re.I)
+_URL_IN_TEXT = re.compile(r"[a-z][a-z0-9+.-]*://[^\s|)\]>\"'`]+", re.I)
 
 def safe_public_url(value):
     if not isinstance(value, str) or not value.strip(): return None
