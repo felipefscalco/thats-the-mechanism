@@ -44,6 +44,8 @@ def t_scope():
     rev = llm.enforce_scope(d, snap, ["ok/*"])
     assert (d / "a.txt").read_text() == "a" and (d / "b.txt").read_text() == "b-dirty-before" and not (d / "new.txt").exists() and (d / "ok/x.txt").exists(), rev
     assert set(rev) == {"a.txt", "b.txt", "new.txt"}, rev
+    snap = llm.snapshot(d); (d / ".remotion").mkdir(); (d / ".remotion/chrome").write_text("bin"); (d / "metrics").mkdir(); (d / "metrics/runs.jsonl").write_text("{}")
+    assert llm.enforce_scope(d, snap, ["ok/*"]) == [] and (d / ".remotion/chrome").exists()   # caches / pipeline outputs are never reverted
 
 def t_guard():
     base = 'const A = () => <Stage><Label x={100} y={400} text="CAR" size={30} color={C.paper} />\n<g transform={`translate(${cam.x} 0) scale(${zoom})`}><rect x={80} width={920} fill="#0D0E12" /></g></Stage>;\nconst t = ease(f, 10, 20, 0, 1, EASE.OUT);'

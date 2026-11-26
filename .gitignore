@@ -82,3 +82,4 @@ tools/d2/
 .venv-tts
 tools/whisper.cpp
 remotion/node_modules
+.remotion/

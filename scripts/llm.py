@@ -192,8 +192,13 @@ def snapshot(workdir: Path) -> dict:
     return dict(dirty=d, bak=bak)
 
 
+# Paths every role may touch: tool caches and pipeline outputs. Reverting these would delete downloaded binaries
+# (Remotion's chrome-headless-shell lives in .remotion/) or lose metrics/QA output written by the gates the agent runs.
+ALWAYS_ALLOWED = [".remotion/*", "remotion/.remotion/*", "node_modules/*", ".cache/*", "metrics/*", "qa/*", "renders/*", "_scratch/*", "logs/*"]
+
+
 def in_scope(path: str, scope) -> bool:
-    return any(fnmatch.fnmatch(path, g) for g in scope)
+    return any(fnmatch.fnmatch(path, g) for g in list(scope) + ALWAYS_ALLOWED)
 
 
 def enforce_scope(workdir: Path, snap: dict, scope) -> list[str]:
