@@ -341,10 +341,31 @@ def render_prompt(clusters: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def guard_active(new_clusters: list[dict]) -> None:
+    """L-36 gate: qa/** critic JSONs are gitignored, so a fresh clone sees only its own episodes. Never let a rebuild
+    silently drop a rule that is active in the committed docs/style_rules.json. Exit 3 (nothing written) unless --force."""
+    if "--force" in sys.argv or not OUT_JSON.exists():
+        return
+    try:
+        prev = [c for c in json.loads(OUT_JSON.read_text()).get("clusters", []) if c.get("active")]
+    except (json.JSONDecodeError, OSError):
+        return
+    new_toks = [tokenize(c["rule"]) for c in new_clusters if c.get("active")]
+    lost = [c["rule"] for c in prev if not any(jaccard(tokenize(c["rule"]), t) >= 0.5 for t in new_toks)]
+    if lost:
+        print(f"lessons.py: REFUSED - this rebuild would drop {len(lost)} active rule(s) from {OUT_JSON.relative_to(ROOT)} "
+              "(their critic JSONs under qa/ are probably not on this machine). Nothing written. Re-run with --force only "
+              "if dropping them is intended.", file=sys.stderr)
+        for r in lost:
+            print(f"  - {r[:140]}", file=sys.stderr)
+        sys.exit(3)
+
+
 def main():
     rows = collect()
     if not rows:
         print("lessons.py: no general_rules found under qa/", file=sys.stderr)
+        guard_active([])
         # still write empty files so the prompt path exists
         empty = {"generated": datetime.now().astimezone().isoformat(timespec="seconds"), "clusters": []}
         OUT_JSON.parent.mkdir(exist_ok=True)
@@ -362,6 +383,7 @@ def main():
         if c.get("category"):
             rec["category"] = rec["category"] or c["category"]
         clusters.append(rec)
+    guard_active(clusters)
     generated = datetime.now().astimezone().isoformat(timespec="seconds")
     OUT_JSON.write_text(json.dumps({"generated": generated, "source_rules": len(rows), "clusters": clusters}, indent=2, ensure_ascii=False))
     OUT_MD.write_text(render_md(clusters, generated))

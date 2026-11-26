@@ -46,6 +46,7 @@ An episode ships only when every automated check PASSes **and** the visual revie
 - A13 Labels: no two stage label/pill occupancies closer than 36 px, and no icon covering a pill interior, held >= 0.6 s (`scripts/contrast.py` overlap; evidence `overlap_fail.png`). Prefer `Lane` / `LabeledBox` so the layout cannot collide.
 - A14 Motion: badge/pill entrances (TagLabel, Pill, TitleHook backings) pop with anticipation/overshoot, never snap in at full size (`scripts/contrast.py` occupancy pass). Hand-rolled badges are invisible to this gate: use the primitives.
 - A15 Labels: text stays inside the Shorts UI safe zones and >= 24 px from the left/right frame edge, held >= 0.6 s (`scripts/contrast.py` `unsafe()`, EDGE=24). After any camera punch/push, re-check edge labels.
+- A16 Pipeline: `scripts/check_portability.py` passes before any render (no absolute shebangs or `/workspace/` paths, no ffmpeg `-vsync`, no GNU-only `sed -i "..."`); `iterate.sh` / `build-episode.sh` stop on failure.
 
 ## Independent critic (round 4, advisory)
 After all automated checks pass, run `scripts/critic.py <Id>` (needs `GEMINI_API_KEY` in the environment). It uploads the MP4 with audio to Gemini and writes `qa/<Id>/<SUF>/critic.json` + `critic.md` (8 scores 1–10, timestamped issues, suggestions). The builder never grades its own work: route findings to `docs/LESSONS.md` / `docs/BACKLOG.md`; a finding that repeats becomes a qa.py check. Any score < 7 means one more iteration. The critic is not yet calibrated (L-21): it is a second opinion, not the gate.

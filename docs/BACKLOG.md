@@ -25,13 +25,13 @@ Ideas and suggestions from reviews that are not bugs. Reviewers append; whoever 
 - [ ] (r4) drawing-skill backdrops as 2-3 parallax plates (far/mid/near) instead of one flat JPG, so ShotLayers can move them.
 - [ ] (r4) LOC API timed out (30 s) on every search; add retry/backoff or drop it from defaults.
 
-- [ ] (r6, gate) Lint committed scripts for absolute interpreter shebangs (`#!/workspace/...`); allow only `/usr/bin/env` or `/bin/(ba)sh` (L-34).
 
 - [ ] (r6, gate accuracy) contrast.py A13: merge glyph components of one Label (e.g. mono superscripts) before measuring clearance (L-35).
 
-- [ ] (r6, tool) lessons.py: merge incrementally into the committed docs/style_rules.json; never rebuild only from local qa/** (gitignored) and never drop active rules (L-36).
+- [ ] (r6, tool) lessons.py: merge incrementally into the committed docs/style_rules.json instead of rebuilding from local qa/** (the drop guard is done, L-36).
 
 ## Done
+- [x] (r6) Portability gate scripts/check_portability.py (shebangs, /workspace/ paths, -vsync, GNU sed -i) run before every render; setup.sh Python 3.12/3.13 pick; lessons.py drop guard (L-31, L-34, L-36).
 - [x] (r6) Label overlap gate A13 (contrast.py occupancy) and agy critic backend (`critic.py --backend agy`, `ship_check.sh`); the pilot's `scripts/critic_agy.py` was dropped for them. (round 6, merged into the Microwave pilot)
 - [x] Extend `qa.py` minimum font-size gate from `<Label>` (>= 30 px) to raw SVG `<text>` elements (e.g. `CAR`, `EMPTY CAR`) so mobile readability matches primary labels (from critic L-17). (round 5)
 - [x] (r4 critic) Give `ProofCard` a softer eased slide/scale entry (`Sky` 0:32) and slightly more breathing room below the top `BrandChip` (`QR` 0:38), plus a subtle brightness/contrast boost on the archival HABS motor photo (`Elevator` 0:35). (round 5)
@@ -49,7 +49,6 @@ Ideas and suggestions from reviews that are not bugs. Reviewers append; whoever 
 - [x] Add depth: parallax, shadows, light isometric or one @remotion/three hero shot. (round 3: ShotLayers parallax/shadow, iso extrusions, 3D planet in Sky)
 - [x] Two-pass loudness with ffmpeg-normalize. (round 3: scripts/master.sh, −14.0 LUFS on all 3)
 - [x] Lucide icons for labels. (round 3: Pill icon prop; QR + Elevator)
-- [ ] (r6) setup.sh: choose python3.12/3.13 for .venv-tts when the default python3 is >= 3.14 (onnxruntime wheels lag behind), and fail with a clear message otherwise (L-31).
 - [ ] (r6) Pre-existing eslint error: brand/EpisodeShell.tsx:64 `@remotion/from-0` (remove `from={0}`); `npm run lint` fails until fixed.
 - [ ] (r6 critic) Microwave: a "ding" on the timer reaching 0:00 (needs a CC0/own-synth bell in sfx/CREDITS.csv), physical foley (cavity hum, wave-bounce thump), and a real CC0/PD macro photo of door mesh as a ProofCard.
 - [ ] (r6 critic) Microwave: the side-on cutaway repeats in 3 chapters; consider a different framing for "Same door" (split lens: wave view vs human view).

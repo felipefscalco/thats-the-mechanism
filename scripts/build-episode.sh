@@ -6,6 +6,7 @@
 set -euo pipefail
 P="$(cd "$(dirname "$0")/.." && pwd)"; S="$1"; ID="$2"; IT="${3:-1}"; PY="$P/.venv-tts/bin/python"; M="python3 $P/scripts/metrics.py run --ep $S"
 E="$P/episodes/$S"; cd "$P"
+python3 "$P/scripts/check_portability.py" || { echo "portability gate failed - fix before building (L-31/L-34)"; exit 1; }
 if [[ "${4:-}" != "--skip-tts" ]]; then
   $M --stage tts --out "$E/narration_raw.wav" -- $PY scripts/tts.py am_michael 1.08 "$E/script.txt"
   $M --stage loudnorm --out "$E/narration.wav" -- bash -c "ffmpeg -loglevel error -y -i '$E/narration_raw.wav' -af loudnorm=I=-14:TP=-1.5:LRA=7 -ar 48000 -ac 1 '$E/narration.wav' && ffmpeg -loglevel error -y -i '$E/narration.wav' -ar 16000 -ac 1 '$E/narration16k.wav'"

@@ -213,8 +213,8 @@ One entry per finding. Newest at the bottom. Format:
 - Problem: on a fresh macOS box, `scripts/setup.sh` failed (`onnxruntime` has no wheel for Homebrew's default Python 3.15). `new-episode.sh` used GNU `sed -i` with a `\n` replacement, which fails on BSD sed. `metrics.py` read `/proc`, which crashed every timed stage, and `build-episode.sh` (`set -e`) aborted after TTS. `contrast.py` used `-vsync 0`, which FFmpeg 9 removed, so the WCAG/safe-zone gate errored without measuring anything. `master.sh` needed `tools/fn-venv`, which setup never created.
 - Root cause: the scripts had only been run on Linux with older FFmpeg/Python.
 - Fix: venv built with python3.12. new-episode.sh edits Root.tsx with Python (portable). metrics.py has a `ps` fallback when there is no /proc. contrast.py uses `-fps_mode passthrough`. setup.sh installs ffmpeg-normalize into tools/fn-venv.
-- Prevention: setup.sh should pick a Python <= 3.13 for .venv-tts (BACKLOG). Treat a gate that *errors* as a tooling bug, not a design FAIL; check the error text before touching the episode.
-- Status: fixed (Python pin open in BACKLOG)
+- Prevention (code): setup.sh picks python3.12/3.13 and refuses >= 3.14 with a clear message; scripts/check_portability.py (run by iterate.sh and build-episode.sh before rendering) fails on -vsync, GNU `sed -i "..."` and absolute paths. Treat a gate that *errors* as a tooling bug, not a design FAIL.
+- Status: fixed
 
 ### L-32 · 2026-11-26 · Microwave · minor (hold after the hook zoom)
 - Problem: Microwave it1 had a 2.4 s stage hold at 0.97–3.4 s: the scale reveal ends at 1.0 s and the next visual event came at "So why" (3.2 s). Mug rotation and steam were too small to count as motion.
@@ -235,7 +235,7 @@ One entry per finding. Newest at the bottom. Format:
 - Problem: on the Mac, after merging round 6, `iterate.sh` rendered fine but QA never ran: `scripts/metrics.py ... scripts/qa.py` failed with "No such file or directory" although qa.py existed.
 - Root cause: round 6 changed the shebang of `scripts/qa.py` and `scripts/critic.py` to `#!/workspace/ttm-r6/.venv-tts/bin/python` (the other box's venv). The exec fails when the interpreter path is missing, and Python reports the script itself as missing.
 - Fix: both back to `#!/usr/bin/env python3`; the pipeline puts `.venv-tts/bin` first on PATH.
-- Prevention: never pin an absolute interpreter path in a committed script. Candidate gate: a pre-commit/lint check that fails on `^#!/` lines other than `/usr/bin/env` or `/bin/(ba)?sh` under scripts/ (BACKLOG).
+- Prevention (gate): scripts/check_portability.py fails on any shebang other than `/usr/bin/env python3|bash|sh|node` or `/bin/(ba)sh` and on `/workspace/` paths; iterate.sh and build-episode.sh run it before rendering.
 - Status: fixed
 
 ### L-35 · 2026-11-26 · QA · minor (iterate.sh judged a stale MP4; A13 glyph split)
@@ -248,5 +248,5 @@ One entry per finding. Newest at the bottom. Format:
 - Problem: `ship_check.sh` ends with `scripts/lessons.py`. On the Mac it rewrote docs/STYLE_RULES.md, style_rules.json and active_rules_prompt.txt from only the Microwave critic files. The 5 active prose rules from QR/Elevator/Sky/ANC disappeared ("no active prose rules yet").
 - Root cause: lessons.py rebuilds from the critic JSONs under qa/**, and those are gitignored (only `critic.json` is kept), so a fresh clone has none of the other episodes' `general_rules`.
 - Fix: restored the three files from git. The Microwave general_rules are still in qa/Microwave/v1/ship_it8/critic_cal.json, waiting to be merged.
-- Prevention: lessons.py should merge into the committed docs/style_rules.json (incremental) instead of rebuilding from qa/**, and refuse to drop active rules (BACKLOG, gate).
-- Status: workaround (files restored); tool fix open
+- Prevention (gate): lessons.py `guard_active()` exits 3 and writes nothing when a rebuild would drop a rule that is active in the committed docs/style_rules.json (`--force` to override). Tested on this Mac: refused to drop 23 active rules. Open: true incremental merge (BACKLOG).
+- Status: fixed (guard); incremental merge open

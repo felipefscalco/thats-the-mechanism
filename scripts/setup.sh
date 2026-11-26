@@ -73,8 +73,17 @@ fi
 
 echo
 echo "== Python venv (.venv-tts) =="
+# kokoro-onnx needs onnxruntime, whose wheels lag new Pythons (none for 3.15 in 2026-11, L-31): prefer 3.12/3.13
+PYV=""
+for c in python3.12 python3.13 python3.11 python3.10; do command -v "$c" >/dev/null 2>&1 && { PYV="$c"; break; }; done
+if [[ -z "$PYV" ]]; then
+  PYV=python3
+  python3 -c 'import sys; sys.exit(0 if sys.version_info < (3, 14) else 1)' || {
+    echo "Python >= 3.14 has no onnxruntime wheels yet. Install python3.12 (macOS: brew install python@3.12) and re-run." >&2; exit 1; }
+fi
 if [[ ! -x .venv-tts/bin/python ]]; then
-  python3 -m venv .venv-tts
+  echo "  using $PYV ($("$PYV" --version))"
+  "$PYV" -m venv .venv-tts
 fi
 .venv-tts/bin/pip install -U pip
 .venv-tts/bin/pip install -r requirements.txt
