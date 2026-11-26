@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "disableClaudeAiConnectors": true,
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": false,
+    "frontend-design@claude-plugins-official": false,
+    "context7@claude-plugins-official": false,
+    "playwright@claude-plugins-official": false,
+    "github@claude-plugins-official": false,
+    "vercel@claude-plugins-official": false,
+    "feature-dev@claude-plugins-official": false,
+    "figma@claude-plugins-official": false,
+    "pr-review-toolkit@claude-plugins-official": false,
+    "chrome-devtools-mcp@claude-plugins-official": false,
+    "csharp-lsp@claude-plugins-official": false,
+    "firecrawl@claude-plugins-official": false,
+    "claude-security@claude-plugins-official": false,
+    "ruby-lsp@claude-plugins-official": false,
+    "azure@claude-plugins-official": false,
+    "unity@claude-plugins-official": false,
+    "hookify@claude-plugins-official": false,
+    "commit-commands@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  }
+}
