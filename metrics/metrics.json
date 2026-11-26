@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26T12:29:31-03:00",
+  "generated": "2026-11-26T12:39:31-03:00",
   "cost_usd_total": 0.0,
   "llm_tokens": "not available to the pipeline (authoring bot's token usage is not exposed)",
   "episodes": {
@@ -1226,6 +1226,51 @@
       },
       "qa_iterations": 8,
       "render_iterations": 8,
+      "cost_usd": 0.0
+    },
+    "Microwave:ship": {
+      "stages": {
+        "critic": {
+          "runs": 1,
+          "wall_s_total": 280.59,
+          "wall_s_last": 280.59,
+          "cpu_s_total": 0.0,
+          "peak_rss_mb": 0,
+          "out_mb_last": 0.0071
+        }
+      },
+      "qa_iterations": 0,
+      "render_iterations": 0,
+      "cost_usd": 0.0
+    },
+    "Microwave:ship_swap": {
+      "stages": {
+        "critic": {
+          "runs": 1,
+          "wall_s_total": 301.62,
+          "wall_s_last": 301.62,
+          "cpu_s_total": 0.0,
+          "peak_rss_mb": 0,
+          "out_mb_last": 0.0081
+        }
+      },
+      "qa_iterations": 0,
+      "render_iterations": 0,
+      "cost_usd": 0.0
+    },
+    "Microwave:ship_cal": {
+      "stages": {
+        "critic": {
+          "runs": 1,
+          "wall_s_total": 280.1,
+          "wall_s_last": 280.1,
+          "cpu_s_total": 0.0,
+          "peak_rss_mb": 0,
+          "out_mb_last": 0.0155
+        }
+      },
+      "qa_iterations": 0,
+      "render_iterations": 0,
       "cost_usd": 0.0
     }
   }

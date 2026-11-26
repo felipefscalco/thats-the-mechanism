@@ -73,6 +73,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Elevator:v5-legacy | critic | 1 | 12.51 | 12.51 | 0.0 | 0 | 0.0015 | $0 |
 | Elevator:v5_rules | critic | 1 | 118.3 | 118.3 | 0.0 | 0 | 0.011 | $0 |
 | FlatVectorRef:ref | critic | 1 | 46.23 | 46.23 | 0.0 | 0 | 0.0041 | $0 |
+| Microwave:ship | critic | 1 | 280.59 | 280.59 | 0.0 | 0 | 0.0071 | $0 |
+| Microwave:ship_cal | critic | 1 | 280.1 | 280.1 | 0.0 | 0 | 0.0155 | $0 |
+| Microwave:ship_swap | critic | 1 | 301.62 | 301.62 | 0.0 | 0 | 0.0081 | $0 |
 | QR | critic | 1 | 15.99 | 15.99 | 0.0 | 0 | 0.0018 | $0 |
 | QR | qa | 1 | 112.22 | 112.22 | 176.66 | 4261 | – | $0 |
 | QR:A=v4 B=v5 | critic | 1 | 19.74 | 19.74 | 0.0 | 0 | 0.0023 | $0 |
@@ -140,6 +143,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Elevator:v5-legacy | 0 | 0 |
 | Elevator:v5_rules | 0 | 0 |
 | FlatVectorRef:ref | 0 | 0 |
+| Microwave:ship | 0 | 0 |
+| Microwave:ship_cal | 0 | 0 |
+| Microwave:ship_swap | 0 | 0 |
 | QR | 0 | 3 |
 | QR:A=v4 B=v5 | 0 | 0 |
 | QR:A=v4 B=v5 5fps | 0 | 0 |
@@ -202,6 +208,9 @@ All tools are local and free: cost $0.00. LLM token counts are not available to 
 | Elevator:v5-legacy | 12.5 | 0.0 | 0 | $0 |
 | Elevator:v5_rules | 118.3 | 0.0 | 0 | $0 |
 | FlatVectorRef:ref | 46.2 | 0.0 | 0 | $0 |
+| Microwave:ship | 280.6 | 0.0 | 0 | $0 |
+| Microwave:ship_cal | 280.1 | 0.0 | 0 | $0 |
+| Microwave:ship_swap | 301.6 | 0.0 | 0 | $0 |
 | QR | 128.2 | 176.7 | 4261 | $0 |
 | QR:A=v4 B=v5 | 19.7 | 0.0 | 0 | $0 |
 | QR:A=v4 B=v5 5fps | 28.7 | 0.0 | 0 | $0 |

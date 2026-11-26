@@ -243,3 +243,10 @@ One entry per finding. Newest at the bottom. Format:
 - Fix: iterate.sh stops (continue) when render.sh fails. The episode number uses the proportional display font.
 - Prevention: (a) is now code. (b) BACKLOG: contrast.py occupancy could merge magenta components that come from one Label (probe id per label) instead of relying on 2 px dilation.
 - Status: fixed
+
+### L-36 · 2026-11-26 · r6 tooling · major (lessons.py wiped the rule base on a second machine)
+- Problem: `ship_check.sh` ends with `scripts/lessons.py`. On the Mac it rewrote docs/STYLE_RULES.md, style_rules.json and active_rules_prompt.txt from only the Microwave critic files. The 5 active prose rules from QR/Elevator/Sky/ANC disappeared ("no active prose rules yet").
+- Root cause: lessons.py rebuilds from the critic JSONs under qa/**, and those are gitignored (only `critic.json` is kept), so a fresh clone has none of the other episodes' `general_rules`.
+- Fix: restored the three files from git. The Microwave general_rules are still in qa/Microwave/v1/ship_it8/critic_cal.json, waiting to be merged.
+- Prevention: lessons.py should merge into the committed docs/style_rules.json (incremental) instead of rebuilding from qa/**, and refuse to drop active rules (BACKLOG, gate).
+- Status: workaround (files restored); tool fix open
