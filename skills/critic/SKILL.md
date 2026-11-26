@@ -26,3 +26,6 @@ Compare scores only within one model.
 1. `scripts/ledger.py add <Id> --round N --artifact ... --critic ... --changes ... --measured ...` (qa/<Id>/gauntlet.md).
 2. Fix the largest gap first; repeated findings become qa.py checks; bugs → docs/LESSONS.md, ideas → docs/BACKLOG.md.
 3. Ignore critic claims contradicted by measurements (e.g. "loop cuts abruptly" when the seam PSNR is 48 dB).
+
+## General rules (round 6)
+Calibrated and pairwise responses include `general_rules`: reusable, episode-agnostic imperatives (`rule`, `category`, `evidence` timestamp, `measurable`, `proposed_gate`, `enforcement`, `severity`). The `rule` text must not name the episode or its subject. `enforcement` is `gate`, `component`, or `prose` (prefer a gate, then a component, over prose). After a critic batch, run `scripts/lessons.py` to merge rules into `docs/STYLE_RULES.md` and refresh `docs/active_rules_prompt.txt`. `--backend agy` is supported (MP4 frames + extracted WAV).
