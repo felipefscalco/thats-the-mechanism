@@ -2,7 +2,7 @@
 
 A local, LLM-agnostic pipeline for vertical explainer Shorts (YouTube, Instagram, TikTok). One everyday object is opened up to show the hidden mechanism. Videos are written and fact-checked here, spoken with local TTS, captioned with whisper.cpp, and rendered as original Remotion animation — no generative video model, no stock b-roll.
 
-This repository is the round-4 state of the channel kit (brand shell, SFX, episode sources, and the scripts that build a Short end to end). It is meant to be driven by **any** coding agent (Claude, Gemini, Cursor, Copilot, Codex, …). Canonical agent instructions live in [`AGENTS.md`](AGENTS.md), including the [enforcement hierarchy: code over prose](AGENTS.md#enforcement-hierarchy-code-over-prose) (prefer a QA gate or a Remotion primitive over a written rule).
+This repository is the channel kit (round 7) (brand shell, SFX, episode sources, and the scripts that build a Short end to end). It is meant to be driven by **any** coding agent (Claude, Gemini, Cursor, Copilot, Codex, …). Canonical agent instructions live in [`AGENTS.md`](AGENTS.md), including the [enforcement hierarchy: code over prose](AGENTS.md#enforcement-hierarchy-code-over-prose) (prefer a QA gate or a Remotion primitive over a written rule).
 
 **Nothing in this pipeline publishes.** A human approves the angle, the script, the style frames of any new look, and the final video, then uploads by hand.
 
@@ -23,7 +23,7 @@ flowchart TD
   H --> I[Render 1080x1920 MP4]
   I --> J[Automated QA + visual review]
   J -->|fail| H
-  J -->|pass| CR[Independent Gemini critic<br/>video + audio]
+  J -->|pass| CR[Independent critic role<br/>any provider: agy / gemini-api / claude / codex / cursor-agent]
   CR -->|score < 7| H
   CR -->|ok| K[Package metadata]
   K --> L[Human approval: final video]
@@ -47,6 +47,41 @@ GEMINI_API_KEY=… .venv-tts/bin/python scripts/critic.py CompId  # independent 
 Format and 48 kHz audio · loudness −14 LUFS / TP ≤ −1 dBTP · SFX 10–16 dB under the voice · SFX density 1.2–1.5 onsets/s · no stage hold > 2 s · hook visible at 0.3 s and frame 0 bright (≥ 12 % bright stage pixels) · exact loop · WCAG label contrast ≥ 4.5:1 (`scripts/contrast.py` probe render) · end card ≥ 1 s with the payoff settled ≥ 1.5 s before the loop · `<Label>` ≥ 30 px · storyboard lint. Then a visual review of `qa/<Id>/<SUF>/grid_it<N>.png` and `transitions_it<N>.png`, then the critic (`skills/critic`, needs the `GEMINI_API_KEY` environment variable; Gemini free tier, $0).
 
 Every stage records wall time, CPU time, peak RAM, output size and tool cost ($0) into `metrics/runs.jsonl`.
+
+## Round 7: vendor-neutral roles + preview-first loop
+
+Every LLM step is a **role** (`planner`, `builder`, `fixer`, `critic`, `critic_deep`, `critic_tiebreak`, `clusterer`) run through `scripts/llm.py`. `pipeline.config.json` maps each role to a provider and model:
+
+```json
+"llm": { "roles": {
+  "planner": {"provider": "claude", "model": "sonnet", "fallback": [{"provider": "agy", "model": "claude-sonnet-5-5"}]},
+  "builder": {"provider": "claude", "model": "sonnet", "fallback": [{"provider": "agy", "model": "claude-sonnet-5-5"}, {"provider": "cursor-agent", "model": null}]},
+  "fixer":   {"provider": "claude", "model": "sonnet"},
+  "critic":  {"provider": "agy", "model": "gemini-3.8-flash-high", "fallback": [{"provider": "gemini-api", "model": "gemini-3.8-flash"}]},
+  "critic_deep": {"provider": "agy", "model": "gemini-4-neon-high"},
+  "critic_tiebreak": {"provider": "agy", "model": "gemini-4-neon-high", "fallback": [{"provider": "claude", "model": "opus"}]},
+  "clusterer": {"provider": "agy", "model": "gemini-3.8-flash-high"} } }
+```
+
+Providers: `claude`, `agy`, `codex`, `cursor-agent`, `gemini-api` (critic only). Swap one role for one run with an env var, for example `LLM_BUILDER=agy:claude-sonnet-5-5` or `LLM_CRITIC=claude:opus`.
+
+```bash
+.venv-tts/bin/python scripts/llm.py detect     # which CLIs are installed
+.venv-tts/bin/python scripts/llm.py roles      # resolved role -> provider:model
+.venv-tts/bin/python scripts/build_loop.py Sky 03-sky v7 --prev renders/Sky_v5.mp4   # plan -> build -> preview -> fix -> self-critique -> ship -> judge
+SUF=v7 .venv-tts/bin/python scripts/preview.py Sky 03-sky 1                         # still-only gates, no full render
+python3 tests/test_r7_pipeline.py              # adapter argv per provider (dry run), scope guard, fixer guard
+```
+
+New gates: whole-stage card / boxed framing (`scripts/framing.py`), callout clutter, raw SVG `<text>` in the contrast scan, intro edge clips judged frame by frame, pop gate for hand-rolled badges, no HUD / fake timecodes, and a pairwise tie-breaker (`scripts/ship_decide.py`). Details: [`docs/ROUND7.md`](docs/ROUND7.md).
+
+### Running on a Mac
+
+- `brew install node python ffmpeg cmake`, then `scripts/setup.sh` (venv, npm, Kokoro, whisper.cpp). Apple GPUs make renders faster.
+- Install and log in to the CLIs you want to use (`claude`, `agy`, `codex`, `cursor-agent`). On a desktop each one opens the browser for login; nothing needs pasting.
+- **Claude token path:** the scripts no longer hard-code it. Order: an existing `claude` login → `CLAUDE_CODE_OAUTH_TOKEN` → the file in `TTM_CLAUDE_TOKEN_FILE` (default `~/.secrets/claude_oauth_token`, created with `claude setup-token`). Example: `export TTM_CLAUDE_TOKEN_FILE=~/Library/Application\ Support/ttm/claude_token`.
+- Use only the providers you have: edit `pipeline.config.json` → `llm.roles`, or set `LLM_<ROLE>=provider:model`. `scripts/llm.py detect` shows what is installed.
+- **Renders are not tracked in git** (`*.mp4` is ignored). The pairwise critic needs the previous approved render on disk: render it again from its commit (`SUF=v5 MASTER=1 scripts/iterate.sh 1 Sky`), or copy the MP4 over, before running `build_loop.py --prev`.
 
 ## Round 5 (local, not pushed)
 - **Gates** (`pipeline.config.json`, `scripts/gates.py`): facts → script → style frames → storyboard → QA → critic → final. Each gate is `human|auto|off`; approvals go to `approvals/approvals.jsonl` with `changes: true/false`; `gates.py stats` suggests auto after 5 clean approvals in a row.

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26T02:39:08-03:00",
+  "generated": "2026-11-26T03:31:42-03:00",
   "source_rules": 147,
   "clusters": [
     {
@@ -52,12 +52,14 @@
       "id": "R-002",
       "rule": "Never pop graphical badges or illustrative callouts onto the stage with zero anticipation or linear interpolation.",
       "category": "motion_craft",
-      "enforcement": "candidate_gate",
+      "enforcement": "gate",
       "active": true,
       "severity": "major",
       "measurable": true,
       "proposed_gate": "Inspect transformation curves of appearing stage layers and flag any entrance lacking spring overshoot or anticipation frames.",
-      "gates": [],
+      "gates": [
+        "scripts/qa.py + scripts/contrast.py: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges, A14)"
+      ],
       "components": [],
       "episodes": [
         "ANC",
@@ -107,12 +109,6 @@
           "timestamp": "00:01-00:03, 00:08-00:09, 00:15-00:17, 00:19-00:21, 00:24-00:26, 00:32-00:34, and 00:43-00:45 all hold nearly static for 2-3 seconds while badges fade in linearly.",
           "severity": "major",
           "source": "qa/Sky/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:34 / B 0:34",
-          "severity": "minor",
-          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
         }
       ]
     },
@@ -144,23 +140,38 @@
       "id": "R-004",
       "rule": "Never confine an entire multi-beat visual explanation inside a single repetitive card container that creates a slide-deck aesthetic.",
       "category": "style_fidelity",
-      "enforcement": "candidate_gate",
-      "active": false,
-      "severity": "major",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "blocker",
       "measurable": true,
       "proposed_gate": "Detect static outer container boundary boxes persisting across more than three consecutive scene chapters.",
-      "gates": [],
+      "gates": [
+        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)"
+      ],
       "components": [],
       "episodes": [
-        "ANC"
+        "ANC",
+        "Elevator"
       ],
-      "episode_count": 1,
+      "episode_count": 2,
       "evidence": [
         {
           "episode": "ANC",
           "timestamp": "00:00",
           "severity": "major",
           "source": "qa/ANC/v6/critic_rules.json"
+        },
+        {
+          "episode": "ANC",
+          "timestamp": "A 0:10 / B 0:10",
+          "severity": "major",
+          "source": "qa/ANC/v7/ship/cmp_new_vs_prev_swap.json"
+        },
+        {
+          "episode": "Elevator",
+          "timestamp": "00:00-00:34 stays locked on the same boxed diagram for 35 of 42 seconds, compressing the centerpiece counterintuitive reveal at 00:32 into roughly 1 second.",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6b/ship/critic_cal.json"
         }
       ]
     },
@@ -255,12 +266,6 @@
         },
         {
           "episode": "Elevator",
-          "timestamp": "00:41",
-          "severity": "blocker",
-          "source": "qa/Elevator/agy_rules/critic_rules.json"
-        },
-        {
-          "episode": "Elevator",
           "timestamp": "A 0:39 / B 0:39",
           "severity": "minor",
           "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
@@ -270,12 +275,6 @@
           "timestamp": "A 0:41 / B 0:41: Both versions end abruptly on the comparison card, creating a hard visual mismatch when looping back to the initial diagram at 00:00.",
           "severity": "major",
           "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "QR",
-          "timestamp": "00:53",
-          "severity": "major",
-          "source": "qa/QR/agy_rules/critic_rules.json"
         },
         {
           "episode": "QR",
@@ -300,12 +299,6 @@
           "timestamp": "A 0:45 / B 0:45",
           "severity": "minor",
           "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:45 / B 0:45",
-          "severity": "major",
-          "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
         },
         {
           "episode": "Sky",
@@ -358,30 +351,6 @@
     },
     {
       "id": "R-009",
-      "rule": "Maintain a unified full-bleed canvas texture and background throughout the video rather than enclosing middle sections in isolated floating cards.",
-      "category": "style_fidelity",
-      "enforcement": "candidate_gate",
-      "active": false,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Enforce a full-bleed root layout container in the brand shell that prohibits arbitrary nested card borders around the primary animation stage.",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "ANC"
-      ],
-      "episode_count": 1,
-      "evidence": [
-        {
-          "episode": "ANC",
-          "timestamp": "A 0:10 / B 0:10",
-          "severity": "major",
-          "source": "qa/ANC/v7/ship/cmp_new_vs_prev_swap.json"
-        }
-      ]
-    },
-    {
-      "id": "R-010",
       "rule": "Always illustrate opposing or interacting forces as spatial vectors converging on the recipient rather than detached stacked equations.",
       "category": "clarity",
       "enforcement": "prose",
@@ -405,7 +374,7 @@
       ]
     },
     {
-      "id": "R-011",
+      "id": "R-010",
       "rule": "Never allow primary animated subject geometry to unintentionally clip or cross container boundaries.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
@@ -429,47 +398,34 @@
       ]
     },
     {
-      "id": "R-012",
-      "rule": "Never position callout badges or secondary layout pills within the dedicated caption safe zone.",
+      "id": "R-011",
+      "rule": "Never nest on-screen diagram elements inside an arbitrary high-contrast container card that cuts into outer safe zones and causes label collisions.",
       "category": "design_typography",
       "enforcement": "gate",
-      "active": true,
-      "severity": "blocker",
+      "active": false,
+      "severity": "major",
       "measurable": true,
       "proposed_gate": "Detect bounding box intersections between top title badges and nested stage container cards.",
       "gates": [
+        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)",
         "scripts/qa.py: labels inside Shorts UI safe zones"
       ],
       "components": [],
       "episodes": [
-        "ANC",
-        "Elevator",
-        "Sky"
+        "ANC"
       ],
-      "episode_count": 3,
+      "episode_count": 1,
       "evidence": [
         {
           "episode": "ANC",
           "timestamp": "A 0:00 / A 0:05",
           "severity": "major",
           "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
-        },
-        {
-          "episode": "Elevator",
-          "timestamp": "00:08, 00:27-00:31",
-          "severity": "blocker",
-          "source": "qa/Elevator/v6/ship/critic_cal.json"
-        },
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:37 / B 0:37",
-          "severity": "major",
-          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
         }
       ]
     },
     {
-      "id": "R-013",
+      "id": "R-012",
       "rule": "Always visualize physical cancellation, collision, or addition mechanisms with spatial vectors meeting at the point of action rather than as disconnected stacked graphs.",
       "category": "clarity",
       "enforcement": "prose",
@@ -493,7 +449,7 @@
       ]
     },
     {
-      "id": "R-014",
+      "id": "R-013",
       "rule": "Maintain consistent canvas luminance across all sequential beats rather than alternating between dark and high-brightness background cards.",
       "category": "finish_texture",
       "enforcement": "candidate_gate",
@@ -517,7 +473,7 @@
       ]
     },
     {
-      "id": "R-015",
+      "id": "R-014",
       "rule": "Add secondary scale and opacity shockwaves to transient disruption events to visually match sudden sound spikes.",
       "category": "motion_craft",
       "enforcement": "prose",
@@ -541,7 +497,7 @@
       ]
     },
     {
-      "id": "R-016",
+      "id": "R-015",
       "rule": "Never allow the main stage region to remain visually static for more than 1.5 seconds between motion events.",
       "category": "motion_craft",
       "enforcement": "gate",
@@ -606,7 +562,7 @@
       ]
     },
     {
-      "id": "R-017",
+      "id": "R-016",
       "rule": "Never reuse the exact same transition sound cue on consecutive scene changes or rely solely on generic UI tones when the narration names a real-world physical sound.",
       "category": "sound_sync",
       "enforcement": "candidate_gate",
@@ -630,7 +586,7 @@
       ]
     },
     {
-      "id": "R-018",
+      "id": "R-017",
       "rule": "Always animate the causal interaction between inputs directly on screen—connecting every stage in the signal or mechanical chain and showing the physical combination step—rather than cutting straight from inputs to a labelled result.",
       "category": "clarity",
       "enforcement": "prose",
@@ -654,7 +610,7 @@
       ]
     },
     {
-      "id": "R-019",
+      "id": "R-018",
       "rule": "Keep background layers strictly subordinate and thematically neutral, and enforce a single cohesive stroke-and-fill illustration grammar across all foreground icons so no mismatched wireframe stock glyphs or stray background shapes collide with active diagrams.",
       "category": "style_fidelity",
       "enforcement": "prose",
@@ -678,7 +634,7 @@
       ]
     },
     {
-      "id": "R-020",
+      "id": "R-019",
       "rule": "Build every episode around one unmistakable sensory hero demonstration where visuals and diegetic audio prove the physical effect together in real time, rather than settling for a quiet diagram.",
       "category": "concept_wow",
       "enforcement": "prose",
@@ -698,6 +654,35 @@
           "timestamp": "00:03-00:05, 00:18-00:21, 00:32-00:35",
           "severity": "blocker",
           "source": "qa/ANC/v7/ship/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-020",
+      "rule": "Always transition callback sequences back into the initial visual world and framing within the final second rather than cutting to an isolated card layout.",
+      "category": "loop",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Check that the final frame image embedding or SSIM against frame 0 exceeds 0.85 or that a spatial motion vector connects them.",
+      "gates": [
+        "scripts/qa.py + scripts/framing.py: no whole-stage card >= 1 s, boxed framing <= 50 % of runtime (A16)",
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+      ],
+      "components": [
+        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
+      ],
+      "episodes": [
+        "Elevator"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Elevator",
+          "timestamp": "00:41",
+          "severity": "blocker",
+          "source": "qa/Elevator/agy_rules/critic_rules.json"
         }
       ]
     },
@@ -974,6 +959,39 @@
     },
     {
       "id": "R-032",
+      "rule": "Never position callout badges or secondary layout pills within the dedicated caption safe zone.",
+      "category": "design_typography",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Render the stage layer without captions across sampled frames and fail the build if any non-background stage pixel appears at y >= 1200 px.",
+      "gates": [
+        "scripts/qa.py: labels inside Shorts UI safe zones"
+      ],
+      "components": [],
+      "episodes": [
+        "Elevator",
+        "Sky"
+      ],
+      "episode_count": 2,
+      "evidence": [
+        {
+          "episode": "Elevator",
+          "timestamp": "00:08, 00:27-00:31",
+          "severity": "blocker",
+          "source": "qa/Elevator/v6/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:37 / B 0:37",
+          "severity": "major",
+          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-033",
       "rule": "Keep every active text label, chart, and data graphic fully inside horizontal safe margins throughout all camera pans and zooms.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -997,7 +1015,7 @@
       ]
     },
     {
-      "id": "R-033",
+      "id": "R-034",
       "rule": "Always clip the stage viewport to its designated vertical safe band so stray strokes or overflowing geometry cannot bleed into caption or header tracks.",
       "category": "finish_texture",
       "enforcement": "candidate_gate",
@@ -1021,7 +1039,7 @@
       ]
     },
     {
-      "id": "R-034",
+      "id": "R-035",
       "rule": "Never hold the primary stage subject motionless for more than 2 seconds during an active explanation beat.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
@@ -1051,7 +1069,7 @@
       ]
     },
     {
-      "id": "R-035",
+      "id": "R-036",
       "rule": "Always ensure interior iconography and indicator symbols maintain a minimum contrast ratio of 4.5 to 1 against their immediate container fill.",
       "category": "design_typography",
       "enforcement": "gate",
@@ -1083,7 +1101,7 @@
       ]
     },
     {
-      "id": "R-036",
+      "id": "R-037",
       "rule": "Always visualize opposing forces, flows, or state causality with explicit directional vectors so the core mechanism remains self-explanatory with sound off.",
       "category": "clarity",
       "enforcement": "prose",
@@ -1107,7 +1125,7 @@
       ]
     },
     {
-      "id": "R-037",
+      "id": "R-038",
       "rule": "Break out of the primary diagram frame at least once for a full-stage hero reveal or visual-metaphor transition rather than keeping one static container across the whole film.",
       "category": "concept_wow",
       "enforcement": "prose",
@@ -1131,7 +1149,7 @@
       ]
     },
     {
-      "id": "R-038",
+      "id": "R-039",
       "rule": "Replace generic UI bleeps and repeated wind-whooshes with subject-specific physical foley tied directly to on-screen material interactions.",
       "category": "sound_sync",
       "enforcement": "gate",
@@ -1163,7 +1181,7 @@
       ]
     },
     {
-      "id": "R-039",
+      "id": "R-040",
       "rule": "Always lock comparative chart axis labels to fixed layout headers above or outside the plot area rather than attaching them to dynamic data bars.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -1187,7 +1205,7 @@
       ]
     },
     {
-      "id": "R-040",
+      "id": "R-041",
       "rule": "Never allow stray punctuation, dashes, or unstripped hyphen delimiters at the beginning of caption segments.",
       "category": "voice_captions",
       "enforcement": "candidate_gate",
@@ -1211,7 +1229,7 @@
       ]
     },
     {
-      "id": "R-041",
+      "id": "R-042",
       "rule": "Never reveal a visual punchline, strike-through, or negation mark before the corresponding spoken audio cue begins.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
@@ -1235,7 +1253,7 @@
       ]
     },
     {
-      "id": "R-042",
+      "id": "R-043",
       "rule": "Always render directional arrows and status markers using dedicated SVG vector components rather than inline unicode characters in label text strings.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -1259,7 +1277,7 @@
       ]
     },
     {
-      "id": "R-043",
+      "id": "R-044",
       "rule": "Always visually distinguish directional motion vectors from gravitational or applied force vectors when multiple interacting bodies are on screen simultaneously.",
       "category": "clarity",
       "enforcement": "prose",
@@ -1283,7 +1301,7 @@
       ]
     },
     {
-      "id": "R-044",
+      "id": "R-045",
       "rule": "Always keep comparator column positions consistent across contrasting states so viewers do not experience inverted spatial mapping.",
       "category": "clarity",
       "enforcement": "candidate_gate",
@@ -1307,7 +1325,7 @@
       ]
     },
     {
-      "id": "R-045",
+      "id": "R-046",
       "rule": "Never display directional arrows on an animated body that oppose its actual direction of travel unless explicitly labeled as opposing force vectors.",
       "category": "clarity",
       "enforcement": "candidate_gate",
@@ -1331,7 +1349,7 @@
       ]
     },
     {
-      "id": "R-046",
+      "id": "R-047",
       "rule": "Never recolor neutral mechanical components with semantic status colors reserved for success, failure, or metric balance.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -1355,7 +1373,7 @@
       ]
     },
     {
-      "id": "R-047",
+      "id": "R-048",
       "rule": "Always animate continuous position displacement across at least two intermediate frames rather than teleporting an object between keyframes across a section beat.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
@@ -1379,7 +1397,7 @@
       ]
     },
     {
-      "id": "R-048",
+      "id": "R-049",
       "rule": "Always accompany force or physical quantity vectors with clear unit or concept text labels rather than bare directional symbols.",
       "category": "clarity",
       "enforcement": "candidate_gate",
@@ -1403,7 +1421,7 @@
       ]
     },
     {
-      "id": "R-049",
+      "id": "R-050",
       "rule": "Never allow secondary data panels, charts, or opening headlines to overlap existing diagram labels, axis ticks, or primary mechanical silhouettes.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -1427,7 +1445,7 @@
       ]
     },
     {
-      "id": "R-050",
+      "id": "R-051",
       "rule": "Always enclose zoomed or panned stage diagrams inside a clipped safe-zone viewport so no off-axis geometry or guide lines can bleed into the caption track.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -1451,7 +1469,7 @@
       ]
     },
     {
-      "id": "R-051",
+      "id": "R-052",
       "rule": "Always flush and split burned-in caption phrases cleanly at title-card and major section cuts so trailing words from the previous beat never bleed onto the next scene.",
       "category": "voice_captions",
       "enforcement": "candidate_gate",
@@ -1475,7 +1493,7 @@
       ]
     },
     {
-      "id": "R-052",
+      "id": "R-053",
       "rule": "Keep every secondary diagram label, axis tick, and attribution line at or above the minimum mobile type floor and placed inside dedicated gutters rather than straddling container borders.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -1499,7 +1517,7 @@
       ]
     },
     {
-      "id": "R-053",
+      "id": "R-054",
       "rule": "Never trap an entire explanation on one static wide diagram; break up long sequences with macro camera punch-ins on the decisive turning point, match-cuts into documentary proof, and closing illustrations crafted to the same visual density as the main diagram.",
       "category": "concept_wow",
       "enforcement": "prose",
@@ -1523,7 +1541,7 @@
       ]
     },
     {
-      "id": "R-054",
+      "id": "R-055",
       "rule": "Always verify that directional force arrows, rotational torque indicators, and moving parts physically agree with the narrated cause-and-effect, and support key mechanical actions with grounded foley rather than generic interface clicks.",
       "category": "clarity",
       "enforcement": "prose",
@@ -1547,7 +1565,7 @@
       ]
     },
     {
-      "id": "R-055",
+      "id": "R-056",
       "rule": "Never render captions containing markdown punctuation artifacts, leading underscores, or orphaned hyphens.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -1571,7 +1589,7 @@
       ]
     },
     {
-      "id": "R-056",
+      "id": "R-057",
       "rule": "Always clamp dynamic gauge bars and their text labels within bounded layout containers to prevent text clipping and overlapping adjacent axis markers.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -1595,7 +1613,7 @@
       ]
     },
     {
-      "id": "R-057",
+      "id": "R-058",
       "rule": "Punch in with camera scaling during technical breakdowns to preserve label legibility and highlight primary moving parts rather than staying in a wide diagram view.",
       "category": "motion_craft",
       "enforcement": "prose",
@@ -1619,7 +1637,7 @@
       ]
     },
     {
-      "id": "R-058",
+      "id": "R-059",
       "rule": "Never allow an outdated state badge or callout pill to persist after the physical system has transitioned to its next motion phase.",
       "category": "clarity",
       "enforcement": "candidate_gate",
@@ -1643,7 +1661,7 @@
       ]
     },
     {
-      "id": "R-059",
+      "id": "R-060",
       "rule": "Always pair directional mechanical forces with contextual visual vector indicators and real-world photographic proof to anchor schematic diagrams.",
       "category": "concept_wow",
       "enforcement": "prose",
@@ -1667,7 +1685,7 @@
       ]
     },
     {
-      "id": "R-060",
+      "id": "R-061",
       "rule": "Always indicate mechanical rotation or opposing forces with dynamic motion vectors when explaining balanced systems.",
       "category": "motion_craft",
       "enforcement": "prose",
@@ -1691,7 +1709,7 @@
       ]
     },
     {
-      "id": "R-061",
+      "id": "R-062",
       "rule": "Never obscure primary technical diagram lines or axis rulers with floating opaque secondary telemetry cards.",
       "category": "clarity",
       "enforcement": "candidate_gate",
@@ -1715,7 +1733,7 @@
       ]
     },
     {
-      "id": "R-062",
+      "id": "R-063",
       "rule": "Maintain minimum padding and font size for data gauge labels when integrating telemetry into tight vertical margins.",
       "category": "design_typography",
       "enforcement": "gate",
@@ -1756,7 +1774,7 @@
       ]
     },
     {
-      "id": "R-063",
+      "id": "R-064",
       "rule": "Differentiate static gravitational force vectors from active directional motion arrows using distinct styling or line patterns.",
       "category": "clarity",
       "enforcement": "prose",
@@ -1780,7 +1798,7 @@
       ]
     },
     {
-      "id": "R-064",
+      "id": "R-065",
       "rule": "Never leave mechanical brake or release states without clear tension or vector state indicators.",
       "category": "motion_craft",
       "enforcement": "prose",
@@ -1804,7 +1822,7 @@
       ]
     },
     {
-      "id": "R-065",
+      "id": "R-066",
       "rule": "Never render overlaid titles, charts, or secondary callout panels on top of existing diagram geometry or axis markers; clear or transition out conflicting layers before entering new elements.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -1828,7 +1846,7 @@
       ]
     },
     {
-      "id": "R-066",
+      "id": "R-067",
       "rule": "Never render credit lines, citations, or secondary annotations inside proof cards below the minimum mobile legibility threshold of 30 px on a 1080-wide canvas.",
       "category": "design_typography",
       "enforcement": "gate",
@@ -1864,30 +1882,6 @@
       ]
     },
     {
-      "id": "R-067",
-      "rule": "Never keep a single framing of one boxed diagram on screen for more than half the runtime; reserve a dedicated full-bleed camera scale shift or visual transformation of at least 2.5 seconds for the script's centerpiece twist.",
-      "category": "concept_wow",
-      "enforcement": "prose",
-      "active": true,
-      "severity": "blocker",
-      "measurable": false,
-      "proposed_gate": "",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "Elevator"
-      ],
-      "episode_count": 1,
-      "evidence": [
-        {
-          "episode": "Elevator",
-          "timestamp": "00:00-00:34 stays locked on the same boxed diagram for 35 of 42 seconds, compressing the centerpiece counterintuitive reveal at 00:32 into roughly 1 second.",
-          "severity": "blocker",
-          "source": "qa/Elevator/v6b/ship/critic_cal.json"
-        }
-      ]
-    },
-    {
       "id": "R-068",
       "rule": "Always pair physical mechanism states and climactic transitions with layered subject-authentic foley rather than repeating generic synthetic UI ticks, chimes, and air swishes.",
       "category": "sound_sync",
@@ -1913,25 +1907,34 @@
     },
     {
       "id": "R-069",
-      "rule": "Always pair documentary proof photos with a gentle camera push-in and a dimmed outer focus mask around highlighted callout regions so the subject separates cleanly from archival clutter.",
-      "category": "finish_texture",
-      "enforcement": "prose",
-      "active": false,
-      "severity": "minor",
-      "measurable": false,
-      "proposed_gate": "",
-      "gates": [],
+      "rule": "Give photographic proof cards and primary real-world evidence cards a minimum dwell time of two full seconds without overlapping overlay clutter.",
+      "category": "concept_wow",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Check that ProofCard components remain visible for at least 60 consecutive frames before initiating exit transitions.",
+      "gates": [
+        "scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17)"
+      ],
       "components": [],
       "episodes": [
-        "Elevator"
+        "Elevator",
+        "Sky"
       ],
-      "episode_count": 1,
+      "episode_count": 2,
       "evidence": [
         {
           "episode": "Elevator",
           "timestamp": "00:35-00:37 holds a static, visually cluttered archival photo with only a thin unmasked dashed outline around the highlighted hardware.",
           "severity": "minor",
           "source": "qa/Elevator/v6b/ship/critic_cal.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:31 / B 0:31",
+          "severity": "major",
+          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
         }
       ]
     },
@@ -1997,6 +2000,42 @@
     },
     {
       "id": "R-072",
+      "rule": "Always lock the final frame layout, scale, camera coordinates, and HUD indicator states to match frame zero exactly.",
+      "category": "loop",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Assert identical progress indicator state, camera scale, and transform values between frame zero and the terminal frame.",
+      "gates": [
+        "scripts/static_gates.py: no decorative HUD / fake timecode strings (A18)",
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+      ],
+      "components": [
+        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
+      ],
+      "episodes": [
+        "QR",
+        "Sky"
+      ],
+      "episode_count": 2,
+      "evidence": [
+        {
+          "episode": "QR",
+          "timestamp": "00:53",
+          "severity": "major",
+          "source": "qa/QR/agy_rules/critic_rules.json"
+        },
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:45 / B 0:45",
+          "severity": "major",
+          "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-073",
       "rule": "Always depict mathematical or algorithmic transformations as physical interlocking mechanisms rather than passive text grids or sudden color state changes.",
       "category": "clarity",
       "enforcement": "prose",
@@ -2020,7 +2059,7 @@
       ]
     },
     {
-      "id": "R-073",
+      "id": "R-074",
       "rule": "Always lock persistent header and UI metadata overlays outside camera transformation matrices to prevent safe-zone clipping during push-ins.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
@@ -2044,7 +2083,7 @@
       ]
     },
     {
-      "id": "R-074",
+      "id": "R-075",
       "rule": "Always synchronize caption segment display windows within fifty milliseconds of the corresponding speech phonemes.",
       "category": "sound_sync",
       "enforcement": "candidate_gate",
@@ -2068,7 +2107,7 @@
       ]
     },
     {
-      "id": "R-075",
+      "id": "R-076",
       "rule": "Never retain an earlier chapter index or section title during the outro card and closing callback sequence.",
       "category": "clarity",
       "enforcement": "candidate_gate",
@@ -2092,7 +2131,7 @@
       ]
     },
     {
-      "id": "R-076",
+      "id": "R-077",
       "rule": "Never flash rapid technical cutaway illustrations for under forty-five frames without secondary motion to ground the viewer.",
       "category": "motion_craft",
       "enforcement": "prose",
@@ -2116,7 +2155,7 @@
       ]
     },
     {
-      "id": "R-077",
+      "id": "R-078",
       "rule": "Always crossfade or hide persistent multi-beat chapter trackers on the final callback frame to ensure an exact visual match with the opening frame.",
       "category": "loop",
       "enforcement": "candidate_gate",
@@ -2140,7 +2179,7 @@
       ]
     },
     {
-      "id": "R-078",
+      "id": "R-079",
       "rule": "Always ensure every spoken word in the audio track has a corresponding timed visual token in the captions without dropped words.",
       "category": "voice_captions",
       "enforcement": "candidate_gate",
@@ -2164,7 +2203,7 @@
       ]
     },
     {
-      "id": "R-079",
+      "id": "R-080",
       "rule": "Keep resolved state diagrams on screen for a minimum dwell time after animation completes so viewers can absorb the mechanical outcome.",
       "category": "clarity",
       "enforcement": "candidate_gate",
@@ -2188,7 +2227,7 @@
       ]
     },
     {
-      "id": "R-080",
+      "id": "R-081",
       "rule": "Never allow the primary visual stage to remain effectively motionless for more than two seconds without a meaningful camera move, structural state transform, or active mechanism motion.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
@@ -2212,7 +2251,7 @@
       ]
     },
     {
-      "id": "R-081",
+      "id": "R-082",
       "rule": "Never permit connector lines, title banners, or hero graphics to intersect or overlap on-screen labels.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -2236,7 +2275,7 @@
       ]
     },
     {
-      "id": "R-082",
+      "id": "R-083",
       "rule": "Never transition between sections or out of the end card using blur or opacity cross-fades; always execute crisp element-driven world moves or directional whips with zero double-exposure frames.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
@@ -2260,7 +2299,7 @@
       ]
     },
     {
-      "id": "R-083",
+      "id": "R-084",
       "rule": "Always animate captions and stage labels at full target contrast from their first visible frame using position or mask reveals rather than opacity ramps, and terminate each caption block before any hard scene cut.",
       "category": "voice_captions",
       "enforcement": "candidate_gate",
@@ -2284,7 +2323,7 @@
       ]
     },
     {
-      "id": "R-084",
+      "id": "R-085",
       "rule": "Always render every stage annotation, formula note, and source attribution at or above the minimum legible mobile type size.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -2308,7 +2347,7 @@
       ]
     },
     {
-      "id": "R-085",
+      "id": "R-086",
       "rule": "Always depict the promised anomaly, mathematical or mechanical transformation, and failure mode literally on screen from the opening second so a muted viewer grasps the mechanism from visuals alone.",
       "category": "clarity",
       "enforcement": "prose",
@@ -2332,7 +2371,7 @@
       ]
     },
     {
-      "id": "R-086",
+      "id": "R-087",
       "rule": "Always build the sound design from restrained, tactile round-robin hits and purposeful silence pockets before key turns rather than repetitive synthetic beeps, buzzers, or identical transition whooshes.",
       "category": "sound_sync",
       "enforcement": "gate",
@@ -2366,7 +2405,7 @@
       ]
     },
     {
-      "id": "R-087",
+      "id": "R-088",
       "rule": "Never present quantitative comparisons as static dashboard bar charts or raw mathematical formula cards.",
       "category": "concept_wow",
       "enforcement": "prose",
@@ -2390,7 +2429,7 @@
       ]
     },
     {
-      "id": "R-088",
+      "id": "R-089",
       "rule": "Always integrate real-world documentary reference cards using feathered vignettes or seamless framing rather than raw floating UI rectangles.",
       "category": "style_fidelity",
       "enforcement": "prose",
@@ -2414,7 +2453,7 @@
       ]
     },
     {
-      "id": "R-089",
+      "id": "R-090",
       "rule": "Limit simultaneous floating annotation badges and callout pills on a single diagram stage to at most three.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -2444,7 +2483,7 @@
       ]
     },
     {
-      "id": "R-090",
+      "id": "R-091",
       "rule": "Maintain a consistent observer frame of reference throughout a continuous spatial diagram rather than simultaneously moving the light source and rotating the subject.",
       "category": "clarity",
       "enforcement": "prose",
@@ -2468,7 +2507,7 @@
       ]
     },
     {
-      "id": "R-091",
+      "id": "R-092",
       "rule": "Integrate real photographic proof cards using picture-in-picture docking or split-screen rather than a full overlay card that completely obstructs ongoing diagram animations.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
@@ -2492,7 +2531,7 @@
       ]
     },
     {
-      "id": "R-092",
+      "id": "R-093",
       "rule": "Ensure numerical callout badges positioned between parallel animated wave paths maintain at least 40px vertical clearance from wave peaks and troughs.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -2516,7 +2555,7 @@
       ]
     },
     {
-      "id": "R-093",
+      "id": "R-094",
       "rule": "Always ensure animated particle paths and radial ray vectors do not intersect with active text boxes or numerical badges.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -2540,7 +2579,7 @@
       ]
     },
     {
-      "id": "R-094",
+      "id": "R-095",
       "rule": "Always clear scene-specific narrative background silhouettes when transitioning to abstract microscopic or quantitative data beats.",
       "category": "finish_texture",
       "enforcement": "prose",
@@ -2564,7 +2603,7 @@
       ]
     },
     {
-      "id": "R-095",
+      "id": "R-096",
       "rule": "Keep mathematical equations paired with immediate visual ratios rather than raw variable-heavy algebraic notation when on screen for under four seconds.",
       "category": "clarity",
       "enforcement": "prose",
@@ -2588,7 +2627,7 @@
       ]
     },
     {
-      "id": "R-096",
+      "id": "R-097",
       "rule": "Always ensure proof card overlays animate out completely before underlying diagram elements begin secondary motion or ray propagation.",
       "category": "motion_craft",
       "enforcement": "candidate_gate",
@@ -2612,7 +2651,7 @@
       ]
     },
     {
-      "id": "R-097",
+      "id": "R-098",
       "rule": "Always render burned-in captions on a dedicated top-level track at full opacity, isolated from stage camera zooms, overlays, and card transitions.",
       "category": "voice_captions",
       "enforcement": "candidate_gate",
@@ -2636,7 +2675,7 @@
       ]
     },
     {
-      "id": "R-098",
+      "id": "R-099",
       "rule": "Always reserve an exclusive collision-free callout zone or solid backdrop pill for every diagram label so animated strokes, rays, or background shapes cannot pass through letterforms.",
       "category": "design_typography",
       "enforcement": "candidate_gate",
@@ -2660,7 +2699,7 @@
       ]
     },
     {
-      "id": "R-099",
+      "id": "R-100",
       "rule": "Always dim, scale back, or clear underlying diagram elements whenever a floating proof card enters the stage so background shapes cannot protrude behind the card border.",
       "category": "style_fidelity",
       "enforcement": "candidate_gate",
@@ -2684,7 +2723,7 @@
       ]
     },
     {
-      "id": "R-100",
+      "id": "R-101",
       "rule": "Always animate cause-and-effect contact directly between interacting visual elements and dedicate the climax beat to a bespoke kinetic metaphor rather than a static bar chart or generic wallpaper.",
       "category": "concept_wow",
       "enforcement": "prose",
@@ -2708,7 +2747,7 @@
       ]
     },
     {
-      "id": "R-101",
+      "id": "R-102",
       "rule": "Hold complex mathematical formulas and multi-variable comparison cards on screen for at least 2.5 seconds.",
       "category": "clarity",
       "enforcement": "candidate_gate",
@@ -2727,30 +2766,6 @@
           "episode": "Sky",
           "timestamp": "A 0:19 / B 0:19",
           "severity": "minor",
-          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
-        }
-      ]
-    },
-    {
-      "id": "R-102",
-      "rule": "Give photographic proof cards and primary real-world evidence cards a minimum dwell time of two full seconds without overlapping overlay clutter.",
-      "category": "concept_wow",
-      "enforcement": "candidate_gate",
-      "active": false,
-      "severity": "major",
-      "measurable": true,
-      "proposed_gate": "Check that ProofCard components remain visible for at least 60 consecutive frames before initiating exit transitions.",
-      "gates": [],
-      "components": [],
-      "episodes": [
-        "Sky"
-      ],
-      "episode_count": 1,
-      "evidence": [
-        {
-          "episode": "Sky",
-          "timestamp": "A 0:31 / B 0:31",
-          "severity": "major",
           "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
         }
       ]
@@ -2781,6 +2796,30 @@
     },
     {
       "id": "R-104",
+      "rule": "Always apply directional easing and spatial continuity when dismissing modal proof cards back to underlying mechanical diagrams.",
+      "category": "motion_craft",
+      "enforcement": "prose",
+      "active": false,
+      "severity": "minor",
+      "measurable": false,
+      "proposed_gate": "",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "Sky"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Sky",
+          "timestamp": "A 0:34 / B 0:34",
+          "severity": "minor",
+          "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+        }
+      ]
+    },
+    {
+      "id": "R-105",
       "rule": "Always align mechanical sting audio transients within two frames of the climax title card impact.",
       "category": "sound_sync",
       "enforcement": "candidate_gate",
