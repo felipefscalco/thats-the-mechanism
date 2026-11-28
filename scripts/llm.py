@@ -284,6 +284,8 @@ def enforce_scope(workdir: Path, snap: dict, scope) -> list[str]:
 def run(role: str, prompt: str, workdir=ROOT, scope=None, schema=None, files=(), read_only=False, dry_run=False,
         log_dir=None, timeout_s=None, spec=None) -> dict:
     workdir = Path(workdir); spec = spec or role_spec(role)
+    if not (prompt or "").strip():   # r10: an empty prompt is a caller bug; fail loudly instead of falling through providers
+        raise ValueError(f"llm.run(role={role}): empty prompt")
     chain = [spec] + list(spec.get("fallback") or [])
     files = [(f[0], Path(f[1])) if isinstance(f, (tuple, list)) else (Path(f).name, Path(f)) for f in files]
     last_err = None

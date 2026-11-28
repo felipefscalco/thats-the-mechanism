@@ -311,3 +311,9 @@ One entry per finding. Newest at the bottom. Format:
 - Security (automated review of gatesmith.py): LLM-written code ran unsandboxed and the agent had a free ffmpeg command line. Fixed: validate refuses unless a human pinned the candidate's sha256 (`gatesmith.py review`), runs it under `sandbox-exec` (no network, writes only to temp dirs; verified), and the agent's only command is scripts/gatesmith_probe.py (fixed output dir). Test t_gatesmith_runs_only_reviewed_code.
 - My mistake: I created scripts/gatesmith_probe.py while the gatesmith agent was still running; llm.py's scope guard saw a new file outside the agent's scope and DELETED it (reverted=["scripts/gatesmith_probe.py"]). Recreated. Same class as L-24: never edit the tree while a scoped agent runs (the guard cannot tell whose file it is).
 - Status: fixed; R-045 promotion pending
+
+### L-45 · 2026-11-29 · builder.sh · major (the builder entry point never worked)
+- Problem: the e07 polish run exited in 1 s. builder.sh's prompt filler did `str.replace("{MAX_TRIES}", 4)` with an int, so the prompt file was empty; claude refused the empty stdin, agy/cursor were (correctly) refused for a write role, and the reported error was the LAST fallback's ("cursor-agent refused"), hiding the cause. builder.sh had been broken since r7; the e07 Cursor test used build_loop.py, which fills prompts differently.
+- Fix (code): str(v) in the filler; builder.sh stops when the prompt is empty; llm.run raises ValueError on an empty prompt instead of walking the fallback chain.
+- Prevention: every entry point that builds a prompt needs one smoke run (dry_run) in tests; a fallback chain must report the FIRST provider's error.
+- Status: fixed
