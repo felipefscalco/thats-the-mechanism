@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26T17:59:05+02:00",
+  "generated": "2026-11-28T23:22:58+09:00",
   "source_rules": 232,
   "clusters": [
     {
@@ -55,7 +55,8 @@
           "severity": "minor",
           "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-002",
@@ -153,7 +154,8 @@
           "severity": "major",
           "source": "qa/Sky/v6/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-003",
@@ -207,7 +209,8 @@
           "severity": "major",
           "source": "qa/Sky/v8/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-004",
@@ -298,7 +301,8 @@
           "severity": "minor",
           "source": "qa/Sky/v6/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-005",
@@ -385,7 +389,8 @@
           "severity": "major",
           "source": "qa/Sky/v7/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-006",
@@ -437,7 +442,8 @@
           "severity": "major",
           "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-007",
@@ -474,7 +480,8 @@
           "severity": "blocker",
           "source": "qa/Sky/v7/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-008",
@@ -505,7 +512,8 @@
           "severity": "major",
           "source": "qa/QR/v6/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-009",
@@ -535,7 +543,8 @@
           "severity": "major",
           "source": "qa/Elevator/v6b/ship/cmp_new_vs_prev_swap.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-010",
@@ -571,7 +580,8 @@
           "severity": "major",
           "source": "qa/QR/v6/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-011",
@@ -608,7 +618,8 @@
           "severity": "blocker",
           "source": "qa/QR/v7/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-012",
@@ -638,7 +649,8 @@
           "severity": "minor",
           "source": "qa/QR/v6/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-013",
@@ -754,7 +766,8 @@
           "severity": "blocker",
           "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-014",
@@ -822,7 +835,8 @@
           "severity": "minor",
           "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-015",
@@ -854,7 +868,8 @@
           "severity": "blocker",
           "source": "qa/Sky/v8/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-016",
@@ -965,7 +980,8 @@
           "severity": "major",
           "source": "qa/Sky/v8/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-017",
@@ -1008,7 +1024,8 @@
           "severity": "major",
           "source": "qa/Sky/v8/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-018",
@@ -1076,7 +1093,8 @@
           "severity": "major",
           "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-019",
@@ -1161,7 +1179,8 @@
           "severity": "blocker",
           "source": "qa/Sky/v8/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-020",
@@ -1191,7 +1210,8 @@
           "severity": "minor",
           "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-021",
@@ -1236,7 +1256,8 @@
           "severity": "major",
           "source": "qa/ANC/v7/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-022",
@@ -1304,7 +1325,8 @@
           "severity": "major",
           "source": "qa/QR/agy_rules/critic_rules.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-023",
@@ -1346,7 +1368,8 @@
           "severity": "minor",
           "source": "qa/Elevator/v6b/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-024",
@@ -1416,7 +1439,8 @@
           "severity": "minor",
           "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-025",
@@ -1460,7 +1484,8 @@
           "severity": "minor",
           "source": "qa/Elevator/v7/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-026",
@@ -1515,7 +1540,8 @@
           "severity": "major",
           "source": "qa/QR/v7/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-027",
@@ -1556,7 +1582,8 @@
           "severity": "minor",
           "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-028",
@@ -1614,7 +1641,8 @@
           "severity": "major",
           "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-029",
@@ -1646,7 +1674,8 @@
           "severity": "minor",
           "source": "qa/Elevator/v7/ship/cmp_tiebreak.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-030",
@@ -1723,7 +1752,8 @@
           "severity": "minor",
           "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-031",
@@ -1759,7 +1789,8 @@
           "severity": "major",
           "source": "qa/Sky/v7/ship/cmp_new_vs_prev_swap.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-032",
@@ -1801,7 +1832,8 @@
           "severity": "minor",
           "source": "qa/Sky/v8/ship/cmp_new_vs_prev_swap.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-033",
@@ -1838,7 +1870,8 @@
           "severity": "minor",
           "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-034",
@@ -1922,7 +1955,8 @@
           "severity": "major",
           "source": "qa/Sky/v8/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-035",
@@ -1974,7 +2008,8 @@
           "severity": "major",
           "source": "qa/Sky/v8/ship/cmp_new_vs_prev_swap.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-036",
@@ -1998,7 +2033,8 @@
           "severity": "blocker",
           "source": "qa/ANC/v7/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-037",
@@ -2036,7 +2072,8 @@
           "severity": "minor",
           "source": "qa/QR/v7/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-038",
@@ -2084,7 +2121,8 @@
           "severity": "major",
           "source": "qa/Sky/v8/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-039",
@@ -2127,7 +2165,8 @@
           "severity": "major",
           "source": "qa/Sky/v7/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-040",
@@ -2176,7 +2215,8 @@
           "severity": "major",
           "source": "qa/Sky/v7/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-041",
@@ -2231,7 +2271,8 @@
           "severity": "major",
           "source": "qa/QR/v7/ship/cmp_prev_vs_new.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-042",
@@ -2262,7 +2303,8 @@
           "severity": "major",
           "source": "qa/Sky/v8/ship/critic_cal.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-043",
@@ -2293,7 +2335,8 @@
           "severity": "major",
           "source": "qa/Sky/v6/ship/cmp_new_vs_prev_swap.json"
         }
-      ]
+      ],
+      "gate_miss": []
     },
     {
       "id": "R-044",
@@ -2317,7 +2360,423 @@
           "severity": "major",
           "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
         }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-045",
+      "rule": "Always enforce an explicit horizontal gap between consecutive rendered caption words and prevent single short orphan words on the final caption line.",
+      "category": "voice_captions",
+      "enforcement": "candidate_gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Measure rendered bounding boxes of adjacent caption word tokens per frame and fail if any inter-word horizontal gap is under 8 px or a trailing line contains a lone word of 1-2 characters.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "Microwave"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Microwave",
+          "timestamp": "00:04 ('do themicrowaves'), 00:07 (orphan 'a'), 00:15 ('centimetreslong.')",
+          "severity": "blocker",
+          "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-046",
+      "rule": "Never hold a locked camera or visually unchanged stage layout for more than two seconds without a meaningful camera move, dimensional peel, or mechanical state transition.",
+      "category": "motion_craft",
+      "enforcement": "candidate_gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Compute frame-to-frame stage-region structural diff and camera transform variance over sliding 2.0 s windows and fail if motion stays below threshold or camera transform remains constant across consecutive beats.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "Microwave"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Microwave",
+          "timestamp": "00:06-00:09 (static 7x7 dot grid), 00:17-00:28 (11-second locked cutaway across two beats), 00:29-00:32 (3-second static void)",
+          "severity": "blocker",
+          "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-047",
+      "rule": "Never allow a headline or callout container to overlap the bounding box of the primary hero illustration.",
+      "category": "design_typography",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Compute axis-aligned bounding boxes for stage text containers and primary artwork layers at every beat midpoint and fail if intersection area exceeds 0 px² or clearance is under 24 px.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "Microwave"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Microwave",
+          "timestamp": "00:00-00:04 (dark hook headline container slices into the top-left corner of the microwave appliance)",
+          "severity": "major",
+          "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-048",
+      "rule": "Always complete animated numeric counters and key data reveals within two frames of the spoken number rather than trailing behind the voiceover.",
+      "category": "sound_sync",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Compare the frame at which each animated counter reaches its target value against the matching numeric token timestamp in word-level captions and fail if lag exceeds 100 ms.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "Microwave"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Microwave",
+          "timestamp": "00:11-00:13 (on-screen frequency counter sits at 1.00 GHz while VO and caption already state 2.45 GHz)",
+          "severity": "major",
+          "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-049",
+      "rule": "Always retract closing callout pills and return dynamic hero state toward frame zero before the final loop whip so the last frame settles cleanly onto the opening frame.",
+      "category": "loop",
+      "enforcement": "gate",
+      "active": true,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Compute SSIM between the final settled loop frame and frame 0 and fail if similarity drops below 0.92 or if closing callout elements remain opaque within the last 10 frames.",
+      "gates": [
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+      ],
+      "components": [
+        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
+      ],
+      "episodes": [
+        "FireSprinkler",
+        "Microwave"
+      ],
+      "episode_count": 2,
+      "evidence": [
+        {
+          "episode": "Microwave",
+          "timestamp": "00:45-00:46 (two colored callback pills and 0:00 timer remain on screen into an unresolved vertical whip blur that pops back to 0:30 and hook headline at 00:00)",
+          "severity": "major",
+          "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:38–00:40",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ],
+      "gate_miss": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:38–00:40",
+          "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+          "qa_report": "qa/FireSprinkler/v1/report_it104.json",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-050",
+      "rule": "Never devote an entire beat to sequential text bullets fading over an empty half-canvas; always pair quantitative facts with an active visual gauge, physical benchmark, or documentary proof frame.",
+      "category": "concept_wow",
+      "enforcement": "gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Measure active non-background pixel coverage across left and right halves of the stage safe zone every 0.5 s and fail if either half stays below 8% visual density for more than 1.5 s.",
+      "gates": [
+        "scripts/facts.py: spoken quantities covered by verified facts"
+      ],
+      "components": [],
+      "episodes": [
+        "Microwave"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Microwave",
+          "timestamp": "00:29-00:35 ('MAXIMUM LEAKAGE' and 'US FEDERAL LIMIT' floating over an empty right void before '5 mW/cm²' and regulation code fade in sequentially)",
+          "severity": "major",
+          "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-051",
+      "rule": "Always convey physical size or ratio mechanisms through a dedicated visual scale comparison with both competing measurements labeled, rather than relying on distorted schematic proportions and text badges.",
+      "category": "clarity",
+      "enforcement": "prose",
+      "active": false,
+      "severity": "major",
+      "measurable": false,
+      "proposed_gate": "",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "Microwave"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Microwave",
+          "timestamp": "00:15-00:23 (12 cm wave contrasted against an unmeasured 'ONE HOLE' for ~1 s, followed by oversized side-on gaps that look wide enough for the wave ribbon to pass)",
+          "severity": "major",
+          "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-052",
+      "rule": "Keep label and caption opacity transitions fast enough that text never lingers in a low-contrast semi-transparent state, and enforce a clear vertical gap between lower stage pills and the caption track.",
+      "category": "design_typography",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "minor",
+      "measurable": true,
+      "proposed_gate": "Fail if any visible text element has WCAG contrast below 4.5:1 for more than 3 consecutive frames during a fade or if any stage element comes within 40 px of the caption band top edge.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "Microwave"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "Microwave",
+          "timestamp": "00:11 (dim mid-fade '2.45 GHz.' caption), 00:20 & 00:28 (pills tightly pressed above captions), 00:34 (faint fading '2 in • 5 cm' label; measured min_ratio=1.18)",
+          "severity": "minor",
+          "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-053",
+      "rule": "Never allow the primary on-screen subject or stage to remain visually static for more than 2 seconds inside any active shot.",
+      "category": "motion_craft",
+      "enforcement": "gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Compute pixel motion energy inside the central stage bounding box across every 2.0 s sliding window (excluding the end card) and fail if any window falls below the active-motion threshold.",
+      "gates": [
+        "scripts/qa.py: motion: no stage hold > 2.0 s"
+      ],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:05–00:10, 00:25–00:29",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ],
+      "gate_miss": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:05–00:10, 00:25–00:29",
+          "check": "motion: no stage hold > 2.0 s",
+          "qa_report": "qa/FireSprinkler/v1/report_it104.json",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-054",
+      "rule": "Always preserve colour and silhouette continuity when cutting from an exterior overview into an internal close-up of the same component.",
+      "category": "clarity",
+      "enforcement": "prose",
+      "active": false,
+      "severity": "major",
+      "measurable": false,
+      "proposed_gate": "",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:04–00:05, 00:17–00:18",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-055",
+      "rule": "Never display duplicate label text simultaneously on stage, and keep every diagram label at least 30 px tall and persistent until its shot exits.",
+      "category": "design_typography",
+      "enforcement": "gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Fail the render if two active on-screen labels display identical text on the same frame, if any rendered text node is under 30 px on a 1080-wide canvas, or if a beat label unmounts more than 0.3 s before its shot ends.",
+      "gates": [
+        "scripts/qa.py: labels >= 30 px and no raw SVG/CSS fontSize < 30"
+      ],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:05–00:16, 00:19, 00:06–00:10",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ],
+      "gate_miss": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:05–00:16, 00:19, 00:06–00:10",
+          "check": "labels: minimum font size >= 30 px on all <Label> elements",
+          "qa_report": "qa/FireSprinkler/v1/report_it104.json",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-056",
+      "rule": "Always anchor explanatory callouts directly to the relevant visual part with a leader line rather than recycling identical top-center status pills on every beat.",
+      "category": "design_typography",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Flag episodes where more than half of all stage labels reuse the same top-center pill slot instead of part-anchored callout components with leader lines.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:03–00:38",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-057",
+      "rule": "Always animate debris, particles, and fluid streams continuously under gravity or flow velocity until they exit frame or the shot cuts, never freezing them mid-air.",
+      "category": "motion_craft",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Track debris, particle, and fluid-stream layers after a trigger event and fail if their displacement drops to zero while still inside the visible stage.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:21–00:24, 00:37–00:40",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-058",
+      "rule": "Never repeat identical synthetic UI pop tones on consecutive label entries, and never leave more than 0.8 seconds of near-dead air before the closing loop transition.",
+      "category": "sound_sync",
+      "enforcement": "gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Block more than three uses of the same UI tick/pop cue per episode in the SFX cue sheet and fail if mixed audio RMS drops below −50 dBFS for longer than 0.8 s before the closing transition.",
+      "gates": [
+        "scripts/qa.py: motion: no stage hold > 2.0 s",
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+      ],
+      "components": [
+        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"
+      ],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:03–00:33, 00:38–00:40",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
+      ],
+      "gate_miss": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:03–00:33, 00:38–00:40",
+          "check": "motion: no stage hold > 2.0 s",
+          "qa_report": "qa/FireSprinkler/v1/report_it104.json",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:03–00:33, 00:38–00:40",
+          "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+          "qa_report": "qa/FireSprinkler/v1/report_it104.json",
+          "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        }
       ]
     }
+  ],
+  "merged_sources": [
+    "qa/FireSprinkler/v1/critic/critic_cal.json",
+    "qa/Microwave/v1/ship_it8/critic_cal.json"
   ]
 }

@@ -19,6 +19,11 @@
   "suggest_auto_after_streak": 5
  },
  "gates": {
+  "angle": {
+   "mode": "human",
+   "artifact": "episodes/{slug}/brief.md",
+   "blocks": "script"
+  },
   "facts": {
    "mode": "auto",
    "check": "scripts/facts.py check {slug}",

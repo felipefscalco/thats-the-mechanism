@@ -443,9 +443,81 @@ def refresh() -> int:
     return 0
 
 
+def _rows_from(path: Path) -> tuple[str, list[dict]]:
+    p = path.resolve()
+    key = str(p.relative_to(ROOT)) if p.is_relative_to(ROOT) else str(p)
+    data = json.loads(p.read_text())
+    ep = episode_id(data, p)
+    rows = []
+    for r in data.get("general_rules") or []:
+        rule = " ".join((r.get("rule") or "").split())
+        if rule:
+            rows.append(dict(rule=rule, category=r.get("category") or "", evidence=r.get("evidence") or "",
+                             measurable=bool(r.get("measurable")), proposed_gate=r.get("proposed_gate") or "",
+                             enforcement=r.get("enforcement") or "prose", severity=r.get("severity") or "minor",
+                             episode=ep, source=key, model=data.get("model", ""), qa_report=data.get("qa_report")))
+    return key, rows
+
+
+def _merge_into(c: dict, r: dict) -> None:
+    sev = {"blocker": 3, "major": 2, "minor": 1}
+    c["evidence"].append(dict(episode=r["episode"], timestamp=r["evidence"], severity=r["severity"], source=r["source"]))
+    c["episodes"] = sorted(set(c["episodes"]) | {r["episode"]}); c["episode_count"] = len(c["episodes"])
+    if sev.get(r["severity"], 0) > sev.get(c["severity"], 0):
+        c["severity"] = r["severity"]
+    c["measurable"] = bool(c.get("measurable")) or r["measurable"] or bool(r["proposed_gate"])
+    c["proposed_gate"] = c.get("proposed_gate") or r["proposed_gate"]
+    c["gates"] = list(dict.fromkeys(c["gates"] + match_known(r["rule"], KNOWN_GATES)))
+    c["components"] = list(dict.fromkeys(c["components"] + match_known(r["rule"], KNOWN_COMPONENTS)))
+    c["enforcement"] = ("gate" if c["gates"] else "component" if c["components"]
+                        else "candidate_gate" if c["measurable"] else "prose")
+    c["active"] = c["episode_count"] >= 2 or c["severity"] == "blocker"
+    c["gate_miss"] = c.get("gate_miss", []) + gate_misses(c["gates"], [r])
+
+
+def merge(paths: list[str]) -> int:
+    """r10 (L-36 follow-up): add the general_rules of NEW critic JSONs to the committed docs/style_rules.json instead of
+    rebuilding from qa/** (gitignored, so a rebuild on another machine only sees its own episodes). Each rule joins the
+    closest existing cluster (same similarity as cluster_local) or opens a new one; nothing is ever dropped, and a source
+    already merged is skipped, so re-running is a no-op. Then re-renders STYLE_RULES.md, the builder prompt and the backlog."""
+    data = json.loads(OUT_JSON.read_text())
+    clusters, done = data.get("clusters", []), set(data.get("merged_sources", []))
+    for c in clusters:
+        c.setdefault("gate_miss", [])
+    nxt = max([int(c["id"].split("-")[1]) for c in clusters if c.get("id", "").startswith("R-")] or [0]) + 1
+    added = joined = 0
+    for p in paths:
+        key, rows = _rows_from(Path(p))
+        if key in done:
+            print(f"lessons.py --merge: {key} already merged, skipped"); continue
+        for r in rows:
+            toks = tokenize(r["rule"]); best, best_s = None, -1.0
+            for c in clusters:
+                s = close_to_cluster(r["rule"], toks, {"tokens": tokenize(c["rule"]), "family": family_keys(c["rule"])}, 0.25)
+                if s > best_s:
+                    best, best_s = c, s
+            if best is not None and best_s >= 0:
+                _merge_into(best, r); joined += 1
+            else:
+                rec = classify(r["rule"], [r]); rec.update(id=f"R-{nxt:03d}", rule=r["rule"]); nxt += 1
+                clusters.append(rec); added += 1
+        done.add(key)
+    data.update(clusters=clusters, merged_sources=sorted(done), generated=datetime.now().astimezone().isoformat(timespec="seconds"))
+    OUT_JSON.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+    OUT_MD.write_text(render_md(clusters, data["generated"]))
+    OUT_PROMPT.write_text(render_prompt(clusters))
+    write_backlog(clusters)
+    act = [c for c in clusters if c["active"]]
+    print(f"lessons.py --merge: {joined} rules joined existing clusters, {added} new clusters; {len(clusters)} clusters, {len(act)} active; "
+          f"interim {sum(1 for c in act if c['enforcement'] == 'candidate_gate' or c.get('gate_miss'))}")
+    return 0
+
+
 def main():
     if "--refresh" in sys.argv:
         return refresh()
+    if "--merge" in sys.argv:
+        return merge([a for a in sys.argv[sys.argv.index("--merge") + 1:] if not a.startswith("--")])
     rows = collect()
     if not rows:
         print("lessons.py: no general_rules found under qa/", file=sys.stderr)

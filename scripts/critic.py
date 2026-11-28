@@ -746,6 +746,9 @@ def main() -> int:
         "backend": args.backend,
         "mode": args.mode,
         "mp4": str(mp4.relative_to(ROOT)) if mp4.is_relative_to(ROOT) else str(mp4),
+        # r10: content hash of the judged MP4 (same format as gates.sha): renders are overwritten in place, so the final gate
+        # must match the exact cut, not just the path
+        "mp4_sha": __import__("hashlib").sha256(Path(mp4).read_bytes()).hexdigest()[:16],
         # r10: the QA report of this exact render, so lessons.py can tell "a gate exists but let this through" (gate_miss)
         "qa_report": (str(Path(args.qa_report).resolve().relative_to(ROOT)) if Path(args.qa_report).resolve().is_relative_to(ROOT)
                       else str(args.qa_report)) if args.qa_report else None,

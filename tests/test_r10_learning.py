@@ -141,6 +141,53 @@ def t_build_loop_polish_keeps_a_winner():
     assert any(e["kind"] == "ship_render_qa" for e in st["events"]) and Path(st["ship_report"]).name == "report_it111.json"
 
 
+
+def t_merge_adds_never_drops_and_is_idempotent():
+    import shutil
+    tmp = Path(tempfile.mkdtemp())
+    saved = (lessons.OUT_JSON, lessons.OUT_MD, lessons.OUT_PROMPT, lessons.OUT_BACKLOG)
+    lessons.OUT_JSON, lessons.OUT_MD, lessons.OUT_PROMPT, lessons.OUT_BACKLOG = (tmp / "r.json", tmp / "r.md", tmp / "p.txt", tmp / "b.json")
+    base = _cluster("Never allow the stage to remain visually static for more than two seconds.", "gate")
+    base["gates"] = [HOLD]; base["id"] = "R-007"
+    lessons.OUT_JSON.write_text(json.dumps(dict(generated="x", clusters=[base])))
+    crit = ROOT / "_scratch" / "t_r10_critic.json"
+    crit.write_text(json.dumps(dict(episode="Zz", general_rules=[
+        dict(rule="Never leave the stage visually static for more than two seconds in any shot.", category="motion_craft", evidence="0:05",
+             measurable=True, proposed_gate="", enforcement="gate", severity="major"),
+        dict(rule="Always let falling debris keep moving under gravity until it exits frame.", category="motion_craft", evidence="0:38",
+             measurable=True, proposed_gate="track particle velocity", enforcement="component", severity="major")])))
+    try:
+        lessons.merge([str(crit)])
+        cl = json.loads(lessons.OUT_JSON.read_text())["clusters"]
+        assert len(cl) == 2 and cl[0]["episode_count"] == 2 and cl[0]["active"], cl      # joined the static-stage cluster
+        assert cl[1]["id"] == "R-008"                                                     # new cluster, next id
+        lessons.merge([str(crit)])                                                        # same source again: no-op
+        assert len(json.loads(lessons.OUT_JSON.read_text())["clusters"]) == 2
+    finally:
+        lessons.OUT_JSON, lessons.OUT_MD, lessons.OUT_PROMPT, lessons.OUT_BACKLOG = saved
+        crit.unlink(missing_ok=True); shutil.rmtree(tmp, ignore_errors=True)
+
+
+def t_final_gate_needs_critic_of_the_same_cut():
+    import subprocess, gates
+    mp4 = ROOT / "renders" / "ZzGateTest_v1.mp4"; qa = ROOT / "qa" / "ZzGateTest"
+    mp4.write_bytes(b"cut-A"); qa.mkdir(parents=True, exist_ok=True)
+    try:
+        rel = "renders/ZzGateTest_v1.mp4"
+        assert gates.critic_for(rel) is None
+        (qa / "critic_cal.json").write_text(json.dumps(dict(mp4=rel, mp4_sha=gates.sha(rel), scores={"hook": 5})))
+        assert gates.critic_for(rel) == "qa/ZzGateTest/critic_cal.json"
+        mp4.write_bytes(b"cut-B")                       # re-rendered in place: the old critique no longer counts
+        assert gates.critic_for(rel) is None
+        log = ROOT / "approvals" / "approvals.jsonl"; n0 = log.read_text()
+        r = subprocess.run([sys.executable, str(ROOT / "scripts" / "gates.py"), "approve", "ZzGateTest", "final", "--by", "test",
+                            "--no-changes", "--artifact", rel], capture_output=True, text=True)
+        assert r.returncode != 0 and "no critic report" in (r.stderr + r.stdout) and log.read_text() == n0   # refused, nothing logged
+    finally:
+        import shutil
+        mp4.unlink(missing_ok=True); shutil.rmtree(qa, ignore_errors=True)
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("t_"):

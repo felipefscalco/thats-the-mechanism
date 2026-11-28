@@ -1,6 +1,40 @@
 {
- "generated": "2026-11-26T14:38:00-03:00",
+ "generated": "2026-11-28T23:22:58+09:00",
  "items": [
+  {
+   "id": "R-049",
+   "kind": "gate_miss",
+   "rule": "Always retract closing callout pills and return dynamic hero state toward frame zero before the final loop whip so the last frame settles cleanly onto the opening frame.",
+   "category": "loop",
+   "severity": "major",
+   "proposed_gate": "Compute SSIM between the final settled loop frame and frame 0 and fail if similarity drops below 0.92 or if closing callout elements remain opaque within the last 10 frames.",
+   "existing_gates": [
+    "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+   ],
+   "misses": [
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:38–00:40",
+     "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+     "qa_report": "qa/FireSprinkler/v1/report_it104.json",
+     "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+    }
+   ],
+   "evidence": [
+    {
+     "episode": "Microwave",
+     "timestamp": "00:45-00:46 (two colored callback pills and 0:00 timer remain on screen into an unresolved vertical whip blur that pops back to 0:30 and hook headline at 00:00)",
+     "severity": "major",
+     "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+    },
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:38–00:40",
+     "severity": "major",
+     "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+    }
+   ]
+  },
   {
    "id": "R-023",
    "kind": "candidate_gate",
@@ -94,6 +128,42 @@
      "timestamp": "00:13-00:14 (third caption line overlaps the chapter deck); 00:00 (caption overlaps bottom edge of opening hero)",
      "severity": "blocker",
      "source": "qa/QR/v7/ship/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-045",
+   "kind": "candidate_gate",
+   "rule": "Always enforce an explicit horizontal gap between consecutive rendered caption words and prevent single short orphan words on the final caption line.",
+   "category": "voice_captions",
+   "severity": "blocker",
+   "proposed_gate": "Measure rendered bounding boxes of adjacent caption word tokens per frame and fail if any inter-word horizontal gap is under 8 px or a trailing line contains a lone word of 1-2 characters.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "Microwave",
+     "timestamp": "00:04 ('do themicrowaves'), 00:07 (orphan 'a'), 00:15 ('centimetreslong.')",
+     "severity": "blocker",
+     "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-046",
+   "kind": "candidate_gate",
+   "rule": "Never hold a locked camera or visually unchanged stage layout for more than two seconds without a meaningful camera move, dimensional peel, or mechanical state transition.",
+   "category": "motion_craft",
+   "severity": "blocker",
+   "proposed_gate": "Compute frame-to-frame stage-region structural diff and camera transform variance over sliding 2.0 s windows and fail if motion stays below threshold or camera transform remains constant across consecutive beats.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "Microwave",
+     "timestamp": "00:06-00:09 (static 7x7 dot grid), 00:17-00:28 (11-second locked cutaway across two beats), 00:29-00:32 (3-second static void)",
+     "severity": "blocker",
+     "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
     }
    ]
   },
