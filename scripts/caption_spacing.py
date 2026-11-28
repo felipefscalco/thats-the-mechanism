@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""R-045 caption word spacing + orphan gate (backlog: voice_captions).
+"""Caption word spacing + orphan gate (A20). Promoted 2026-11-28 by Felipe from gates_candidate/R-045 (written by the
+gatesmith role, human-reviewed sha256 pin, sandbox-validated: FAIL on Microwave it8, PASS on it15; see
+gates_candidate/R-045.json). Run by qa.py in parallel with the other MP4 analyzers.
 
 Rule: consecutive caption words keep an explicit horizontal gap, and the last caption line never ends in a lone
 1-2 character orphan word ("a", "of").

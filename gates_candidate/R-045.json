@@ -64,5 +64,11 @@
  "passes_on_good": true,
  "good_events": [],
  "good_error": null,
- "promotable": true
+ "promotable": true,
+ "promoted": {
+  "to": "scripts/caption_spacing.py",
+  "by": "Felipe",
+  "date": "2026-11-28",
+  "acceptance": "A20"
+ }
 }

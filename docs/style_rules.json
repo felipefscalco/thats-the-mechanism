@@ -519,12 +519,14 @@
       "id": "R-009",
       "rule": "Strip markdown punctuation, leading underscores, stray dashes, and orphaned hyphens from caption text before rendering.",
       "category": "voice_captions",
-      "enforcement": "candidate_gate",
+      "enforcement": "gate",
       "active": false,
       "severity": "major",
       "measurable": true,
       "proposed_gate": "Assert that caption tokens and formatted display lines do not start with punctuation marks such as hyphens, em-dashes, or ellipses.",
-      "gates": [],
+      "gates": [
+        "scripts/qa.py + scripts/caption_spacing.py: caption words keep a gap, no orphan short word (A20)"
+      ],
       "components": [],
       "episodes": [
         "Elevator"
@@ -2369,12 +2371,14 @@
       "id": "R-045",
       "rule": "Always enforce an explicit horizontal gap between consecutive rendered caption words and prevent single short orphan words on the final caption line.",
       "category": "voice_captions",
-      "enforcement": "candidate_gate",
+      "enforcement": "gate",
       "active": true,
       "severity": "blocker",
       "measurable": true,
       "proposed_gate": "Measure rendered bounding boxes of adjacent caption word tokens per frame and fail if any inter-word horizontal gap is under 8 px or a trailing line contains a lone word of 1-2 characters.",
-      "gates": [],
+      "gates": [
+        "scripts/qa.py + scripts/caption_spacing.py: caption words keep a gap, no orphan short word (A20)"
+      ],
       "components": [],
       "episodes": [
         "Microwave"

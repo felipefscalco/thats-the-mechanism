@@ -45,6 +45,7 @@ These active rules are **not** restated as instructions. The gate or component i
 | Hold photo proof cards on screen for at least three seconds, and hold each formula, comparison card, cutaway, or resolved diagram state for at least 2.5 seconds after its animation completes, never flashing a cutaway under 45 frames without secondary motion. | gate | `scripts/qa.py + scripts/contrast.py: callout clutter <= 3 pills/badges at once (A17); scripts/qa.py: labels >= 30 px and no raw SVG/CSS fontSize < 30` |
 | Score physical actions and mechanism states with layered, pitch-varied, subject-authentic foley, using purposeful silence before key turns; never use generic UI clicks, bloops, arcade pings, chimes, or the same whoosh on consecutive cuts. | gate | `scripts/qa.py: >= 0.2 s near-silence (<= -38 dBFS) before the catchphrase; scripts/qa.py: SFX density 1.2-1.5/s and 10-16 dB under voice` |
 | Trigger each visual state change, numeric increment, and sound transient on the exact onset of the spoken verb, keyword, or on-screen impact it matches, within two frames (or 150 ms), and never before the cue. | gate | `scripts/qa.py: SFX density 1.2-1.5/s and 10-16 dB under voice` |
+| Always enforce an explicit horizontal gap between consecutive rendered caption words and prevent single short orphan words on the final caption line. | gate | `scripts/qa.py + scripts/caption_spacing.py: caption words keep a gap, no orphan short word (A20)` |
 | Always retract closing callout pills and return dynamic hero state toward frame zero before the final loop whip so the last frame settles cleanly onto the opening frame. | gate | `scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB; remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)` |
 
 ## Candidate gates
@@ -56,9 +57,6 @@ Measurable rules that are not yet an automated check. Implement these as `qa.py`
 
 - **Reveal captions and stage labels at full target contrast from their first visible frame using position or mask reveals rather than opacity ramps, and end each caption block before any hard scene cut.** (active; 2 episode(s): Elevator, QR)
   - proposed: Cross-check caption chunk timestamps against section and end-card cut frames and fail if any caption phrase spans across a card transition boundary.
-
-- **Strip markdown punctuation, leading underscores, stray dashes, and orphaned hyphens from caption text before rendering.** (not yet active; 1 episode(s): Elevator)
-  - proposed: Assert that caption tokens and formatted display lines do not start with punctuation marks such as hyphens, em-dashes, or ellipses.
 
 - **Never split a hyphenated proper noun or technical term across caption lines or caption chunks.** (not yet active; 1 episode(s): QR)
   - proposed: Validate caption word-level tokens against the source script to reject mid-word syllable splits or orphan conjunction attachments.
@@ -99,9 +97,6 @@ Measurable rules that are not yet an automated check. Implement these as `qa.py`
 - **Reserve semantic status colors for success, failure, or balance states, and never recolor neutral mechanical components with them.** (not yet active; 1 episode(s): Elevator)
   - proposed: Lint component stroke and fill colors against a whitelist that forbids semantic status tokens on passive machinery or structural containers.
 
-- **Always enforce an explicit horizontal gap between consecutive rendered caption words and prevent single short orphan words on the final caption line.** (active; 1 episode(s): Microwave)
-  - proposed: Measure rendered bounding boxes of adjacent caption word tokens per frame and fail if any inter-word horizontal gap is under 8 px or a trailing line contains a lone word of 1-2 characters.
-
 - **Never hold a locked camera or visually unchanged stage layout for more than two seconds without a meaningful camera move, dimensional peel, or mechanical state transition.** (active; 1 episode(s): Microwave)
   - proposed: Compute frame-to-frame stage-region structural diff and camera transform variance over sliding 2.0 s windows and fail if motion stays below threshold or camera transform remains constant across consecutive beats.
 
@@ -137,7 +132,7 @@ The QA report of the judged render shows the gate PASSING while the critic repor
 
 ## Not yet active
 
-- (candidate_gate, 1 ep) Strip markdown punctuation, leading underscores, stray dashes, and orphaned hyphens from caption text before rendering.
+- (gate, 1 ep) Strip markdown punctuation, leading underscores, stray dashes, and orphaned hyphens from caption text before rendering.
 - (candidate_gate, 1 ep) Never split a hyphenated proper noun or technical term across caption lines or caption chunks.
 - (candidate_gate, 1 ep) Sync each caption window to its spoken phonemes within 50 ms, and give every spoken word its own timed caption token with none dropped.
 - (prose, 1 ep) Give the climactic conflict beat secondary physical deformation such as squash-and-stretch and expanding shockwaves, paired with scale and opacity pulses on every transient disruption.

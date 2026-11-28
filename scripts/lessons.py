@@ -59,6 +59,8 @@ KNOWN_GATES = [
      "scripts/qa.py: loudness -15.5..-13 LUFS, true peak <= -1 dBTP"),
     (r"\bsfx\b|whoosh|onset density|under the voice",
      "scripts/qa.py: SFX density 1.2-1.5/s and 10-16 dB under voice"),
+    (r"caption.{0,40}(gap|spacing|fuse|glued|orphan)|(orphan|stranded?).{0,40}(word|caption)|between consecutive .{0,20}caption words",
+     "scripts/qa.py + scripts/caption_spacing.py: caption words keep a gap, no orphan short word (A20)"),
     (r"\bfact|sources|unverified",
      "scripts/facts.py: spoken quantities covered by verified facts"),
 ]
@@ -69,7 +71,7 @@ GATE_CHECK = {
     "A18": "text: no decorative HUD", "A15": "labels: inside Shorts UI safe zones", "icon/label clearance": "labels: icon/label clearance",
     "labels >= 30 px": "labels: minimum font size", "WCAG contrast": "labels: WCAG contrast", "Shorts UI safe zones": "labels: inside Shorts UI safe zones",
     "no stage hold": "motion: no stage hold", "visual-state change": "cadence: visual-state change", "near-silence": "beat: >= 0.2 s near-silence",
-    "loop seam": "loop: seam jump", "loudness": "loudness", "SFX density": "SFX",
+    "loop seam": "loop: seam jump", "loudness": "loudness", "SFX density": "SFX", "A20": "captions: words keep a visible gap",
 }
 
 

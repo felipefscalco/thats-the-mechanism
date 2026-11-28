@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-28T23:25:15+09:00",
+ "generated": "2026-11-28T23:48:06+09:00",
  "items": [
   {
    "id": "R-049",
@@ -128,24 +128,6 @@
      "timestamp": "00:13-00:14 (third caption line overlaps the chapter deck); 00:00 (caption overlaps bottom edge of opening hero)",
      "severity": "blocker",
      "source": "qa/QR/v7/ship/critic_cal.json"
-    }
-   ]
-  },
-  {
-   "id": "R-045",
-   "kind": "candidate_gate",
-   "rule": "Always enforce an explicit horizontal gap between consecutive rendered caption words and prevent single short orphan words on the final caption line.",
-   "category": "voice_captions",
-   "severity": "blocker",
-   "proposed_gate": "Measure rendered bounding boxes of adjacent caption word tokens per frame and fail if any inter-word horizontal gap is under 8 px or a trailing line contains a lone word of 1-2 characters.",
-   "existing_gates": [],
-   "misses": [],
-   "evidence": [
-    {
-     "episode": "Microwave",
-     "timestamp": "00:04 ('do themicrowaves'), 00:07 (orphan 'a'), 00:15 ('centimetreslong.')",
-     "severity": "blocker",
-     "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
     }
    ]
   },

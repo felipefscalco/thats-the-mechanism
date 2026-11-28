@@ -64,6 +64,7 @@ _spawn("contrast", "--no-contrast", [sys.executable, str(_S / "contrast.py"), ID
 _spawn("framing", "--no-framing", [sys.executable, str(_S / "framing.py"), str(MP4), str(OUT), "--card", _card])
 _spawn("entrances", "--no-entrances", [sys.executable, str(_S / "entrances.py"), str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
 _spawn("artedge", "--no-artedge", [sys.executable, str(_S / "artedge.py"), str(MP4), str(OUT), "--cuts", _cuts, "--card", _card])
+_spawn("capspace", "--no-caption-spacing", [sys.executable, str(_S / "caption_spacing.py"), str(MP4)])   # A20 (gatesmith R-045)
 
 # 3. SFX vs voice from stems (rendered with --props stem)
 if STEMS:
@@ -333,6 +334,16 @@ def sheets():
     sh(f"ffmpeg -v error -y -i {MP4} -vf fps=1/1.5,scale=216:-1,tile=8x5 -frames:v 1 {OUT}/grid_it{IT}.png")
     for p in OUT.glob("_*.png"): p.unlink()
 
+
+# A20 (r10, gatesmith R-045, promoted by Felipe): caption words keep a visible gap; no lone short word on the last line
+if "--no-caption-spacing" not in sys.argv:
+    _cs = _collect("capspace")
+    try:
+        _cj = json.loads(_cs.stdout.strip().splitlines()[-1]); res["caption_spacing"] = _cj
+        check("captions: words keep a visible gap and no orphan short word on the last line (OCR)", _cj["ok"],
+              dict(events=_cj["events"][:6], detail=_cj["detail"]))
+    except Exception as e:
+        check("captions: words keep a visible gap and no orphan short word on the last line (OCR)", False, dict(error=str(e)[:300], stderr=_cs.stderr[-300:]))
 
 sheets() if '--no-sheets' not in sys.argv else None
 res["checks"] = checks; res["iteration"] = IT
