@@ -1,6 +1,233 @@
 {
- "generated": "2026-11-29T00:54:31+09:00",
+ "generated": "2026-11-29T02:03:34+09:00",
  "items": [
+  {
+   "id": "R-016",
+   "kind": "gate_miss",
+   "rule": "Keep the primary stage in continuous motion so it is never static for more than two seconds (1.5 s where a stricter limit applies), using physical motion, a camera move, or a state change in every rolling window.",
+   "category": "motion_craft",
+   "severity": "blocker",
+   "proposed_gate": "Measure masked stage pixel change (excluding captions and footer chrome) across every sliding 1.5 s window and fail if mean stage motion falls below the active-motion threshold.",
+   "existing_gates": [
+    "scripts/qa.py: motion: no stage hold > 2.0 s",
+    "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB",
+    "scripts/qa.py + scripts/contrast.py: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges, A14)"
+   ],
+   "misses": [
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:00-00:02, 00:06-00:10",
+     "check": "motion: no stage hold > 2.0 s",
+     "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+     "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+    },
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:00-00:02, 00:06-00:10",
+     "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+     "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+     "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+    },
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:00-00:02, 00:06-00:10",
+     "check": "motion: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges)",
+     "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+     "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+    }
+   ],
+   "evidence": [
+    {
+     "episode": "ANC",
+     "timestamp": "00:06-00:09, 00:12-00:14, 00:21-00:23",
+     "severity": "major",
+     "source": "qa/ANC/v7/ship/critic_cal.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "00:08",
+     "severity": "major",
+     "source": "qa/Elevator/agy_rules/critic_rules.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "A 0:39 / B 0:39",
+     "severity": "minor",
+     "source": "qa/Elevator/v6/ship/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "00:01-00:04, 00:08-00:13, 00:29-00:31",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship/critic_cal.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "A 0:14-0:26 / B 0:14-0:26",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship_it4/cmp_prev_vs_new.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "00:01-00:04, 00:10-00:13, 00:22-00:26, 00:35-00:37",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "00:05-00:07, 00:10-00:13, and 00:22-00:26 hold the main stage diagram visually static for 3 to 5 seconds during active narration.",
+     "severity": "blocker",
+     "source": "qa/Elevator/v6b/ship/critic_cal.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "00:05-00:07, 00:10-00:13, 00:14-00:16, and 00:29-00:31 hold completely frozen for 2.5-4 s, while 00:00-00:34 stays locked on a single unchanging front-elevation schematic across five chapters.",
+     "severity": "blocker",
+     "source": "qa/Elevator/v7/ship/critic_cal.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "00:29",
+     "severity": "major",
+     "source": "qa/QR/agy_rules/critic_rules.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "00:11-00:14 (4 s static grid), 00:19-00:21 (3 s static diagram), 00:23-00:27 (5 s stuck 0% display), 00:30-00:35 (6 s motionless hero graphic), 00:45-00:47 (3 s static highlight)",
+     "severity": "blocker",
+     "source": "qa/QR/v6/ship/critic_cal.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "00:12-00:18 (6 s frozen diagram grid); 00:32-00:35 (4 s static hero card and bar); 00:23 (empty transition frame)",
+     "severity": "major",
+     "source": "qa/QR/v7/ship/critic_cal.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "00:10",
+     "severity": "major",
+     "source": "qa/Sky/agy_rules/critic_rules.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "00:01-00:03, 00:08-00:09, 00:15-00:17, 00:19-00:21, 00:24-00:26, 00:32-00:34, and 00:43-00:45 all hold nearly static for 2-3 seconds while badges fade in linearly.",
+     "severity": "major",
+     "source": "qa/Sky/v6/ship/critic_cal.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "00:00 - 00:03, 00:37 - 00:40 (opening and climax stages remain compositionally static for ~3 s with only minor ambient drift)",
+     "severity": "major",
+     "source": "qa/Sky/v8/ship/critic_cal.json"
+    },
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:00-00:02, 00:06-00:10",
+     "severity": "major",
+     "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-006",
+   "kind": "gate_miss",
+   "rule": "Keep stage art, diagram containers, and callout badges out of the caption safe zone, and clip the stage viewport to its designated vertical band.",
+   "category": "design_typography",
+   "severity": "blocker",
+   "proposed_gate": "Render the stage layer without captions across sampled frames and fail the build if any non-background stage pixel appears at y >= 1200 px.",
+   "existing_gates": [
+    "scripts/qa.py: labels inside Shorts UI safe zones"
+   ],
+   "misses": [
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:11-00:16, 00:22, 00:38",
+     "check": "labels: inside Shorts UI safe zones + >= 24 px from side edges",
+     "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+     "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+    }
+   ],
+   "evidence": [
+    {
+     "episode": "Elevator",
+     "timestamp": "00:08, 00:27-00:31",
+     "severity": "blocker",
+     "source": "qa/Elevator/v6/ship/critic_cal.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "00:09-00:13, 00:27-00:31",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship/critic_cal.json"
+    },
+    {
+     "episode": "Elevator",
+     "timestamp": "00:06-00:13",
+     "severity": "major",
+     "source": "qa/Elevator/v6/ship_it4/critic_cal.json"
+    },
+    {
+     "episode": "QR",
+     "timestamp": "B 0:43",
+     "severity": "major",
+     "source": "qa/QR/v7/ship/cmp_new_vs_prev_swap.json"
+    },
+    {
+     "episode": "Sky",
+     "timestamp": "A 0:37 / B 0:37",
+     "severity": "major",
+     "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+    },
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:11-00:16, 00:22, 00:38",
+     "severity": "major",
+     "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-062",
+   "kind": "gate_miss",
+   "rule": "Never freeze active particles or continuous fluid motion during an ending payoff hold, and always resolve the closing transition cleanly back onto frame zero's exact composition.",
+   "category": "loop",
+   "severity": "blocker",
+   "proposed_gate": "Verify continuous non-zero pixel motion on active particle layers during payoff holds and require the final return frame to match frame 0 within a strict perceptual similarity threshold.",
+   "existing_gates": [
+    "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+   ],
+   "misses": [
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:38-00:40 vs 00:00",
+     "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+     "qa_report": "qa/FireSprinkler/report_it13.json",
+     "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+    },
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:38-00:40",
+     "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+     "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+     "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+    }
+   ],
+   "evidence": [
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:38-00:40 vs 00:00",
+     "severity": "major",
+     "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+    },
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:38-00:40",
+     "severity": "blocker",
+     "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+    }
+   ]
+  },
   {
    "id": "R-049",
    "kind": "gate_miss",

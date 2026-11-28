@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-29T00:54:31+09:00",
+  "generated": "2026-11-29T02:03:34+09:00",
   "source_rules": 232,
   "clusters": [
     {
@@ -407,10 +407,11 @@
       "components": [],
       "episodes": [
         "Elevator",
+        "FireSprinkler",
         "QR",
         "Sky"
       ],
-      "episode_count": 3,
+      "episode_count": 4,
       "evidence": [
         {
           "episode": "Elevator",
@@ -441,9 +442,23 @@
           "timestamp": "A 0:37 / B 0:37",
           "severity": "major",
           "source": "qa/Sky/v6/ship_retry/cmp_prev_vs_new.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:11-00:16, 00:22, 00:38",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
         }
       ],
-      "gate_miss": []
+      "gate_miss": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:11-00:16, 00:22, 00:38",
+          "check": "labels: inside Shorts UI safe zones + >= 24 px from side edges",
+          "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        }
+      ]
     },
     {
       "id": "R-007",
@@ -893,10 +908,11 @@
       "episodes": [
         "ANC",
         "Elevator",
+        "FireSprinkler",
         "QR",
         "Sky"
       ],
-      "episode_count": 4,
+      "episode_count": 5,
       "evidence": [
         {
           "episode": "ANC",
@@ -981,9 +997,37 @@
           "timestamp": "00:00 - 00:03, 00:37 - 00:40 (opening and climax stages remain compositionally static for ~3 s with only minor ambient drift)",
           "severity": "major",
           "source": "qa/Sky/v8/ship/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:00-00:02, 00:06-00:10",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
         }
       ],
-      "gate_miss": []
+      "gate_miss": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:00-00:02, 00:06-00:10",
+          "check": "motion: no stage hold > 2.0 s",
+          "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:00-00:02, 00:06-00:10",
+          "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+          "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:00-00:02, 00:06-00:10",
+          "check": "motion: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges)",
+          "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        }
+      ]
     },
     {
       "id": "R-017",
@@ -2875,8 +2919,8 @@
       "rule": "Never freeze active particles or continuous fluid motion during an ending payoff hold, and always resolve the closing transition cleanly back onto frame zero's exact composition.",
       "category": "loop",
       "enforcement": "gate",
-      "active": false,
-      "severity": "major",
+      "active": true,
+      "severity": "blocker",
       "measurable": true,
       "proposed_gate": "Verify continuous non-zero pixel motion on active particle layers during payoff holds and require the final return frame to match frame 0 within a strict perceptual similarity threshold.",
       "gates": [
@@ -2896,6 +2940,12 @@
           "timestamp": "00:38-00:40 vs 00:00",
           "severity": "major",
           "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:38-00:40",
+          "severity": "blocker",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
         }
       ],
       "gate_miss": [
@@ -2905,6 +2955,13 @@
           "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
           "qa_report": "qa/FireSprinkler/report_it13.json",
           "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:38-00:40",
+          "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+          "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
         }
       ]
     },
@@ -2957,11 +3014,167 @@
         }
       ],
       "gate_miss": []
+    },
+    {
+      "id": "R-065",
+      "rule": "Always render every on-screen callout label at or above the 30 px readability floor with an opaque backing surface so no individual label instance ever drops below WCAG AA contrast over busy art.",
+      "category": "design_typography",
+      "enforcement": "gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Block the render if any measured label instance has a computed font size under 30 px or a minimum contrast ratio under 4.5:1 rather than passing on median or p10 alone.",
+      "gates": [
+        "scripts/qa.py: labels >= 30 px and no raw SVG/CSS fontSize < 30",
+        "scripts/qa.py + scripts/contrast.py: WCAG contrast >= 4.5:1 (held >= 0.6 s)"
+      ],
+      "components": [
+        "remotion/src/brand/Kit.tsx `TagLabel` (ink backing behind stage labels)"
+      ],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:06-00:16, 00:27-00:29, 00:38-00:40",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:06-00:16, 00:27-00:29, 00:38-00:40",
+          "check": "labels: minimum font size >= 30 px on all <Label> elements",
+          "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:06-00:16, 00:27-00:29, 00:38-00:40",
+          "check": "labels: WCAG contrast >= 4.5:1 (held >= 0.6 s)",
+          "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-066",
+      "rule": "Never draw callout leader lines that overshoot past their text box, cross another leader line, or overlap foreground arrows and gauges; compute anchor points from each label box's nearest edge.",
+      "category": "clarity",
+      "enforcement": "gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Add a bounding-box and segment-intersection check on rendered callout components that fails when leader segments cross each other, extend beyond their label bounds, or overlap foreground widget boxes.",
+      "gates": [
+        "scripts/qa.py + scripts/contrast.py: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges, A14)"
+      ],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:13-00:16, 00:31-00:34",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:13-00:16, 00:31-00:34",
+          "check": "motion: badge entrances pop with anticipation/overshoot (incl. hand-rolled badges)",
+          "qa_report": "qa/FireSprinkler/v3/report_it15.json",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-067",
+      "rule": "Always synchronize callout entrances and exits to their corresponding narration phrases and dismiss superseded labels before the next mechanism state begins.",
+      "category": "clarity",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Block the render when label-persistence or label-sync checks miss spoken phrase windows by more than 0.5 s or when consecutive visual beats miss narration word timestamps by more than 0.4 s.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:18-00:23, 00:26-00:28",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-068",
+      "rule": "Always normalize caption word tokens to single uniform inter-word spacing so uneven horizontal gaps never disrupt caption legibility.",
+      "category": "voice_captions",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Fail the caption gate if any rendered caption line contains consecutive whitespace characters or inter-word pixel gaps exceeding 1.6x the nominal space width.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:00, 00:33",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-069",
+      "rule": "Always give the climactic proof beat enough hold time to visually register before cutting to the end card, and vary recurring impact foley in pitch, layer, or perspective so repeated actions never sound copy-pasted.",
+      "category": "concept_wow",
+      "enforcement": "prose",
+      "active": false,
+      "severity": "major",
+      "measurable": false,
+      "proposed_gate": "",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:20, 00:34, 00:37",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v3/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
     }
   ],
   "merged_sources": [
     "qa/FireSprinkler/v1/critic/critic_cal.json",
     "qa/FireSprinkler/v2/ship/critic_cal.json",
+    "qa/FireSprinkler/v3/ship/critic_cal.json",
     "qa/Microwave/v1/ship_it8/critic_cal.json"
   ]
 }
