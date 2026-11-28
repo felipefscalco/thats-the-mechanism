@@ -2079,13 +2079,15 @@
       "id": "R-038",
       "rule": "Animate physical trajectory deflection, bouncing, and particle or ray behavior by deforming or redirecting paths on contact, with continuous secondary motion and gradients interpolated along the active path, instead of static starbursts, static formulas, or bar charts.",
       "category": "motion_craft",
-      "enforcement": "candidate_gate",
+      "enforcement": "component",
       "active": false,
       "severity": "major",
       "measurable": true,
       "proposed_gate": "Assert that path stroke gradient offset properties animate across at least 15 frames during state transformation sequences.",
       "gates": [],
-      "components": [],
+      "components": [
+        "remotion/src/brand/frame.tsx `useAmbient()` (ambient motion keeps running through the payoff freeze; pinned to 0 in LoopBack)"
+      ],
       "episodes": [
         "Sky"
       ],
@@ -2708,13 +2710,15 @@
       "id": "R-057",
       "rule": "Always animate debris, particles, and fluid streams continuously under gravity or flow velocity until they exit frame or the shot cuts, never freezing them mid-air.",
       "category": "motion_craft",
-      "enforcement": "candidate_gate",
+      "enforcement": "component",
       "active": false,
       "severity": "major",
       "measurable": true,
       "proposed_gate": "Track debris, particle, and fluid-stream layers after a trigger event and fail if their displacement drops to zero while still inside the visible stage.",
       "gates": [],
-      "components": [],
+      "components": [
+        "remotion/src/brand/frame.tsx `useAmbient()` (ambient motion keeps running through the payoff freeze; pinned to 0 in LoopBack)"
+      ],
       "episodes": [
         "FireSprinkler"
       ],

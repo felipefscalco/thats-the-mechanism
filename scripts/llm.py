@@ -159,7 +159,8 @@ def build_cmd(provider: str, model, prompt: str, workdir: Path, schema_path, fil
     if not read_only and provider in NO_PATH_SCOPED_WRITES:
         raise ProviderUnavailable(f"{provider}: write roles refused (no path-scoped edit permissions; it could rewrite the "
                                   "scripts its allowed commands run). Use claude for builder/fixer.")
-    tools = list(tools or (READ_TOOLS if read_only else WRITE_TOOLS + edit_rules(scope)))
+    # a role's own "tools" replace the default command list, but a write role ALWAYS gets Edit only on its scope
+    tools = list(tools or (READ_TOOLS if read_only else WRITE_TOOLS)) + ([] if read_only else edit_rules(scope))
     tools = [x for x in tools if x not in ("Edit", "Write", "Bash")]   # never a bare, unscoped Edit/Write/Bash
     dirs = sorted({str(Path(p).resolve().parent) for _, p in files if Path(p).resolve().parent != workdir.resolve()})
     full = _files_block(files) + prompt

@@ -122,14 +122,15 @@ export const Captions: React.FC<{ words: Word[]; hideFrom?: number; hideTo?: num
           (Math.min(1, s * 1.5) on a spring that starts at 0), so each page started with 3-4 ghost frames at 0-60 %,
           and fast speech (pages every ~0.5 s) spent up to a third of the time dimmed. Pages now land at full opacity
           and pop by scale only; qa.py "captions: never dimmed" holds it. */}
-      <div style={{ textAlign: "center", fontFamily: SANS, fontWeight: 900, fontSize: 84, lineHeight: 1.12, color: "white", transform: `scale(${0.9 + 0.1 * s})` }}>
+      {/* r10 (critic R-045, gatesmith pilot): balanced lines, so a short word ("a", "of") is never stranded alone on line 2 */}
+      <div style={{ textAlign: "center", textWrap: "balance", fontFamily: SANS, fontWeight: 900, fontSize: 84, lineHeight: 1.12, color: "white", transform: `scale(${0.9 + 0.1 * s})` }}>
         {page.tokens.map((t, i) => {
           const active = ms >= t.fromMs && ms < t.toMs + 80;
           return (
             <span key={i} style={{
               color: active ? C.amber : "white", WebkitTextStroke: "14px #000", paintOrder: "stroke fill",
               textShadow: "0 8px 24px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
-              display: "inline-block", margin: "0 0.13em", transform: `scale(${active ? 1.07 : 1})`,
+              display: "inline-block", margin: "0 0.22em", transform: `scale(${active ? 1.07 : 1})`,   // r10 R-045: the 14 px stroke ate the 0.13em gap ("themicrowaves"); 0.22em leaves ~20 px
             }}>{t.text.trim()}</span>
           );
         })}

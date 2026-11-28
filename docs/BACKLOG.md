@@ -39,6 +39,10 @@ Ideas and suggestions from reviews that are not bugs. Reviewers append; whoever 
 - [ ] (e07 Cursor test) whisper-cli failed once (exit 2) and passed on retry: retry once inside captions.py and log stderr.
 - [ ] (e07 Cursor test) Two agents rendering at once on one host slowed both (Microwave render 242 s -> 425 s): one render at a time per host (lock in render.sh / probe_frames / stem render).
 
+- [ ] (r10) Promote gates_candidate/R-045 (caption word gap / orphan) into qa.py if Felipe approves: validated FAIL on Microwave it8, PASS on it15. It found the orphan but not the two glued pairs the critic named at 0:04 / 0:15; consider a second rule (OCR token == concatenation of two caption words).
+- [ ] (r10) llm.py scope guard: it deletes ANY new file outside the scope that appears during a run, including a human's concurrent work (L-44). Record the agent's own tool calls (or lock the tree) instead of diffing the whole worktree.
+- [ ] (r10) Run the gatesmith on the next backlog items that have local evidence (R-049 closing-pill retract, R-046 static stage) once a good render exists for each.
+
 ## Done
 - [x] (r6) Portability gate scripts/check_portability.py (shebangs, /workspace/ paths, -vsync, GNU sed -i) run before every render; setup.sh Python 3.12/3.13 pick; lessons.py drop guard (L-31, L-34, L-36).
 - [x] (r6) Label overlap gate A13 (contrast.py occupancy) and agy critic backend (`critic.py --backend agy`, `ship_check.sh`); the pilot's `scripts/critic_agy.py` was dropped for them. (round 6, merged into the Microwave pilot)

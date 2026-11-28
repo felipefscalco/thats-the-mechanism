@@ -4,7 +4,7 @@ import { Check, X } from "lucide-react";
 import words from "../06-microwave-door.captions.json";
 import {
   C, Enter, EpisodeShell, LOOP_FRAMES, MONO, PILLARS, Pill, Shot, Stage, TagLabel, TitleHook, Label,
-  EASE, cue, ease, makeAt, pop, popOpacity, popScale, reveal, squash, useG,
+  EASE, cue, ease, makeAt, pop, popOpacity, popScale, reveal, squash, useAmbient, useG,
 } from "../brand";
 
 /**
@@ -47,7 +47,8 @@ const Front: React.FC<{ final?: boolean }> = ({ final = false }) => {
   // scale reveal: frame 0 is a bright close-up of the glowing window, pulling out to the whole oven by ~1 s
   const z = 0.8 * (final ? 1 : interpolate(f, [2, 30], [1.25, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) }));
   const cx = WX + WW / 2, cy = WY + WH / 2;
-  const th = f / 22;
+  const fa = useAmbient();   // r10: turntable, steam and rings keep moving through the payoff freeze
+  const th = fa / 22;
   const mugX = cx + 130 * Math.sin(th), mugS = 0.9 + 0.1 * Math.cos(th);
   const timer = 30;   // static: a ticking digit is an entrance snap every second (r9 entrances gate)
   // microwaves: rings from the centre, clipped to the window; they arrive on "So why", the frame flashes on "stay in"
@@ -79,11 +80,11 @@ const Front: React.FC<{ final?: boolean }> = ({ final = false }) => {
               <path d="M55 -30 q46 0 46 36 q0 36 -46 36" fill="none" stroke={C.paper} strokeWidth={14} />
               {[0, 1, 2].map((k) => (
                 <path key={k} d={`M${-28 + k * 28} -80 q12 -22 0 -44 q-12 -22 0 -44`} fill="none" stroke="#FFF6E0" strokeWidth={7} strokeLinecap="round"
-                  opacity={0.45 + 0.3 * Math.sin(f / 6 + k * 2)} transform={`translate(${4 * Math.sin(f / 8 + k)} 0)`} />
+                  opacity={0.45 + 0.3 * Math.sin(fa / 6 + k * 2)} transform={`translate(${4 * Math.sin(fa / 8 + k)} 0)`} />
               ))}
             </g>
             {[0, 1, 2, 3].map((k) => {
-              const r = ((f * 4 + k * 90) % 360) + 10;
+              const r = ((fa * 4 + k * 90) % 360) + 10;
               return <circle key={k} cx={cx} cy={cy - 20} r={r} fill="none" stroke={MW} strokeWidth={9} opacity={ringsOn * 0.75 * (1 - r / 380)} />;
             })}
             <rect x={WX} y={WY} width={WW} height={WH} fill="url(#mwMesh)" />

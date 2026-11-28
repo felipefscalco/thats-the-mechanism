@@ -87,9 +87,6 @@ Measurable rules that are not yet an automated check. Implement these as `qa.py`
 - **Transition between beats and out of end cards with crisp directional whips or element morphs, never with blur, opacity cross-dissolves, or double-exposure frames, and ease any dismissal back to the underlying diagram along its spatial direction.** (active; 2 episode(s): QR, Sky)
   - proposed: Enforce section boundaries through a shared world-move transition component and fail QA if any transition frame blends two section canvases or applies blur above threshold.
 
-- **Animate physical trajectory deflection, bouncing, and particle or ray behavior by deforming or redirecting paths on contact, with continuous secondary motion and gradients interpolated along the active path, instead of static starbursts, static formulas, or bar charts.** (not yet active; 1 episode(s): Sky)
-  - proposed: Assert that path stroke gradient offset properties animate across at least 15 frames during state transformation sequences.
-
 - **Keep background layers subordinate and thematically neutral, draw every foreground element in one hard-edged layered flat-vector grammar with accurate scale and lighting, and clear scene silhouettes when moving to abstract beats; never place decorative illustrations behind technical diagrams.** (active; 2 episode(s): ANC, Sky)
   - proposed: Ensure background layer behind scientific focal elements maintains low visual complexity and minimum contrast against diagram elements.
 
@@ -119,9 +116,6 @@ Measurable rules that are not yet an automated check. Implement these as `qa.py`
 
 - **Always anchor explanatory callouts directly to the relevant visual part with a leader line rather than recycling identical top-center status pills on every beat.** (not yet active; 1 episode(s): FireSprinkler)
   - proposed: Flag episodes where more than half of all stage labels reuse the same top-center pill slot instead of part-anchored callout components with leader lines.
-
-- **Always animate debris, particles, and fluid streams continuously under gravity or flow velocity until they exit frame or the shot cuts, never freezing them mid-air.** (not yet active; 1 episode(s): FireSprinkler)
-  - proposed: Track debris, particle, and fluid-stream layers after a trigger event and fail if their displacement drops to zero while still inside the visible stage.
 
 
 ## Gate misses (a gate exists but the critic still saw it)
@@ -153,7 +147,7 @@ The QA report of the judged render shows the gate PASSING while the critic repor
 - (candidate_gate, 1 ep) Limit simultaneous floating annotation badges, callout pills, and annotation tags on one stage to at most three, all grouped in one focal region.
 - (candidate_gate, 1 ep) Insert and remove proof cards with directional push or scale easing, dimming or moving the underlying diagram before a card enters, and let overlays animate fully out before the diagram's secondary motion or ray propagation resumes.
 - (gate, 1 ep) Anchor every connector, dashed flow line, and derived child element to explicit source and target elements, and animate satellite arrays along continuous guide paths.
-- (candidate_gate, 1 ep) Animate physical trajectory deflection, bouncing, and particle or ray behavior by deforming or redirecting paths on contact, with continuous secondary motion and gradients interpolated along the active path, instead of static starbursts, static formulas, or bar charts.
+- (component, 1 ep) Animate physical trajectory deflection, bouncing, and particle or ray behavior by deforming or redirecting paths on contact, with continuous secondary motion and gradients interpolated along the active path, instead of static starbursts, static formulas, or bar charts.
 - (candidate_gate, 1 ep) Reserve semantic status colors for success, failure, or balance states, and never recolor neutral mechanical components with them.
 - (candidate_gate, 1 ep) Never allow a headline or callout container to overlap the bounding box of the primary hero illustration.
 - (candidate_gate, 1 ep) Always complete animated numeric counters and key data reveals within two frames of the spoken number rather than trailing behind the voiceover.
@@ -164,5 +158,5 @@ The QA report of the judged render shows the gate PASSING while the critic repor
 - (prose, 1 ep) Always preserve colour and silhouette continuity when cutting from an exterior overview into an internal close-up of the same component.
 - (gate, 1 ep) Never display duplicate label text simultaneously on stage, and keep every diagram label at least 30 px tall and persistent until its shot exits.
 - (candidate_gate, 1 ep) Always anchor explanatory callouts directly to the relevant visual part with a leader line rather than recycling identical top-center status pills on every beat.
-- (candidate_gate, 1 ep) Always animate debris, particles, and fluid streams continuously under gravity or flow velocity until they exit frame or the shot cuts, never freezing them mid-air.
+- (component, 1 ep) Always animate debris, particles, and fluid streams continuously under gravity or flow velocity until they exit frame or the shot cuts, never freezing them mid-air.
 - (gate, 1 ep) Never repeat identical synthetic UI pop tones on consecutive label entries, and never leave more than 0.8 seconds of near-dead air before the closing loop transition.

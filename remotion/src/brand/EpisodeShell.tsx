@@ -7,7 +7,7 @@ import { Pillar } from "./tokens";
 import { Background, BrandChip, Captions, Chapter, Deck } from "./Chrome";
 import { MechanismCard, outroCues } from "./Outro";
 import { Cue, SfxTrack, cue } from "./Sfx";
-import { AtFrame } from "./frame";
+import { AtAmbient, AtFrame } from "./frame";
 import { Word } from "./timing";
 import { T_FRAMES } from "./Shot";
 import { PillarCtx, ShotLayers } from "./Depth";
@@ -53,9 +53,9 @@ export const EpisodeShell: React.FC<{
       {/* r10 exact loop: once LoopBack has fully arrived (q = 0 at 1/1.6 of its run) the frozen stage is no longer drawn under
           it, so the last frame is background + frame-0 hook whatever the hook covers (Microwave it10: payoff pills showed
           through a smaller hook, seam PSNR 22.8 dB). */}
-      {f >= loopArrived ? null : f >= holdFrom
+      <AtAmbient f={f}>{f >= loopArrived ? null : f >= holdFrom
         ? <Freeze frame={holdFrom}><AtFrame f={holdFrom}><AbsoluteFill className="ttm-stage">{children}</AbsoluteFill></AtFrame></Freeze>
-        : <AtFrame f={f}><AbsoluteFill className="ttm-stage">{children}</AbsoluteFill></AtFrame>}
+        : <AtFrame f={f}><AbsoluteFill className="ttm-stage">{children}</AbsoluteFill></AtFrame>}</AtAmbient>
       {f >= loopFrom - T_FRAMES && <AbsoluteFill className="ttm-stage"><LoopBack from={loopFrom} hook={hook} /></AbsoluteFill>}
       <MechanismCard at={cardAt} until={cardUntil} pillar={pillar} />
       <Grain f={f} D={D} />
@@ -77,7 +77,7 @@ const LoopBack: React.FC<{ from: number; hook: React.ReactNode }> = ({ from, hoo
   return (
     <Sequence from={0} layout="none">
       <AbsoluteFill style={{ transform: `translateX(${1080 * q * q}px)`, filter: `blur(${Math.min(14, q * 22)}px)`, background: "transparent" }}>
-        <AtFrame f={0}><ShotLayers seed={0} g={0}>{hook}</ShotLayers></AtFrame>
+        <AtAmbient f={0}><AtFrame f={0}><ShotLayers seed={0} g={0}>{hook}</ShotLayers></AtFrame></AtAmbient>
       </AbsoluteFill>
     </Sequence>
   );

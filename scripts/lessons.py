@@ -102,6 +102,8 @@ KNOWN_COMPONENTS = [
      "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)"),
     (r"busy (art|background)|label on .*art|taglabel",
      "remotion/src/brand/Kit.tsx `TagLabel` (ink backing behind stage labels)"),
+    (r"(debris|particles?|fluid|water|steam|stream|shards?).{0,80}(freez|mid-air|continu)|(freez|mid-air).{0,60}(debris|particles?|fluid|water|shards?)",
+     "remotion/src/brand/frame.tsx `useAmbient()` (ambient motion keeps running through the payoff freeze; pinned to 0 in LoopBack)"),
 ]
 
 STOP = {"the","a","an","and","or","to","of","in","on","for","with","from","that","this","it","is","be","as","at","by","not","no","never","always","keep","use","must","should","do","don't","than","then","into"}
@@ -435,6 +437,14 @@ def refresh() -> int:
     clusters = data.get("clusters", [])
     for c in clusters:
         c.setdefault("gate_miss", [])
+        # re-check against the current KNOWN_GATES / KNOWN_COMPONENTS (a new gate or component promotes the rule to code)
+        g = list(dict.fromkeys(c.get("gates", []) + match_known(c["rule"], KNOWN_GATES)))
+        k = list(dict.fromkeys(c.get("components", []) + match_known(c["rule"], KNOWN_COMPONENTS)))
+        if (g, k) != (c.get("gates", []), c.get("components", [])):
+            c["gates"], c["components"] = g, k
+            c["enforcement"] = "gate" if g else "component" if k else c["enforcement"]
+    data["clusters"] = clusters
+    OUT_JSON.write_text(json.dumps(data, indent=2, ensure_ascii=False))
     OUT_MD.write_text(render_md(clusters, data.get("generated", "")))
     OUT_PROMPT.write_text(render_prompt(clusters))
     write_backlog(clusters)
