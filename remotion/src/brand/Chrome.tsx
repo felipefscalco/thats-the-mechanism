@@ -46,6 +46,14 @@ export const BrandChip: React.FC<{ pillar: Pillar; ep: string; source?: string }
   const shine = interpolate(f, [4, 34], [-40, 140], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
+      {/* r10 header plate (e07 v2 critic: the water pipe covered "#007 · PHYSICS"): a feathered ink plate keeps the brand
+          lines readable over any stage art; over empty background it is invisible (same colour as C.ink). */}
+      <div style={{
+        position: "absolute", left: 0, top: 118, width: 860, height: 156,
+        background: "linear-gradient(90deg, rgba(13,14,18,0.9) 0%, rgba(13,14,18,0.9) 70%, rgba(13,14,18,0) 100%)",
+        WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%)",
+        maskImage: "linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%)",
+      }} />
       <div style={{ position: "absolute", left: 60, top: 146, display: "flex", alignItems: "center", gap: 16 }}>
         <div style={{ filter: `drop-shadow(0 0 ${18 * glow}px ${C.amber})`, transform: `scale(${1 + 0.18 * glow})` }}>
           <Gear size={50} color={C.amber} rot={rot} />

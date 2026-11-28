@@ -84,7 +84,9 @@ if STEMS:
     peaks = [i for i in range(1, len(sx) - 1) if sx[i] >= sx[i - 1] and sx[i] > sx[i + 1] and sx[i] > -60 and sx[i] == sx[max(0, i - 4):i + 5].max()]
     gaps = np.array([voice_lvl - sx[i] for i in peaks])
     res["sfx"] = dict(voice_rms_db=round(voice_lvl, 1), events=len(peaks), gap_db_median=round(float(np.median(gaps)), 1), gap_db_min=round(float(gaps.min()), 1),
-                      gap_db_max=round(float(gaps.max()), 1), sfx_per_s=round(len(peaks) / dur, 2))
+                      gap_db_max=round(float(gaps.max()), 1), sfx_per_s=round(len(peaks) / dur, 2),
+                      # r10: WHERE the loudest events are, so a failing level is fixable without re-measuring (e07 v2)
+                      loudest=[dict(t_s=round(i * 0.1 + 0.2, 1), gap_db=round(float(voice_lvl - sx[i]), 1)) for i in sorted(peaks, key=lambda i: -sx[i])[:3]])
     # onset density: 50 ms windows, rise > 6 dB over the previous 150 ms floor, above -55 dBFS, >= 80 ms apart
     x, sr = sf.read(OUT / "stem_sfx.wav"); x = x.mean(1) if x.ndim > 1 else x
     w5 = int(0.05 * sr); e5 = np.array([20 * np.log10(np.sqrt(np.mean(x[i:i + w5] ** 2)) + 1e-9) for i in range(0, len(x) - w5, w5)])
