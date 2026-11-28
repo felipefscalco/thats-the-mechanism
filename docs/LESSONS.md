@@ -317,3 +317,10 @@ One entry per finding. Newest at the bottom. Format:
 - Fix (code): str(v) in the filler; builder.sh stops when the prompt is empty; llm.run raises ValueError on an empty prompt instead of walking the fallback chain.
 - Prevention: every entry point that builds a prompt needs one smoke run (dry_run) in tests; a fallback chain must report the FIRST provider's error.
 - Status: fixed
+
+### L-46 · 2026-11-29 · kit + preview · major (a polish rewrite crashed the render and nobody could see why)
+- Problem: the e07 polish builder (allowlisted, as designed) could not see why preview.py failed: the probe render threw `inputRange must be strictly monotonically increasing [158,180,175,214,243]` at frame 156, preview.py discarded that stderr and crashed later on empty stills, and the builder's diagnostic commands were (correctly) denied. Earlier, an in-scope Edit was reported denied; replaying the same permissions succeeded and the raw denials had been discarded.
+- Root cause: camera keys built from phrase times plus offsets (`s2 + 22` then `tV - 8`) fall out of order when two phrases are close; keyed() passed them straight to interpolate().
+- Fix (code): brand/timing.ts `keyed()` makes keys strictly increasing (a late key moves to previous + 1 frame) -> this crash class is impossible in every episode. preview.py writes a readable FAIL with the render error and stops. llm.py keeps claude's permission_denials in meta (the continuation run logged 6, all diagnostic Bash calls outside the allowlist).
+- Prevention: tools an allowlisted agent depends on must report their own errors; the agent cannot go and look.
+- Status: fixed

@@ -19,8 +19,14 @@ export const ease = (f: number, a: number, b: number, from = 0, to = 1) =>
   interpolate(f, [a, b], [from, to], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.33, 0, 0.2, 1) });
 export const pop = (f: number, at: number, fps: number, damping = 14) =>
   spring({ frame: f - at, fps, config: { damping, stiffness: 170, mass: 0.7 } });
-export const keyed = (f: number, keys: [number, number][]) =>
-  interpolate(f, keys.map((k) => k[0]), keys.map((k) => k[1]), { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
+/** Keyframes from spoken-phrase times. r10 (e07 polish crash: [158,180,175,214,243] -> "inputRange must be strictly
+ *  monotonically increasing" mid-render): when a phrase lands before the previous key's offset, the key is pushed to
+ *  1 frame after the previous one instead of throwing, so a pacing change can never crash a render. */
+export const keyed = (f: number, keys: [number, number][]) => {
+  const ts: number[] = [];
+  for (const [t] of keys) ts.push(ts.length ? Math.max(t, ts[ts.length - 1] + 1) : t);
+  return interpolate(f, ts, keys.map((k) => k[1]), { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
+};
 
 /** r5 motion tokens (emilkowalski/skills STANDARDS + mg-styles-15 Flat Vector). One timing family per element:
  *  OUT = entering / responding (never ease-in for entries), IN_OUT = on-screen moves, OVERSHOOT = flat-vector "pop" landings. */

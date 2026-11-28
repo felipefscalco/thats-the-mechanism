@@ -61,6 +61,12 @@ t = time.time()
 cr = subprocess.run([PY, str(ROOT / "scripts/contrast.py"), ID, "-", str(OUT / f"_pv_it{IT}"), "--preview", "--cuts", cuts, "--card", f"{card_at:.2f},{card_until:.2f}", "--keep-norm"],
                     capture_output=True, text=True)
 res["timing_probe_s"] = round(time.time() - t, 1)
+if cr.returncode:   # r10: a scene threw while rendering; say WHICH error instead of crashing later on empty stills
+    errs = [l.strip() for l in (cr.stderr + cr.stdout).splitlines() if "Error" in l or "error" in l or "frame:" in l][-4:]
+    check("preview: probe render ran (a scene threw while rendering - fix it first)", False, dict(error=" | ".join(errs)[-700:]))
+    res["checks"] = checks; res["wall_s"] = round(time.time() - T0, 1) if "T0" in globals() else None
+    (OUT / f"preview_it{IT}.json").write_text(json.dumps(res, indent=1))
+    print("FAIL | preview: probe render ran |", " | ".join(errs)[-700:]); sys.exit(1)
 try:
     c = json.loads((OUT / f"_pv_it{IT}" / "contrast.json").read_text()); res["contrast"] = c
     check("labels: WCAG contrast >= 4.5:1 (held >= 0.6 s; raw SVG text included)", c["ok"], dict(min=c["min_ratio"], p10=c["p10_ratio"], failures=[(f["t_start_s"], f["worst_ratio"], f["bbox"]) for f in c["held_failures"]][:8]))
