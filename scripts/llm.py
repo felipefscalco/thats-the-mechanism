@@ -205,11 +205,12 @@ def build_cmd(provider: str, model, prompt: str, workdir: Path, schema_path, fil
 
 
 def parse_output(provider: str, stdout: str, schema, last_msg: Path | None = None) -> dict:
-    usage, cost, text, js = {}, None, "", None
+    usage, cost, text, js, denials = {}, None, "", None, []
     if provider == "claude":
         d = json.loads(stdout)
         if d.get("is_error"): raise RuntimeError(f"claude error: {str(d.get('result'))[:300]}")
         text = d.get("result") or ""; js = d.get("structured_output"); usage = d.get("usage") or {}; cost = d.get("total_cost_usd")
+        denials = d.get("permission_denials") or []   # r10 (L-46): keep what the allowlist refused, for the log and the caller
     elif provider == "agy":
         d = json.loads(stdout)
         if d.get("status") != "SUCCESS": raise RuntimeError(f"agy status={d.get('status')}: {stdout[-300:]}")
@@ -222,7 +223,7 @@ def parse_output(provider: str, stdout: str, schema, last_msg: Path | None = Non
         text = d.get("result") or ""; usage = d.get("usage") or {}
     if schema is not None and js is None:
         js = _extract_json(text)
-    return dict(text=text, json=js, usage=usage, cost_usd=cost)
+    return dict(text=text, json=js, usage=usage, cost_usd=cost, denials=denials)
 
 
 # ---- scope guard (vendor-independent): revert anything the agent changed outside its allowed globs ----
@@ -320,7 +321,7 @@ def run(role: str, prompt: str, workdir=ROOT, scope=None, schema=None, files=(),
             out = parse_output(prov, cp.stdout, schema, last_msg)
             reverted = enforce_scope(workdir, snap, scope) if snap else []
             meta = dict(provider=prov, model=model, role=role, wall_s=round(time.time() - t0, 1), usage=out["usage"],
-                        cost_usd=out["cost_usd"], reverted=reverted, cmd=redacted)
+                        cost_usd=out["cost_usd"], reverted=reverted, cmd=redacted, denials=out.get("denials", [])[:20])
             if log_dir:
                 ld = Path(log_dir); ld.mkdir(parents=True, exist_ok=True)
                 ts = time.strftime("%Y%m%d-%H%M%S")

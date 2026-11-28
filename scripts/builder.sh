@@ -18,4 +18,4 @@ print(t)
 PYEOF
 [[ -s "$PROMPT" ]] || { echo "builder.sh: the prompt is empty ($PROMPT); not starting an agent" >&2; exit 2; }   # r10: never call a model with nothing
 SUF="$SUF" "$PY" "$P/scripts/llm.py" run --role builder --prompt-file "$PROMPT" --workdir "$P" --log-dir "$LOG" \
-  --scope "remotion/src/episodes/$ID.tsx,episodes/$SLUG/*.json,episodes/$SLUG/notes*.md"
+  --scope "remotion/src/episodes/$ID.tsx,episodes/$SLUG/*.json,episodes/$SLUG/notes*.md,episodes/$SLUG/shots.md"   # same scope as build_loop.py
