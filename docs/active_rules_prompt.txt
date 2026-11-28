@@ -20,3 +20,4 @@ I9. Label every comparison chart with a top-level descriptor and fixed headers o
 I10. Animate continuous displacement across at least two intermediate frames, and keep one fixed observer frame of reference when a spatial diagram changes, rather than teleporting objects or moving the light source and subject together. (gate not written yet)
 I11. Never hold a locked camera or visually unchanged stage layout for more than two seconds without a meaningful camera move, dimensional peel, or mechanical state transition. (gate not written yet)
 I12. Always retract closing callout pills and return dynamic hero state toward frame zero before the final loop whip so the last frame settles cleanly onto the opening frame. (a gate exists but missed it)
+I13. Never allow animated stage artwork, zoomed rigs, or callout leader lines to cross into the caption zone, chapter deck, or top header chrome during any camera move. (gate not written yet)

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-28T23:22:58+09:00",
+  "generated": "2026-11-29T00:54:31+09:00",
   "source_rules": 232,
   "clusters": [
     {
@@ -2613,6 +2613,12 @@
           "timestamp": "00:05–00:10, 00:25–00:29",
           "severity": "major",
           "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:07-00:10 (static hold) and 00:03, 00:09, 00:16 (pop/fade entrances)",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
         }
       ],
       "gate_miss": [
@@ -2622,6 +2628,13 @@
           "check": "motion: no stage hold > 2.0 s",
           "qa_report": "qa/FireSprinkler/v1/report_it104.json",
           "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
+        },
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:07-00:10 (static hold) and 00:03, 00:09, 00:16 (pop/fade entrances)",
+          "check": "motion: no stage hold > 2.0 s",
+          "qa_report": "qa/FireSprinkler/report_it13.json",
+          "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
         }
       ]
     },
@@ -2781,10 +2794,174 @@
           "source": "qa/FireSprinkler/v1/critic/critic_cal.json"
         }
       ]
+    },
+    {
+      "id": "R-059",
+      "rule": "Never allow animated stage artwork, zoomed rigs, or callout leader lines to cross into the caption zone, chapter deck, or top header chrome during any camera move.",
+      "category": "design_typography",
+      "enforcement": "candidate_gate",
+      "active": true,
+      "severity": "blocker",
+      "measurable": true,
+      "proposed_gate": "Render the stage layer without HUD overlays and fail if any non-background artwork or leader-line pixels enter the top header (y < 290) or lower UI zones (y > 1190) on any sampled frame, including during camera zooms.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:00-00:34 (header overlap) and 00:04-00:16 (caption and chapter-bar overlap)",
+          "severity": "blocker",
+          "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-060",
+      "rule": "Always bind callout leader-line target coordinates in the parent rig's local space and render stage callout text at >= 32 px inside an opaque or high-contrast pill backing.",
+      "category": "design_typography",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Verify that every rendered callout label meets >= 30 px font height, keeps leader endpoints inside y 290..1190, and achieves WCAG >= 4.5:1 contrast on every individual label instance rather than only the 10th percentile.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:06-00:10, 00:12-00:16, 00:23-00:24, 00:38-00:40",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-061",
+      "rule": "Always enforce uniform single-space word gaps in burned-in captions regardless of active-word highlight styling.",
+      "category": "voice_captions",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Measure horizontal inter-word pixel gaps on every rendered caption frame and fail if any gap deviates by more than 25% from the nominal single-space width.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:00-00:02, 00:06, 00:09-00:10, 00:21, 00:33",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-062",
+      "rule": "Never freeze active particles or continuous fluid motion during an ending payoff hold, and always resolve the closing transition cleanly back onto frame zero's exact composition.",
+      "category": "loop",
+      "enforcement": "gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Verify continuous non-zero pixel motion on active particle layers during payoff holds and require the final return frame to match frame 0 within a strict perceptual similarity threshold.",
+      "gates": [
+        "scripts/qa.py: loop seam jump <= p95 frame step and PSNR >= 25 dB"
+      ],
+      "components": [
+        "remotion/src/brand/EpisodeShell.tsx `LoopEnd` / `LoopBack` (hook frozen at frame 0)",
+        "remotion/src/brand/frame.tsx `useAmbient()` (ambient motion keeps running through the payoff freeze; pinned to 0 in LoopBack)"
+      ],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:38-00:40 vs 00:00",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:38-00:40 vs 00:00",
+          "check": "loop: seam jump <= p95 frame step (and PSNR >= 25 dB)",
+          "qa_report": "qa/FireSprinkler/report_it13.json",
+          "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+        }
+      ]
+    },
+    {
+      "id": "R-063",
+      "rule": "Always synchronize every spoken mechanical action and callout label within 0.35 s of its visual event, and give the final proof beat at least one second of visual payoff before transitioning to the end card.",
+      "category": "sound_sync",
+      "enforcement": "candidate_gate",
+      "active": false,
+      "severity": "major",
+      "measurable": true,
+      "proposed_gate": "Compare word-level transcript timestamps for action cues and callout labels against visual state-change frames, failing if sync offset exceeds 0.35 s or if the final proof beat cuts away within 0.8 s of its trigger.",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:20-00:23 (action and label lag) and 00:33-00:35 (cut-off proof)",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
+    },
+    {
+      "id": "R-064",
+      "rule": "Always visualize categorical or comparative claims with distinct, labeled contrasting examples on screen rather than dimmed duplicates, and depict physical fracture or mechanical release with authentic multi-part motion rather than uniform geometric confetti.",
+      "category": "clarity",
+      "enforcement": "prose",
+      "active": false,
+      "severity": "major",
+      "measurable": false,
+      "proposed_gate": "",
+      "gates": [],
+      "components": [],
+      "episodes": [
+        "FireSprinkler"
+      ],
+      "episode_count": 1,
+      "evidence": [
+        {
+          "episode": "FireSprinkler",
+          "timestamp": "00:20 (confetti burst), 00:21 (omitted mechanical drop), 00:25-00:29 (identical dimmed flanking items)",
+          "severity": "major",
+          "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
+        }
+      ],
+      "gate_miss": []
     }
   ],
   "merged_sources": [
     "qa/FireSprinkler/v1/critic/critic_cal.json",
+    "qa/FireSprinkler/v2/ship/critic_cal.json",
     "qa/Microwave/v1/ship_it8/critic_cal.json"
   ]
 }

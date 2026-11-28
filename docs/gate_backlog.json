@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-28T23:48:06+09:00",
+ "generated": "2026-11-29T00:54:31+09:00",
  "items": [
   {
    "id": "R-049",
@@ -146,6 +146,24 @@
      "timestamp": "00:06-00:09 (static 7x7 dot grid), 00:17-00:28 (11-second locked cutaway across two beats), 00:29-00:32 (3-second static void)",
      "severity": "blocker",
      "source": "qa/Microwave/v1/ship_it8/critic_cal.json"
+    }
+   ]
+  },
+  {
+   "id": "R-059",
+   "kind": "candidate_gate",
+   "rule": "Never allow animated stage artwork, zoomed rigs, or callout leader lines to cross into the caption zone, chapter deck, or top header chrome during any camera move.",
+   "category": "design_typography",
+   "severity": "blocker",
+   "proposed_gate": "Render the stage layer without HUD overlays and fail if any non-background artwork or leader-line pixels enter the top header (y < 290) or lower UI zones (y > 1190) on any sampled frame, including during camera zooms.",
+   "existing_gates": [],
+   "misses": [],
+   "evidence": [
+    {
+     "episode": "FireSprinkler",
+     "timestamp": "00:00-00:34 (header overlap) and 00:04-00:16 (caption and chapter-bar overlap)",
+     "severity": "blocker",
+     "source": "qa/FireSprinkler/v2/ship/critic_cal.json"
     }
    ]
   },
