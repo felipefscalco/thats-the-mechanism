@@ -26,7 +26,13 @@ def stem(t):
     return t
 
 def echo(label, ws, t0, t1):
-    if "@" in label: return phrase_time(ws, label.split("@", 1)[1].strip()), "explicit"
+    if "@" in label:   # r10: a phrase spoken twice (e.g. "sixty-eight") anchors to its occurrence inside THIS shot
+        ph, hits, n = label.split("@", 1)[1].strip(), [], 0
+        while True:
+            try: hits.append(phrase_time(ws, ph, n)); n += 1
+            except KeyError: break
+        inside = [t for t in hits if t0 - 0.3 <= t < t1]
+        return (inside or hits or [None])[0], "explicit"
     need = [stem(x) for x in LP.toks(label) if len(x) >= 3 or x.isdigit()]
     if not need: return None, None
     idx = [i for i, w in enumerate(ws) if t0 - 0.3 <= w["start"] < t1]

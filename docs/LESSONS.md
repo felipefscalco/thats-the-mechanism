@@ -324,3 +324,9 @@ One entry per finding. Newest at the bottom. Format:
 - Fix (code): brand/timing.ts `keyed()` makes keys strictly increasing (a late key moves to previous + 1 frame) -> this crash class is impossible in every episode. preview.py writes a readable FAIL with the render error and stops. llm.py keeps claude's permission_denials in meta (the continuation run logged 6, all diagnostic Bash calls outside the allowlist).
 - Prevention: tools an allowlisted agent depends on must report their own errors; the agent cannot go and look.
 - Status: fixed
+
+### L-47 · 2026-11-29 · gate · minor (label_sync judged a repeated phrase against its first occurrence)
+- Problem: e07 v2 failed label_sync with "68 °C" 10.5 s late. Shot 5's `68 °C @sixty-eight` was timed against shot 4's "sixty-eight".
+- Fix (code): label_sync.echo() anchors an explicit @phrase to its occurrence inside the shot window (test in tests/test_r10_captions.py).
+- Also seen on e07 v2 (episode-level fixes): a badge riding a moving value (thermometer tip) is hard to read and OCR misses it; pin threshold labels to the threshold mark. Clamp ambient art (heat plume) above the caption band in screen space, not world space, when the camera zooms.
+- Status: fixed

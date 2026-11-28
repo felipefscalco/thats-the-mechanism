@@ -33,6 +33,14 @@ def t_anchor_gate():
     assert bad[1] is False and bad[2]["missing"] == ["five milliwatts"], bad
 
 
+def t_label_sync_repeated_phrase_uses_this_shot():
+    """e07 v2: "68 °C @sixty-eight" in shot 5 was judged against the shot-4 "sixty-eight" (10.5 s 'late')."""
+    import label_sync as L
+    ws = [dict(text=w, start=float(i), end=i + 0.5) for i, w in enumerate("at sixty-eight degrees red bulb built for sixty-eight".split())]
+    assert L.echo("68 °C @sixty-eight", ws, 0, 4)[0] == 1.0
+    assert L.echo("68 °C @sixty-eight", ws, 4, 9)[0] == 7.0
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("t_"):
